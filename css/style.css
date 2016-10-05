@@ -8,6 +8,62 @@ h1 {
   text-align: center;
 }
 
+.description {
+  font-size: 1.2em;
+}
+
+.title {
+  font-weight: bold;
+  text-decoration: underline;
+}
+
 .nav {
   border: 0px solid transparent;
 }
+
+.heading {
+    padding-top: 5%;
+}
+
+.navbar .navbar-nav {
+  display: inline-block;
+  float: none;
+  vertical-align: top;
+}
+
+.navbar .navbar-collapse {
+  text-align: center;
+}
+
+p {
+	text-align: center;
+}
+
+.delim-select {
+	visibility: hidden;
+	display: none;
+	color: red;
+}
+
+.d3-area {
+  /*padding-top: 50px;*/
+}
+
+svg {
+  display: block;
+  margin: auto;
+}
+
+.options {
+  text-align: center;
+  margin-top: 0px;
+}
+
+.tooltip-inner {
+  border: 1px solid rgba(5, 5, 5, 0.8);
+  background-color: rgba(182, 182, 182, 0.3);
+  color: #111;
+  font-weight: 500;
+  white-space:pre-wrap;
+}
+
