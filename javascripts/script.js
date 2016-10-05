@@ -270,15 +270,15 @@ function plotYear(svg, runs, year) {
 	$('.options').append('<div class="checkbox-inline ' + 'checkbox-' + year + '" style="color:' + colors[year][1] + '"><label><input type="checkbox" name="'+year+'" value="one" checked>'+year+'</label></div>');
 	$('input[type=checkbox]').change(function() {
 		var year = '.' + this.name;
-		// var checkbox = '.checkbox-' + this.name;
+		var checkbox = '.checkbox-' + this.name;
 		if (this.checked) {
 			// console.log(colors[year][1]);
 			($(year)).show();
-			// $(checkbox).css('color', colors[this.name][1]);
+			$(checkbox).css('color', colors[this.name][1]);
 		}
 		else {
 			($(year)).hide();
-			// $(checkbox).css('color', '#999');
+			$(checkbox).css('color', '#999');
 		}
 	});
 }
