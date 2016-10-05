@@ -18,7 +18,7 @@ var plotHeight = height - margins.top - margins.bottom;
 var plotWidth = width - margins.right - margins.left;
 
 var x = d3.scaleLinear()
-	.domain([0,365])
+	.domain([0,366])
 	.range([margins.left, plotWidth]);
 
 var y = d3.scaleLinear()
@@ -46,16 +46,20 @@ var m = d3.scaleOrdinal()
 // 	.range(['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']);
 	// .rangePoints(monthDays);
 
+// for (var i = 0; i < 12; i ++) {
+// 	console.log(m(monthDays[i]));
+// }
+
 months.map(function(d) { return d})
 
 // var xAxis = d3.svg.axis().orient("bottom").scale(xScale).ticks(12, d3.format(",d")),
-    // yAxis = d3.svg.axis().scale(yScale).orient("left");
+//     yAxis = d3.svg.axis().scale(yScale).orient("left");
 
 var colors = {
-	'2014' : ['rgba(256,0,0,0.3)', 'rgb(256,0,0)'],
-	'2015' : ['rgba(0,0,256,0.3)', 'rgb(0,256,0)'],
-	'2016' : ['rgba(0,256,0,0.3)', 'rgb(0,0,256)']
-};
+	'2014' : 'rgba(256,0,0,0.3)',
+	'2015' : 'rgba(0,0,256,0.3)',
+	'2016' : 'rgba(0,256,0,0.3)'
+}
 
 /**
  * Draws the chart using svg.
@@ -65,6 +69,9 @@ var colors = {
 function draw(data) {
 
 	runs = getRuns(data);
+
+	// d3.select('.d3').html('');
+	// var svg = d3.select('.d3').append('svg').attr('width',width).attr('height',height);
 
 	var svg = d3.select('.svg').attr('width',width).attr('height',height);
 
@@ -78,25 +85,26 @@ function draw(data) {
  //        .text("Running Log");
 
 	// x-axis
-	svg.append('g').attr('transform', 'translate(0,' + plotHeight + ')').call(d3.axisBottom(x).tickValues(monthDays).tickFormat(function(d,i){ return monthAbr[i]}));
+	svg.append('g').attr('transform', 'translate(0,' + plotHeight + ')').call(d3.axisBottom(x).tickValues(monthDays));
+	// svg.append('g').attr('transform', 'translate(0,' + plotHeight + ')').call(d3.axisBottom(x).ticks(d3.utcMonth));
+	// svg.append('g').attr('transform', 'translate(0,' + plotHeight + ')').call(d3.axisBottom(x).ticks(12, "s"));
 
-	// y-axis
-	svg.append('g').attr('transform', 'translate(' + margins.left + ',0)').call(d3.axisLeft(y).tickFormat(function(d) { 
-		var min = Math.floor(d / 1);
-		var sec = d % 1 * 60;
-		var filler = sec < 10 ? ':0' : ':';
-		return min + filler + sec;
-	}));
+	// var xAxis = d3.axisBottom().scale(x);
+	// svg.append('g').attr('transform', 'translate(0,' + plotHeight + ')').call(xAxis);
 
 	svg.append('text')
 		.attr('transform', 'translate(' + (plotWidth/2 + margins.left) + ' ,' + (height - margins.top) + ')')
 		.style('text-anchor', 'middle')
 		.text('Date');
 
+	// y-axis
+	svg.append('g').attr('transform', 'translate(' + margins.left + ',0)').call(d3.axisLeft(y));
+
 	svg.append("text")
 		.attr("transform", "rotate(-90)")
-		.attr("y", margins.left / 3)
+		.attr("y", margins.left / 2)
 		.attr("x",0 - (plotHeight / 2))
+	// 	.attr("dy", "1em")
 		.style("text-anchor", "middle")
 		.text("Pace (min/km)"); 
 
@@ -267,18 +275,14 @@ function plotYear(svg, runs, year) {
 		}		
 	});	
 
-	$('.options').append('<div class="checkbox-inline ' + 'checkbox-' + year + '" style="color:' + colors[year][1] + '"><label><input type="checkbox" name="'+year+'" value="one" checked>'+year+'</label></div>');
+	$('.options').append('<div class="checkbox-inline"><label><input type="checkbox" name="'+year+'" value="one" checked>'+year+'</label></div>');
 	$('input[type=checkbox]').change(function() {
 		var year = '.' + this.name;
-		// var checkbox = '.checkbox-' + this.name;
 		if (this.checked) {
-			// console.log(colors[year][1]);
 			($(year)).show();
-			// $(checkbox).css('color', colors[this.name][1]);
 		}
 		else {
 			($(year)).hide();
-			// $(checkbox).css('color', '#999');
 		}
 	});
 }
