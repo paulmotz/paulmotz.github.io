@@ -100,9 +100,27 @@ function draw(data) {
 		.style("text-anchor", "middle")
 		.text("Pace (min/km)"); 
 
-	runs.years.forEach(function(year) {
-		plotYear(svg, runs, year);
-	});
+
+
+	// plot the data (an array) with the smallest runs first if it only contains the running data 
+	// plot the data (an object) in chronological order if there is aggregate yearly data
+	if(Array.isArray(runs)) {
+		var years = [];
+		for (var run in runs) {
+			var thisYear = runs[run].date.getFullYear();
+			if (!years.includes(thisYear)) {
+				years.push(thisYear);
+			}
+		}
+		years.sort();
+		plotAll(svg, runs, years);
+	}
+	else {
+		runs.years.forEach(function(year) {
+			plotYear(svg, runs, year);
+		});
+	}
+
 
 	$("svg circle").tooltip({
         'container': 'body',
@@ -147,7 +165,13 @@ function getRuns(data) {
 		}
 	});
 
-	var sortedRuns = sortRuns(runs);
+	var sortedRuns = runs.sort(
+		function(a, b) {
+			return b.dist - a.dist;
+		}
+	);
+
+	// var sortedRuns = sortRuns(runs);
 
 	return sortedRuns;
 }
@@ -197,20 +221,18 @@ function sortRuns(runs) {
 }
 
 /**
- * Plots a given year
+ * Plots runs from all years starting with the smallest run
  * @param {???} svg - the svg element to which data is appended
  * @param {Object} runs - running data for all years
- * @param {number} year - the year that is being plotted
+ * @param {number[]} years - the years for which there is running data
  */
 
-function plotYear(svg, runs, year) {
+function plotAll(svg, runs, years) {
 
-
-	var yearRuns = runs[year];
-	// var yearColor = getColor(runs.years.indexOf(year), runs.avgTemp[year], 0);
-	yearRuns.forEach(function(row) {
+	runs.forEach(function(row) {
 		var day = row.date.getDate();
 		var month = row.date.getMonth();
+		var year = row.date.getFullYear();
 		var leap = year % 4 === 0 && month > 1 ? 1 : 0;
 		var daysIntoYear = monthDays[month] + day + leap;
 
@@ -225,13 +247,11 @@ function plotYear(svg, runs, year) {
 			svg.append('circle')
 				.attr('class', year)
 				.attr('r', r(row.dist))
-				.attr('fill', getColor(runs.years.indexOf(year), runs.avgTemp[year], row.temp))
+				.attr('fill', getColor(year, years, 0.3))
 				.attr('stroke','rgba(0,0,0,0.3)')
 				.attr('cx', x(daysIntoYear))
 				.attr('cy', y(row.pace))
 				.attr('title', 'Date: ' + dateString + '\nPace: ' + paceString + '\nDist ' + row.dist + ' km');
-				// .append('svg:title')
-				// .text('Date: ' + dateString + '\nPace: ' + paceString + '\nDist ' + row.dist + ' km');
 		}
 		if (row.race) {
 			var cX = x(daysIntoYear);
@@ -258,29 +278,130 @@ function plotYear(svg, runs, year) {
 			svg.append('polygon')
 				.attr('class', year)
 				.attr('points', starString)
-				.attr('fill', getColor(runs.years.indexOf(year), runs.avgTemp[year], 0))
+				.attr('fill', getColor(year, years, 0.3))
 				.attr('stroke','rgba(0,0,0,0.9)')
 				.attr('title', 'Date: ' + dateString + '\nPace: ' + paceString + '\nDist: ' + row.dist + ' km' + '\n' + row.race + ' ' + year);
-				// .append('svg:title')
-				// change the race to use the race name from the .csv
-				// .text('Date: ' + dateString + '\nPace: ' + paceString + '\nDist: ' + row.dist + ' km' + '\n' + row.race + ' ' + year);
 		}		
 	});	
 
-	$('.options').append('<div class="checkbox-inline ' + 'checkbox-' + year + '" style="color:' + colors[year][1] + '"><label><input type="checkbox" name="'+year+'" value="one" checked>'+year+'</label></div>');
+	for (var index in years) {
+		var year = years[index];
+		$('.options').append('<div class="checkbox-inline ' + 'checkbox-' + year + '" style="color:' + getColor(year, years, 1.0) + '"><label><input type="checkbox" name="'+year+'" value="one" checked>'+year+'</label></div>');
+		$('input[type=checkbox]').change(function() {
+			var year = '.' + this.name;
+			var checkbox = '.checkbox-' + this.name;
+			if (this.checked) {
+				($(year)).show();
+				$(checkbox).css('color', getColor(year, years, 1.0));
+			}
+			else {
+				($(year)).hide();
+				$(checkbox).css('color', '#999');
+			}
+		});
+	}
+}
+
+/**
+ * Plots a given year
+ * @param {???} svg - the svg element to which data is appended
+ * @param {Object} runs - running data for all years
+ * @param {number} year - the year that is being plotted
+ */
+
+function plotYear(svg, runs, year) {
+
+	var yearRuns = runs[year];
+	yearRuns.forEach(function(row) {
+		var day = row.date.getDate();
+		var month = row.date.getMonth();
+		var leap = year % 4 === 0 && month > 1 ? 1 : 0;
+		var daysIntoYear = monthDays[month] + day + leap;
+
+		// string representation of data for tooltips
+		var dateString = monthNames[row.date.getMonth()] + ' ' + row.date.getDate() + ' ' + row.date.getFullYear();
+		var minuteString = Math.floor(row.pace / 1).toString();
+		var secondString = Math.round(row.pace % 1 * 60).toString();
+		secondString = secondString.length === 1 ? '0' + secondString : secondString;
+		var paceString = minuteString + ':' + secondString + ' min/km';
+
+		if (!row.race) {
+			svg.append('circle')
+				.attr('class', year)
+				.attr('r', r(row.dist))
+				.attr('fill', getColorRelative(runs.years.indexOf(year), runs.avgTemp[year], row.temp))
+				.attr('stroke','rgba(0,0,0,0.3)')
+				.attr('cx', x(daysIntoYear))
+				.attr('cy', y(row.pace))
+				.attr('title', 'Date: ' + dateString + '\nPace: ' + paceString + '\nDist ' + row.dist + ' km');
+		}
+		if (row.race) {
+			var cX = x(daysIntoYear);
+			var cY = y(row.pace);
+			var rS = r(row.dist);
+			var side = rS * Math.cos(18/180*Math.PI); 
+			var pentBisectRad = rS * Math.sin(18/180*Math.PI);
+			var pentCornRad = pentBisectRad / Math.cos(36/180*Math.PI);
+			var star = [{'x':cX, 'y':cY - rS},
+						{'x':cX + pentCornRad * Math.sin(36/180*Math.PI), 'y':cY - pentCornRad * Math.cos(36/180*Math.PI)},
+						{'x':cX + side, 'y':cY - pentCornRad * Math.cos(36/180*Math.PI)},
+						{'x':cX + pentCornRad * Math.cos(18/180*Math.PI), 'y':cY + pentCornRad * Math.sin(18/180*Math.PI)},
+						{'x':cX + rS * Math.sin(36/180*Math.PI), 'y':cY + rS * Math.cos(36/180*Math.PI)},
+						{'x':cX, 'y':cY + pentCornRad},
+						{'x':cX - rS * Math.sin(36/180*Math.PI), 'y':cY + rS * Math.cos(36/180*Math.PI)},
+						{'x':cX - pentCornRad * Math.cos(18/180*Math.PI), 'y':cY + pentCornRad * Math.sin(18/180*Math.PI)},
+						{'x':cX - side, 'y':cY - pentCornRad * Math.cos(36/180*Math.PI)},
+						{'x':cX - pentCornRad * Math.sin(36/180*Math.PI), 'y':cY - pentCornRad * Math.cos(36/180*Math.PI)}];
+
+			var starString = star.map(function(p) {
+				return [p.x,p.y].join(',');
+			}).join(', ');
+
+			svg.append('polygon')
+				.attr('class', year)
+				.attr('points', starString)
+				.attr('fill', getColorRelative(runs.years.indexOf(year), runs.avgTemp[year], 0))
+				.attr('stroke','rgba(0,0,0,0.9)')
+				.attr('title', 'Date: ' + dateString + '\nPace: ' + paceString + '\nDist: ' + row.dist + ' km' + '\n' + row.race + ' ' + year);
+		}		
+	});	
+
+	$('.options').append('<div class="checkbox-inline ' + 'checkbox-' + year + '" style="color:' + getColor(year, years, 1.0) + '"><label><input type="checkbox" name="'+year+'" value="one" checked>'+year+'</label></div>');
 	$('input[type=checkbox]').change(function() {
 		var year = '.' + this.name;
 		var checkbox = '.checkbox-' + this.name;
 		if (this.checked) {
-			// console.log(colors[year][1]);
 			($(year)).show();
-			$(checkbox).css('color', colors[this.name][1]);
+			$(checkbox).css('color', getColor(year, years, 1.0));
 		}
 		else {
 			($(year)).hide();
 			$(checkbox).css('color', '#999');
 		}
 	});
+}
+
+/**
+ * not yet implemented
+ * Assigns a color based on the year of the run
+ * @param {number} year - the year of the run
+ * @param {number[]} year - the years for which there is running data
+ * @param {number} opacity - the desired opacity of the color
+ * @return {string} color
+ */
+
+function getColor(year, years, opacity) {
+	var firstYear = years[0]; // since years are sorted in ascending order
+	var yearIndex = year - firstYear;
+	var colorValues = [[256, 0, 0], [0, 256, 0], [0, 0, 256], [256, 256, 0], [256, 0, 256], [0, 256, 256], [256, 256, 256]];
+	var yearColor = colorValues[yearIndex];
+	for (var hue in yearColor) {
+		if (yearColor[hue]) {
+			// yearColor[hue] += increment;
+		}
+	}
+	var colorString = 'rgba(' + colorValues[yearIndex].join() + ',' + opacity + ')';
+	return colorString;
 }
 
 /**
@@ -292,7 +413,7 @@ function plotYear(svg, runs, year) {
  * @return {string} color
  */
 
-function getColor(yearIndex, avgTemp, temp) {
+function getColorRelative(yearIndex, avgTemp, temp) {
 	var increment = Math.round(temp);
 	var colorValues = [[256, 0, 0], [0, 256, 0], [0, 0, 256], [256, 256, 0], [256, 0, 256], [0, 256, 256], [256, 256, 256]];
 	var yearColor = colorValues[yearIndex];
