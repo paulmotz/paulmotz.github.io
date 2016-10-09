@@ -8,6 +8,15 @@ h1 {
   text-align: center;
 }
 
+/*li a {
+  color: orange;
+  text-align: left;
+}*/
+
+.dropdown-header {
+  /*color: orange;*/
+}
+
 .description {
   font-size: 1.2em;
 }
@@ -44,6 +53,13 @@ p {
 	display: none;
 	color: red;
 }
+
+/*.footer {
+  height: 40px;
+  line-height: 40px;
+  text-align: center;
+  background-color: #222;
+}*/
 
 .d3-area {
   /*padding-top: 50px;*/
