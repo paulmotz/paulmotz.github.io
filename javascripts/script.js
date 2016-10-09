@@ -288,14 +288,14 @@ function plotAll(svg, runs, years) {
 		var year = years[index];
 		$('.options').append('<div class="checkbox-inline ' + 'checkbox-' + year + '" style="color:' + getColor(year, years, 1.0) + '"><label><input type="checkbox" name="'+year+'" value="one" checked>'+year+'</label></div>');
 		$('input[type=checkbox]').change(function() {
-			var year = '.' + this.name;
+			var yearData = '.' + this.name;
 			var checkbox = '.checkbox-' + this.name;
 			if (this.checked) {
-				($(year)).show();
-				$(checkbox).css('color', getColor(year, years, 1.0));
+				($(yearData)).show();
+				$(checkbox).css('color', getColor(this.name, years, 1.0));
 			}
 			else {
-				($(year)).hide();
+				($(yearData)).hide();
 				$(checkbox).css('color', '#999');
 			}
 		});
@@ -393,13 +393,15 @@ function plotYear(svg, runs, year) {
 function getColor(year, years, opacity) {
 	var firstYear = years[0]; // since years are sorted in ascending order
 	var yearIndex = year - firstYear;
+	// console.log(year);
 	var colorValues = [[256, 0, 0], [0, 256, 0], [0, 0, 256], [256, 256, 0], [256, 0, 256], [0, 256, 256], [256, 256, 256]];
-	var yearColor = colorValues[yearIndex];
-	for (var hue in yearColor) {
-		if (yearColor[hue]) {
-			// yearColor[hue] += increment;
-		}
-	}
+	// var yearColor = colorValues[yearIndex];
+	// for (var hue in yearColor) {
+	// 	if (yearColor[hue]) {
+	// 		// yearColor[hue] += increment;
+	// 	}
+	// }
+	// console.log(yearIndex);
 	var colorString = 'rgba(' + colorValues[yearIndex].join() + ',' + opacity + ')';
 	return colorString;
 }
@@ -416,12 +418,12 @@ function getColor(year, years, opacity) {
 function getColorRelative(yearIndex, avgTemp, temp) {
 	var increment = Math.round(temp);
 	var colorValues = [[256, 0, 0], [0, 256, 0], [0, 0, 256], [256, 256, 0], [256, 0, 256], [0, 256, 256], [256, 256, 256]];
-	var yearColor = colorValues[yearIndex];
-	for (var hue in yearColor) {
-		if (yearColor[hue]) {
-			// yearColor[hue] += increment;
-		}
-	}
+	// var yearColor = colorValues[yearIndex];
+	// for (var hue in yearColor) {
+	// 	if (yearColor[hue]) {
+	// 		// yearColor[hue] += increment;
+	// 	}
+	// }
 	var colorString = 'rgba(' + colorValues[yearIndex].join() + ',0.3)';
 	return colorString;
 }
