@@ -6,6 +6,11 @@ $(document).ready(function(){
     $('[data-toggle="tooltip"]').tooltip(); 
 });
 
+$(window).on('scroll', function() {
+	// $('input:hover').tooltip('show');
+	$('[data-toggle="tooltip"]').tooltip(); 
+});
+
 var runs = [];
 
 var margins = {'top' : 20, 'right' : 20, 'bottom' : 50, 'left' : 70};
@@ -45,9 +50,6 @@ var m = d3.scaleOrdinal()
 
 months.map(function(d) { return d})
 
-// var xAxis = d3.svg.axis().orient("bottom").scale(xScale).ticks(12, d3.format(",d")),
-    // yAxis = d3.svg.axis().scale(yScale).orient("left");
-
 /**
  * Draws the chart using svg.
  * @param {Object[]} data - running data
@@ -57,16 +59,11 @@ function draw(data) {
 
 	runs = getRuns(data);
 
-	var svg = d3.select('.svg').attr('width',width).attr('height',height);
+	var tooltipDiv = d3.select("body").append("div")
+		.attr("class", "tooltip")
+		.style("opacity", 0);
 
-	// title
-	// svg.append("text")
- //        .attr("x", (width / 2))             
- //        .attr("y", 0 + (margins.top))
- //        .attr("text-anchor", "middle")  
- //        .style("font-size", "1ipx") 
- //        .style("text-decoration", "underline")  
- //        .text("Running Log");
+	var svg = d3.select('.svg').attr('width',width).attr('height',height);
 
 	// x-axis
 	svg.append('g').attr('transform', 'translate(0,' + plotHeight + ')').call(d3.axisBottom(x).tickValues(monthDays).tickFormat(function(d,i){ return monthAbr[i]}));
@@ -117,6 +114,11 @@ function draw(data) {
         'container': 'body',
         'placement': 'bottom'
     });
+
+    // $("svg circle").on("mouseover", function(e) {
+    // 	console.log(this);
+    // 	console.log(e.clientX, e.clientY);
+    // });
 
     $("svg polygon").tooltip({
         'container': 'body',

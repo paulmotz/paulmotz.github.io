@@ -10,7 +10,7 @@ h1 {
 
 /*li a {
   color: orange;
-  text-align: left;
+  text-align: left;x
 }*/
 
 .dropdown-header {
@@ -73,6 +73,15 @@ svg {
 .options {
   text-align: center;
   margin-top: 0px;
+}
+
+/*.tooltip-outer {
+  color: red;
+  position: relative;
+}*/
+
+circle {
+  position: relative;
 }
 
 .tooltip-inner {

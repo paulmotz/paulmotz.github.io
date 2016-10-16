@@ -114,7 +114,8 @@ function draw(data) {
 
 	$("svg circle").tooltip({
         'container': 'body',
-        'placement': 'bottom'
+        'placement': 'bottom',
+        'position': 'absolute'
     });
 
     $("svg polygon").tooltip({
