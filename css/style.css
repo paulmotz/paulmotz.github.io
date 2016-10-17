@@ -8,15 +8,6 @@ h1 {
   text-align: center;
 }
 
-/*li a {
-  color: orange;
-  text-align: left;x
-}*/
-
-.dropdown-header {
-  /*color: orange;*/
-}
-
 .description {
   font-size: 1.2em;
 }
@@ -54,13 +45,6 @@ p {
 	color: red;
 }
 
-/*.footer {
-  height: 40px;
-  line-height: 40px;
-  text-align: center;
-  background-color: #222;
-}*/
-
 .d3-area {
   /*padding-top: 50px;*/
 }
@@ -82,6 +66,12 @@ svg {
 
 circle {
   position: relative;
+}
+
+.tooltip-top {
+  border-top-color: red;
+  position: absolute;
+  top: 40px;
 }
 
 .tooltip-inner {

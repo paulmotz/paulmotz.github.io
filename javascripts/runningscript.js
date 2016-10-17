@@ -6,11 +6,6 @@ $(document).ready(function(){
     $('[data-toggle="tooltip"]').tooltip(); 
 });
 
-$(window).on('scroll', function() {
-	// $('input:hover').tooltip('show');
-	$('[data-toggle="tooltip"]').tooltip(); 
-});
-
 var runs = [];
 
 var margins = {'top' : 20, 'right' : 20, 'bottom' : 50, 'left' : 70};
@@ -292,6 +287,11 @@ function plotAll(svg, runs, years) {
 			}
 		});
 	}
+
+	$(".description").tooltip({
+        'container': 'body',
+        'placement': 'top'
+    });
 }
 
 /**
@@ -385,7 +385,6 @@ function plotYear(svg, runs, year) {
 function getColor(year, years, opacity) {
 	var firstYear = years[0]; // since years are sorted in ascending order
 	var yearIndex = year - firstYear;
-	// console.log(year);
 	var colorValues = [[256, 0, 0], [0, 256, 0], [0, 0, 256], [256, 256, 0], [256, 0, 256], [0, 256, 256], [256, 256, 256]];
 	// var yearColor = colorValues[yearIndex];
 	// for (var hue in yearColor) {
@@ -393,7 +392,6 @@ function getColor(year, years, opacity) {
 	// 		// yearColor[hue] += increment;
 	// 	}
 	// }
-	// console.log(yearIndex);
 	var colorString = 'rgba(' + colorValues[yearIndex].join() + ',' + opacity + ')';
 	return colorString;
 }
