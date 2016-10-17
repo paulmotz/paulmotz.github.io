@@ -59,26 +59,15 @@ svg {
   margin-top: 0px;
 }
 
-/*.tooltip-outer {
-  color: red;
-  position: relative;
-}*/
 
-circle {
-  position: relative;
+div.tooltip {   
+  position: absolute;           
+  text-align: center;           
+  padding: 6px;             
+  background: rgba(182, 182, 182, 0.4);   
+  border: 1px solid rgba(5, 5, 5, 0.3);   
+  border-radius: 2px;           
+  /*pointer-events: none;         */
 }
 
-.tooltip-top {
-  border-top-color: red;
-  position: absolute;
-  top: 40px;
-}
-
-.tooltip-inner {
-  border: 1px solid rgba(5, 5, 5, 0.8);
-  background-color: rgba(182, 182, 182, 0.3);
-  color: #111;
-  font-weight: 500;
-  white-space:pre-wrap;
-}
 

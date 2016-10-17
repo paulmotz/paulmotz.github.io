@@ -2,10 +2,6 @@
 // data.pace = +/.+?(?=:)/.exec(row.Pace)[0];
 // data.pace = row.Pace.match(/.+:/);
 
-$(document).ready(function(){
-    $('[data-toggle="tooltip"]').tooltip(); 
-});
-
 var runs = [];
 
 var margins = {'top' : 20, 'right' : 20, 'bottom' : 50, 'left' : 70};
@@ -37,11 +33,9 @@ for (var i = 0; i < monthDays.length; i++) {
 }
 
 
-var m = d3.scaleOrdinal()
-	.domain(months.map(function(d) { return d.value}))
-	.range(months.map(function(d) { return d.key}))
-// 	.range(['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']);
-	// .rangePoints(monthDays);
+// var m = d3.scaleOrdinal()
+// 	.domain(months.map(function(d) { return d.value}))
+// 	.range(months.map(function(d) { return d.key}))
 
 months.map(function(d) { return d})
 
@@ -54,9 +48,9 @@ function draw(data) {
 
 	runs = getRuns(data);
 
-	var tooltipDiv = d3.select("body").append("div")
-		.attr("class", "tooltip")
-		.style("opacity", 0);
+	var tooltip = d3.select("body").append("div")   
+	    .attr("class", "tooltip")               
+	    .style("opacity", 0);
 
 	var svg = d3.select('.svg').attr('width',width).attr('height',height);
 
@@ -104,21 +98,25 @@ function draw(data) {
 		});
 	}
 
-
-	$("svg circle").tooltip({
-        'container': 'body',
-        'placement': 'bottom'
+	// TODO: if the user mouseouts in the direction of the tooltip quickly enough the tooltip will not appear at the next mouseover
+	// this is made slightly more difficuly by positioning the tooltip 12px to the left and 12px down from the circle
+	// custon tooltips inspired by: 
+	// http://stackoverflow.com/questions/16256454/d3-js-position-tooltips-using-element-position-not-mouse-position
+	$("svg circle, svg polygon").on('mouseover', function(e) {
+		tooltip.style("opacity", 1); 
+		tooltip.html(this.getAttribute('title'))
+			// use cursor co-ordinates
+			.style("left", (e.pageX + 12) + "px")     
+      		.style("top", (e.pageY + 12) + "px");
+      		// centre of SVG element (work in progress)
+      		// .style("left", $('.svg')[0].getBoundingClientRect().left + parseInt(d3.select(this).attr("cx")) + "px")    
+      		// .style("top", $('.svg')[0].getBoundingClientRect().top + parseInt(d3.select(this).attr("cy")) + "px");
     });
-
-    // $("svg circle").on("mouseover", function(e) {
-    // 	console.log(this);
-    // 	console.log(e.clientX, e.clientY);
-    // });
-
-    $("svg polygon").tooltip({
-        'container': 'body',
-        'placement': 'bottom'
-    });
+    $("svg circle, svg polygon").on("mouseout", function(e) {       
+		tooltip.style("opacity", 0);   
+		// "ghost" the tooltip by moving it off the page
+		// tooltip.style("left", -99999 + "px")     
+	});
 }
 
 d3.csv("./data/all.csv", draw);
@@ -238,7 +236,7 @@ function plotAll(svg, runs, years) {
 				.attr('stroke','rgba(0,0,0,0.3)')
 				.attr('cx', x(daysIntoYear))
 				.attr('cy', y(row.pace))
-				.attr('title', 'Date: ' + dateString + '\nPace: ' + paceString + '\nDist ' + row.dist + ' km');
+				.attr('title', 'Date: ' + dateString + '<br>Pace: ' + paceString + '<br>Dist ' + row.dist + ' km');
 		}
 		if (row.race) {
 			var cX = x(daysIntoYear);
@@ -267,7 +265,7 @@ function plotAll(svg, runs, years) {
 				.attr('points', starString)
 				.attr('fill', getColor(year, years, 0.3))
 				.attr('stroke','rgba(0,0,0,0.9)')
-				.attr('title', 'Date: ' + dateString + '\nPace: ' + paceString + '\nDist: ' + row.dist + ' km' + '\n' + row.race + ' ' + year);
+				.attr('title', 'Date: ' + dateString + '<br>Pace: ' + paceString + '<br>Dist: ' + row.dist + ' km<br>' + row.race + ' ' + year);
 		}		
 	});	
 
@@ -287,11 +285,6 @@ function plotAll(svg, runs, years) {
 			}
 		});
 	}
-
-	$(".description").tooltip({
-        'container': 'body',
-        'placement': 'top'
-    });
 }
 
 /**
