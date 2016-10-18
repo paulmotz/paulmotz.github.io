@@ -98,22 +98,72 @@ function draw(data) {
 		});
 	}
 
+	// var co = getRunCentre();
+	// var sx = $('.svg').offset().left;
+	// var sy = $('.svg').offset().top;
+	// console.log(sx, sy);
+	// svg.append('circle')
+	// 			.attr('r', 100)
+	// 			.attr('fill', 'black')
+	// 			.attr('stroke','rgba(0,0,0,0.3)')
+	// 			.attr('cx', co[0] - sx)
+	// 			.attr('cy', co[1] - sy);
+	// console.log(co);
+
 	// TODO: if the user mouseouts in the direction of the tooltip quickly enough the tooltip will not appear at the next mouseover
 	// this is made slightly more difficuly by positioning the tooltip 12px to the left and 12px down from the circle
 	// custon tooltips inspired by: 
 	// http://stackoverflow.com/questions/16256454/d3-js-position-tooltips-using-element-position-not-mouse-position
 	$("svg circle, svg polygon").on('mouseover', function(e) {
+		var xPos = e.pageX;
+		var yPos = e.pageY;
+		// var xPos = Number(this.getAttribute('cx'));
+		// var yPos = Number(this.getAttribute('cx'));
+		// console.log(xPos, yPos);
 		tooltip.style("opacity", 1); 
 		var color = this.getAttribute('fill');
 		tooltip.html(this.getAttribute('title'));
+		var tooltipHeight = tooltip._groups[0][0].offsetHeight;
 		var tooltipWidth = tooltip._groups[0][0].offsetWidth;	
-		// use cursor co-ordinates
-		tooltip.style("border", '1px solid ' + color) // for colored borders
-				.style("left", (e.pageX - tooltipWidth/2) + "px")     
-      			.style("top", (e.pageY + 28) + "px");
-      		// centre of SVG element (work in progress)
-      		// .style("left", $('.svg')[0].getBoundingClientRect().left + parseInt(d3.select(this).attr("cx")) + "px")    
-      		// .style("top", $('.svg')[0].getBoundingClientRect().top + parseInt(d3.select(this).attr("cy")) + "px");
+
+		var co = getRunCentre();
+		// console.log(co);
+
+		var x = co[0];
+		var y = co[1];
+
+		// run is below the average on the graph
+		if (yPos > y) {
+			tooltip.style("border", '1px solid ' + color) // for colored borders
+				.style("left", (xPos - tooltipWidth/2) + "px")     
+      			.style("top", (yPos + 28) + "px");
+		}
+
+		// run is above the average on the graph
+		else {
+			var left = xPos - tooltipWidth/2
+			var top = yPos - 28 - tooltipHeight;
+			var sTop = $('.svg').offset().top; // TODO: this should not be calculated every time
+			
+			// tooltip would hit the title, put it on the side instead
+			// TODO: it could still hit the title if the run is slow enough
+			if (top < sTop) {
+				top = yPos - tooltipHeight/2;
+				
+				// if run is left of center, put tooltip to the right
+				if (xPos < x) {
+					left = xPos - 38;
+				} 
+				else {
+					left = xPos + 28;
+				}
+			}
+			tooltip.style("border", '1px solid ' + color) // for colored borders
+				.style("left", left + "px")     
+      			.style("top", top + "px");
+		}
+
+		
     });
     $("svg circle, svg polygon").on("mouseout", function(e) {       
 		tooltip.style("opacity", 0);   
@@ -123,6 +173,34 @@ function draw(data) {
 }
 
 d3.csv("./data/all.csv", draw);
+
+
+// TODO: 
+// -make this work for ploygons as well
+// -only include checked years
+/**
+ * Calculates the centre of all the coordinates of runs (circles and stars) on the page
+ * @return {number[]} - the co-ordinates of the centre of the runs in the form {x, y}
+ */
+
+function getRunCentre() {
+	var x = 0;
+	var y = 0;
+	var count = 0;
+	// var l = $('circle').length;
+	$('circle').each(function(item) {
+		// console.log(this.getBoundingClientRect());
+		if($('input[name=' + this.getAttribute('class') + ']')[0].checked) {
+			// x += Number(this.getAttribute('cx'));
+			// y += Number(this.getAttribute('cy'));
+			x += (this.getBoundingClientRect().left + this.getBoundingClientRect().width/2);
+			y += (this.getBoundingClientRect().top + this.getBoundingClientRect().height/2);
+			// console.log(this.getBoundingClientRect.left);
+			count++;
+		}
+	});
+	return [ x/count, y/count];
+}
 
 /**
  * Transforms the running data into an object that will be used to plot the data
@@ -286,6 +364,8 @@ function plotAll(svg, runs, years) {
 				($(yearData)).hide();
 				$(checkbox).css('color', '#999');
 			}
+			var co = getRunCentre();
+			console.log(co);
 		});
 	}
 }
@@ -294,6 +374,7 @@ function plotAll(svg, runs, years) {
  * Plots a given year
  * @param {???} svg - the svg element to which data is appended
  * @param {Object} runs - running data for all years
+
  * @param {number} year - the year that is being plotted
  */
 
@@ -413,3 +494,9 @@ function getColorRelative(yearIndex, avgTemp, temp) {
 	var colorString = 'rgba(' + colorValues[yearIndex].join() + ',0.3)';
 	return colorString;
 }
+
+// $('html').on('mousemove', function(e) {
+// 	var xPos = e.pageX;
+// 	var yPos = e.pageY;
+// 	console.log(e.pageX);
+// });
