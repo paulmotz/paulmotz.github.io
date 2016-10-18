@@ -73,11 +73,3 @@ div.tooltip {
   border-radius: 2px;           
   /*pointer-events: none;         */
 }
-
-.resume {
-  height: 10px;
-  width: 100%;
-  overflow: hidden;
-  margin: 0;
-}
-

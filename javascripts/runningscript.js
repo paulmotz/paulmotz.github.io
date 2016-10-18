@@ -105,11 +105,12 @@ function draw(data) {
 	$("svg circle, svg polygon").on('mouseover', function(e) {
 		tooltip.style("opacity", 1); 
 		var color = this.getAttribute('fill');
-		tooltip.html(this.getAttribute('title'))
-			// use cursor co-ordinates
-			.style("border", '1px solid ' + color) // for colored borders
-			.style("left", (e.pageX + 12) + "px")     
-      		.style("top", (e.pageY + 12) + "px");
+		tooltip.html(this.getAttribute('title'));
+		var tooltipWidth = tooltip._groups[0][0].offsetWidth;	
+		// use cursor co-ordinates
+		tooltip.style("border", '1px solid ' + color) // for colored borders
+				.style("left", (e.pageX - tooltipWidth/2) + "px")     
+      			.style("top", (e.pageY + 28) + "px");
       		// centre of SVG element (work in progress)
       		// .style("left", $('.svg')[0].getBoundingClientRect().left + parseInt(d3.select(this).attr("cx")) + "px")    
       		// .style("top", $('.svg')[0].getBoundingClientRect().top + parseInt(d3.select(this).attr("cy")) + "px");
