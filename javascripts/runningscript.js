@@ -104,8 +104,10 @@ function draw(data) {
 	// http://stackoverflow.com/questions/16256454/d3-js-position-tooltips-using-element-position-not-mouse-position
 	$("svg circle, svg polygon").on('mouseover', function(e) {
 		tooltip.style("opacity", 1); 
+		var color = this.getAttribute('fill');
 		tooltip.html(this.getAttribute('title'))
 			// use cursor co-ordinates
+			.style("border", '1px solid ' + color) // for colored borders
 			.style("left", (e.pageX + 12) + "px")     
       		.style("top", (e.pageY + 12) + "px");
       		// centre of SVG element (work in progress)
