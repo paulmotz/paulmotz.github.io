@@ -152,10 +152,10 @@ function draw(data) {
 				
 				// if run is left of center, put tooltip to the right
 				if (xPos < x) {
-					left = xPos - 38;
+					left = xPos - 50;
 				} 
 				else {
-					left = xPos + 28;
+					left = xPos + 50;
 				}
 			}
 			tooltip.style("border", '1px solid ' + color) // for colored borders
