@@ -85,7 +85,7 @@ function draw(data) {
 		var years = [];
 		for (var run in runs) {
 			var thisYear = runs[run].date.getFullYear();
-			if (!years.includes(thisYear)) {
+			if (years.indexOf(thisYear) === -1) {
 				years.push(thisYear);
 			}
 		}
@@ -152,7 +152,7 @@ function draw(data) {
 				
 				// if run is left of center, put tooltip to the right
 				if (xPos < x) {
-					left = xPos - 50;
+					left = xPos - 50 - tooltipWidth;
 				} 
 				else {
 					left = xPos + 50;
