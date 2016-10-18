@@ -2,6 +2,10 @@
   font-family: 'HelveticaNeue-Light', sans-serif;
 }
 
+html, body {
+  height: 100%;
+}
+
 h1 {
   font-size: 40px;
   line-height: 48px;
@@ -70,4 +74,10 @@ div.tooltip {
   /*pointer-events: none;         */
 }
 
+.resume {
+  height: 10px;
+  width: 100%;
+  overflow: hidden;
+  margin: 0;
+}
 
