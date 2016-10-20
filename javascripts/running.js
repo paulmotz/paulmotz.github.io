@@ -98,18 +98,6 @@ function draw(data) {
 		});
 	}
 
-	// var co = getRunCentre();
-	// var sx = $('.svg').offset().left;
-	// var sy = $('.svg').offset().top;
-	// console.log(sx, sy);
-	// svg.append('circle')
-	// 			.attr('r', 100)
-	// 			.attr('fill', 'black')
-	// 			.attr('stroke','rgba(0,0,0,0.3)')
-	// 			.attr('cx', co[0] - sx)
-	// 			.attr('cy', co[1] - sy);
-	// console.log(co);
-
 	// TODO: if the user mouseouts in the direction of the tooltip quickly enough the tooltip will not appear at the next mouseover
 	// this is made slightly more difficuly by positioning the tooltip 12px to the left and 12px down from the circle
 	// custon tooltips inspired by: 
@@ -119,7 +107,6 @@ function draw(data) {
 		var yPos = e.pageY;
 		// var xPos = Number(this.getAttribute('cx'));
 		// var yPos = Number(this.getAttribute('cx'));
-		// console.log(xPos, yPos);
 		tooltip.style("opacity", 1); 
 		var color = this.getAttribute('fill');
 		tooltip.html(this.getAttribute('title'));
@@ -152,10 +139,10 @@ function draw(data) {
 				
 				// if run is left of center, put tooltip to the right
 				if (xPos < x) {
-					left = xPos - 50 - tooltipWidth;
+					left = xPos - 30 - tooltipWidth;
 				} 
 				else {
-					left = xPos + 50;
+					left = xPos + 30;
 				}
 			}
 			tooltip.style("border", '1px solid ' + color) // for colored borders

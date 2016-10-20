@@ -3,13 +3,14 @@
 	<head>
 		<meta charset="UTF-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1">
-		<title>Paul Motz - Running</title>
+		<title>Paul Motz - Drunk Chess</title>
 		<link rel="stylesheet" href="css/bootstrap.min.css">
 		<link href="css/style.css" rel="stylesheet" type="text/css">
+		<link href="css/chess.css" rel="stylesheet" type="text/css">
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 		<script src="https://d3js.org/d3.v4.min.js"></script>
-		<script src="javascripts/running.js"></script>
+		<script src="javascripts/chess.js"></script>
 		<!-- http://stackoverflow.com/questions/18712338/make-header-and-footer-files-to-be-included-in-multiple-html-pages -->
 		<script>
 		$(document).ready(function() {
@@ -24,31 +25,33 @@
 		<div class='row'>
 			<div class='col-xs-12 description'>
 				<p>
-					<span class="title">Running Log</span><br>
-					Larger circle == Longer run<br>
-					Stars == Special
+					<span class="title">Drunk Chess</span><br>
+					Play as the colour of your choice.<br>
+					Your drunk opponent  will make a random move.<br>
+					If you want to win a game of chess, you have come to the right place.
 				</p>
 			</div>
 		</div>
 		<div class='row'>
 			<div class='col-xs-12'>
-				<div class="d3-area">
-					<svg class="svg"></svg>
-				</div>
+				<canvas id="chessboard" width="600" height="600">
+				</canvas>
 			</div>
 		</div>
 		<div class='row'>
 			<div class='col-xs-12'>
 				<div class='row options'>
-					<h4>Show data from the following years:</h4>
+					<h4>Play as:</h4>
+					<div class="radio-inline"><labeL><input type="radio" name="color" value="white" checked>White</label></div>
+					<div class="radio-inline"><labeL><input type="radio" name="color" value="black">Black</label></div>
 				</div>
 			</div>
 		</div>
-		<div class='row'>
+		<!-- <div class='row'>
 			<div class='col-xs-12'>
 				<p>Built with <a href="https://d3js.org">D3.js</a></p>
 			</div>
-		</div>
+		</div> -->
 		<!-- <nav class="footer navbar-fixed-bottom">
 	    	Git
 	  	</nav> -->
