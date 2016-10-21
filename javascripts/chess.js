@@ -1,3 +1,13 @@
+/**
+ * TODOs
+ * Visual:
+ * -Make the occupied square one color and all attacking squares another (for testing)
+ *
+ * Logic:
+ * - is the king in check
+ * - is the piece pinned (moving it in a certain direction leaves the king in check)
+*/
+
 $(document).ready(function() {
 	var $board = $('#chessboard');
 
@@ -165,6 +175,115 @@ $(document).ready(function() {
 		}
 	}
 
+	class King extends Piece {
+		/**
+		 * Get the King's moves
+		 * @return {number[][]} moves - the moves of the King as an array of co-ordinates (also an array)
+		 */
+
+	 	get moves() {
+	 		var file = this._file;
+	 		var rank = this._rank;
+	 		var possibleMoves = [ [file - 1, rank + 1], [file, rank + 1], [file + 1, rank + 1], 
+	 							  [file - 1, rank],                       [file + 1, rank], 
+	 							  [file - 1, rank - 1], [file, rank - 1], [file + 1, rank - 1] ];
+
+ 			var moves = possibleMoves.filter(function(square){
+ 				return square[0] > 0 && square[0] < 9 && square[1] > 0 && square[1] < 9;
+ 			});
+
+ 			return moves;
+	 	}
+	}
+
+	class Queen extends Piece {
+
+		// TODO: account for pieces that could be blocking the bishop
+		/**
+		 * Get the Queen's moves
+		 * @return {number[][]} moves - the moves of the Queen as an array of co-ordinates (also an array)
+		 */
+
+		get moves() {
+			var moves = [];
+
+			var file = this._file;
+			var rank = this._rank;
+
+			// moves towards the bottom-left
+			while (rank > 1 && file > 1 && file <= 8){
+				file--;
+				rank--;
+				moves.push([file, rank]);
+			}
+
+			file = this._file;
+			rank = this._rank;
+
+			// moves towards the bottom-right
+			while (rank > 1 && file >= 1 && file < 8){
+				file++;
+				rank--;
+				moves.push([file, rank]);
+			}
+
+			file = this._file;
+			rank = this._rank;
+
+			// moves towards the top-left
+			while (rank < 8 && file > 1 && file <= 8){
+				file--;
+				rank++;
+				moves.push([file, rank]);
+			}
+
+			file = this._file;
+			rank = this._rank;
+
+			// moves towards the top-right
+			while (rank < 8 && file >= 1 && file < 8){
+				rank++;
+				file++;
+				moves.push([file, rank]);
+			}
+
+			file = this._file;
+			rank = this._rank;
+
+			// moves towards the left
+			while (file > 1) {
+				file--;
+				moves.push([file, rank]);
+			}
+
+			file = this._file;
+
+			// moves towards the right
+			while (file < 8) {
+				file++;
+				moves.push([file, rank]);
+			}
+
+			file = this._file;
+
+			// moves towards the bottom
+			while (rank > 1) {
+				rank--;
+				moves.push([file, rank]);
+			}
+
+			rank = this._rank;
+
+			// moves towards the top
+			while (rank < 8) {
+				rank++;
+				moves.push([file, rank]);
+			}
+
+			return moves;
+		}
+	}
+
 	class Rook extends Piece {
 		
 		/*
@@ -228,7 +347,7 @@ $(document).ready(function() {
 
 	}
 
-	var p = new Rook('white', 1, 1, false);
+	var p = new King('white', 5, 8);
 	console.log(p);
 	p.color = 'red';
 	console.log(p);
