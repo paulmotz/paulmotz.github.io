@@ -118,6 +118,11 @@ $(document).ready(function() {
 				this._rank = rank;
 			}
 		}
+
+		// TODO: not sure if this is right, read up on this
+		get moves() {
+			return [];
+		}
 	}
 
 	class Bishop extends Piece {
@@ -347,11 +352,19 @@ $(document).ready(function() {
 
 	}
 
-	var p = new King('white', 5, 8);
-	console.log(p);
-	p.color = 'red';
-	console.log(p);
-	console.log(p.moves);
+	var b = new Bishop('white', 3, 1);
+	drawOnSquare(b.file, b.rank, 'B');
+	bMoves = b.moves;
+	for (var m in bMoves) {
+		drawOnSquare(bMoves[m][0], bMoves[m][1], 'BA');
+	}
+
+	var k = new King('white', 5, 1);
+	drawOnSquare(k.file, k.rank, 'K');
+	kMoves = k.moves;
+	for (var m in kMoves) {
+		drawOnSquare(kMoves[m][0], kMoves[m][1], 'KA');
+	}
 
 	/**
 	 * Draw the board with white at the bottom
@@ -447,6 +460,7 @@ $(document).ready(function() {
 	 */
 
 	function getSquare(x, y) {
+		console.log(x, y);
 		var file = Math.floor(x/squareSize);
 		var rank = Math.floor(y/squareSize);
 		if (whiteDown) {
@@ -457,8 +471,42 @@ $(document).ready(function() {
 			var square = [rank, 9 - file];
 			// var square = files[9 - file] + rank.toString();
 		}
-		console.log(square);
+		// console.log(square);
 		return square;
 	}
 
+	/**
+	 * Maps the rank and file of a square to x and y co-ordinates corresponding with its offset
+	 * @param {number} file - the square's file: 1 - 8
+	 * @param {number} rank - the square's rank: 1 - 8
+	 * @return {number[]} offset - the offset of the square in the form [x, y]
+	 */
+
+	function getCoordinates(file, rank) {
+		// console.log(file);
+		if (whiteDown) {
+			var x = file * squareSize;
+			var y = (9 - rank) * squareSize;
+		}
+		else {
+			var x = (9 - file) * squareSize;
+			var y = rank * squareSize;
+		}
+		// console.log(x, y);
+		return [x, y];
+	}
+
+	/**
+	 * Draws on the square at the given co-ordinates
+	 * @param {number} file - the square's file: 1 - 8
+	 * @param {number} rank - the square's rank: 1 - 8
+	 * @param {drawing} String - what to draw on the square
+	 */
+
+	function drawOnSquare(file, rank, drawing) {
+		var coordinates = getCoordinates(file, rank);
+		console.log(coordinates);
+		boardctx.fillStyle = "#FF0000";
+		boardctx.fillText(drawing, coordinates[0] + (0.5 * squareSize), coordinates[1] + (0.5 * squareSize));
+	}
 });
