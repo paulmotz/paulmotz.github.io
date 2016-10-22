@@ -8,10 +8,7 @@
  * - is the piece pinned (moving it in a certain direction leaves the king in check)
 */
 
-
-$.getScript("pieces.js");
-
-$(document).ready(function() {
+$.getScript('./javascripts/chess/piece.js', function() {
 	var $board = $('#chessboard');
 
 	// TODO: what if height !== width?
@@ -43,327 +40,12 @@ $(document).ready(function() {
 	var files = ['', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', ''];
 	var ranks = ['', '1', '2', '3', '4', '5', '6', '7', '8', ''];
 
+	// https://en.wikipedia.org/wiki/Chess_symbols_in_Unicode
 	var whitePieces = {'B': '♗', 'N': '♘', 'K': '♔', 'P': '♙', 'Q': '♕', 'R': '♖'};
 	var blackPieces = {'B': '♝', 'N': '♞', 'K': '♚', 'P': '♟', 'Q': '♛', 'R': '♜'};
 
 	var whiteDown = true;
 	drawWhite();
-
-	// class Piece {
-
-	// 	/**
-	// 	 * Creates a piece of the given color at the given location
-	// 	 * @param {string} color - The color of the piece: white || black
-	// 	 * @param {number} file - file rank of the piece: 1 - 8
-	// 	 * @param {number} rank - the rank of the piece: 1 - 8
-	// 	 */
-
-	// 	constructor(color, file, rank) {
-	// 		this._color = color;
-	// 		this._file = file;
-	// 		this._rank = rank;
-	// 	}
-
-	// 	/**
-	// 	 * Get the piece's color
-	// 	 * @return {string} color - The color of the piece: white || black
-	// 	 */
-
-	// 	get color() {
-	// 		return this._color;
-	// 	}
-
-	// 	/**
-	// 	 * Get the piece's color
-	// 	 * @return {number} file - The file of the piece: 1 - 8
-	// 	 */
-
-	// 	get file() {
-	// 		return this._file;
-	// 	}
-
-	// 	*
-	// 	 * Get the piece's rank
-	// 	 * @return {number} rank - The rank of the piece: 1 - 8
-		 
-
-	// 	get rank() {
-	// 		return this._rank;
-	// 	}
-
-	// 	/**
-	// 	 * Set the piece's color
-	// 	 * @param {string} color - The color of the piece: white || black
-	// 	 */
-
-	// 	set color(color) {
-	// 		if (color === 'white' || color === 'black') {
-	// 			this._color = color;
-	// 		}
-	// 	}
-
-	// 	/**
-	// 	 * Set the piece's color
-	// 	 * @param {number} file - The file of the piece: 1 - 8
-	// 	 */
-
-	// 	set file(file) {
-	// 		if (file > 0 && file < 9) {
-	// 			this._file = file;
-	// 		}
-	// 	}
-
-	// 	/**
-	// 	 * Set the piece's rank
-	// 	 * @param {number} rank - The rank of the piece: 1 - 8
-	// 	 */
-
-	// 	set rank(rank) {
-	// 		if (rank > 0 && rank < 9) {
-	// 			this._rank = rank;
-	// 		}
-	// 	}
-
-	// 	// TODO: not sure if this is right, read up on this
-	// 	get moves() {
-	// 		return [];
-	// 	}
-	// }
-
-	class Bishop extends Piece {
-
-		// TODO: account for pieces that could be blocking the bishop
-		/**
-		 * Get the Bishop's moves
-		 * @return {number[][]} moves - the moves of the Bishop as an array of co-ordinates (also an array)
-		 */
-
-		get moves() {
-			var moves = [];
-
-			var file = this._file;
-			var rank = this._rank;
-
-			// moves towards the bottom-left
-			while (rank > 1 && file > 1 && file <= 8){
-				file--;
-				rank--;
-				moves.push([file, rank]);
-			}
-
-			file = this._file;
-			rank = this._rank;
-
-			// moves towards the bottom-right
-			while (rank > 1 && file >= 1 && file < 8){
-				file++;
-				rank--;
-				moves.push([file, rank]);
-			}
-
-			file = this._file;
-			rank = this._rank;
-
-			// moves towards the top-left
-			while (rank < 8 && file > 1 && file <= 8){
-				file--;
-				rank++;
-				moves.push([file, rank]);
-			}
-
-			file = this._file;
-			rank = this._rank;
-
-			// moves towards the top-right
-			while (rank < 8 && file >= 1 && file < 8){
-				rank++;
-				file++;
-				moves.push([file, rank]);
-			}
-
-			return moves;
-		}
-	}
-
-	class King extends Piece {
-		/**
-		 * Get the King's moves
-		 * @return {number[][]} moves - the moves of the King as an array of co-ordinates (also an array)
-		 */
-
-	 	get moves() {
-	 		var file = this._file;
-	 		var rank = this._rank;
-	 		var possibleMoves = [ [file - 1, rank + 1], [file, rank + 1], [file + 1, rank + 1], 
-	 							  [file - 1, rank],                       [file + 1, rank], 
-	 							  [file - 1, rank - 1], [file, rank - 1], [file + 1, rank - 1] ];
-
- 			var moves = possibleMoves.filter(function(square){
- 				return square[0] > 0 && square[0] < 9 && square[1] > 0 && square[1] < 9;
- 			});
-
- 			return moves;
-	 	}
-	}
-
-	class Knight extends Piece {
-
-	}
-
-	class Pawn extends Piece {
-
-	}
-
-	class Queen extends Piece {
-
-		// TODO: account for pieces that could be blocking the bishop
-		/**
-		 * Get the Queen's moves
-		 * @return {number[][]} moves - the moves of the Queen as an array of co-ordinates (also an array)
-		 */
-
-		get moves() {
-			var moves = [];
-
-			var file = this._file;
-			var rank = this._rank;
-
-			// moves towards the bottom-left
-			while (rank > 1 && file > 1 && file <= 8){
-				file--;
-				rank--;
-				moves.push([file, rank]);
-			}
-
-			file = this._file;
-			rank = this._rank;
-
-			// moves towards the bottom-right
-			while (rank > 1 && file >= 1 && file < 8){
-				file++;
-				rank--;
-				moves.push([file, rank]);
-			}
-
-			file = this._file;
-			rank = this._rank;
-
-			// moves towards the top-left
-			while (rank < 8 && file > 1 && file <= 8){
-				file--;
-				rank++;
-				moves.push([file, rank]);
-			}
-
-			file = this._file;
-			rank = this._rank;
-
-			// moves towards the top-right
-			while (rank < 8 && file >= 1 && file < 8){
-				rank++;
-				file++;
-				moves.push([file, rank]);
-			}
-
-			file = this._file;
-			rank = this._rank;
-
-			// moves towards the left
-			while (file > 1) {
-				file--;
-				moves.push([file, rank]);
-			}
-
-			file = this._file;
-
-			// moves towards the right
-			while (file < 8) {
-				file++;
-				moves.push([file, rank]);
-			}
-
-			file = this._file;
-
-			// moves towards the bottom
-			while (rank > 1) {
-				rank--;
-				moves.push([file, rank]);
-			}
-
-			rank = this._rank;
-
-			// moves towards the top
-			while (rank < 8) {
-				rank++;
-				moves.push([file, rank]);
-			}
-
-			return moves;
-		}
-	}
-
-	class Rook extends Piece {
-		
-		/*
-		 * Creates a rook of the given color at the given location
-		 * @param {string} color - The color of the rook: white || black
-		 * @param {number} file - file rank of the rook: 1 - 8
-		 * @param {number} rank - the rank of the rook: 1 - 8
-		 * @param {boolean} hasMoved - whether or not the rook has moved (used for checking if castling is possible)
-		 */
-
-		constructor(color, file, rank, hasMoved) {
-			super(color, file, rank)
-			this._hasMoved = hasMoved;
-		}
-
-		// TODO: account for pieces that could be blocking the rook
-		/**
-		 * Get the Rook's moves
-		 * @return {number[][]} moves - the moves of the Rook as an array of co-ordinates (also an array)
-		 */
-
-		get moves() {
-			var moves = [];
-
-			var file = this._file;
-			var rank = this._rank;
-
-			// moves towards the left
-			while (file > 1) {
-				file--;
-				moves.push([file, rank]);
-			}
-
-			file = this._file;
-
-			// moves towards the right
-			while (file < 8) {
-				file++;
-				moves.push([file, rank]);
-			}
-
-			file = this._file;
-
-			// moves towards the bottom
-			while (rank > 1) {
-				rank--;
-				moves.push([file, rank]);
-			}
-
-			rank = this._rank;
-
-			// moves towards the top
-			while (rank < 8) {
-				rank++;
-				moves.push([file, rank]);
-			}
-
-			return moves;
-		}
-
-
-	}
 
 	// white pieces
 
@@ -399,7 +81,6 @@ $(document).ready(function() {
 	}
 
 	var q = new Queen('white', 4, 1);
-	console.log(q);
 	drawOnSquare(q.file, q.rank, whitePieces['Q']);
 	// qMoves = q.moves;
 	// for (var m in qMoves) {
@@ -633,4 +314,8 @@ $(document).ready(function() {
 		ctx.fillText(image, coordinates[0] + (0.5 * squareSize), coordinates[1] + (0.5 * squareSize));
 		// ctx.drawImage(image, coordinates[0] + (0.5 * squareSize), coordinates[1] + (0.5 * squareSize));
 	}
+});
+
+$(document).ready(function() {
+	
 });
