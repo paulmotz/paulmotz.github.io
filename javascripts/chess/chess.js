@@ -8,13 +8,14 @@
  * - is the piece pinned (moving it in a certain direction leaves the king in check)
 */
 
-$.getScript('./javascripts/chess/piece.js', function() {
+$(document).ready(function() {
 	var $board = $('#chessboard');
 
 	// TODO: what if height !== width?
 	var height = parseInt($board.css('height'));
 	var width = parseInt($board.css('width'));
 	var squareSize = height/10;
+	var lineWidth = 5;
 
 	$board.on('click', function(e) {
 		var x = e.offsetX;
@@ -22,8 +23,16 @@ $.getScript('./javascripts/chess/piece.js', function() {
 
 		// make sure the user clicked on the board
 		if (x > squareSize && y > squareSize && x < 9 * squareSize && y < 9 * squareSize) {
-			getSquare(x, y);  
+			var square = getSquare(x, y);  
+			var c = getCoordinates(square[0], square[1]);
+			ctx.rect(c[0] +lineWidth/2, c[1] + lineWidth/2, squareSize - lineWidth, squareSize - lineWidth);
+			ctx.lineWidth = lineWidth;
+			ctx.strokeStyle = "orange";
+			ctx.stroke();
 		}
+
+		// console.log(getSquare(x, y));
+		
 	});
 
 	$('input[type=radio]').change(function() {
@@ -37,12 +46,105 @@ $.getScript('./javascripts/chess/piece.js', function() {
 
 	var board = $board[0];
 	var ctx = board.getContext('2d');
+
+	// piece objects
+	// king objects don't need to be arrays, I guess
+	var wB = [];
+	var wN = [];
+	var wK = [];
+	var wP = [];
+	var wQ = [];
+	var wR = [];
+	var bB = [];
+	var bN = [];
+	var bK = [];
+	var bP = [];
+	var bQ = [];
+	var bR = [];
+
+	var whitePieces = {'B' : wB, 'N' : wN, 'K' : wK, 'P' : wP, 'Q' : wQ, 'R' : wR};
+	var blackPieces = {'B' : bB, 'N' : bN, 'K' : bK, 'P' : bP, 'Q' : bQ, 'R' : bR};
+
 	var files = ['', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', ''];
 	var ranks = ['', '1', '2', '3', '4', '5', '6', '7', '8', ''];
 
+	var pieceNames = {'B': 'Bishop', 'N': 'Knight', 'K': 'King', 'P': 'Pawn', 'Q': 'Queen', 'R': 'Rook'};
+	var pieceCount = {'B': 2, 'N': 2, 'K': 1, 'P': 8, 'Q': 1, 'R': 2};
+
 	// https://en.wikipedia.org/wiki/Chess_symbols_in_Unicode
-	var whitePieces = {'B': '♗', 'N': '♘', 'K': '♔', 'P': '♙', 'Q': '♕', 'R': '♖'};
-	var blackPieces = {'B': '♝', 'N': '♞', 'K': '♚', 'P': '♟', 'Q': '♛', 'R': '♜'};
+	var whitePieceSymbols = {'B': '♗', 'N': '♘', 'K': '♔', 'P': '♙', 'Q': '♕', 'R': '♖'};
+	var blackPieceSymbols = {'B': '♝', 'N': '♞', 'K': '♚', 'P': '♟', 'Q': '♛', 'R': '♜'};
+
+	// kings and queens have arrays of length 1 for convenience in later methods
+	var whitePieceStartingPositions = {'B' : [[3, 1], [6, 1]],
+									   'N' : [[2, 1], [7, 1]],
+									   'K' : [[5, 1]],
+									   'P' : [[1, 2], [2, 2], [3, 2], [4, 2], [5, 2], [6, 2], [7, 2], [8, 2]],
+									   'Q' : [[4, 1]],
+									   'R' : [[1, 1], [8, 1]]};
+
+   var blackPieceStartingPositions = {'B' : [[3, 8], [6, 8]],
+									  'N' : [[2, 8], [7, 8]],
+									  'K' : [[5, 8]],
+									  'P' : [[1, 7], [2, 7], [3, 7], [4, 7], [5, 7], [6, 7], [7, 7], [8, 7]],
+									  'Q' : [[4, 8]],
+									  'R' : [[1, 8], [8, 8]]};
+
+	// b1 = new Bishop('white', 3, 1);
+
+	for (var pn in pieceNames) {
+		for (var pc = 0; pc < pieceCount[pn]; pc++) {
+			var file = whitePieceStartingPositions[pn][pc][0];
+			var rank = whitePieceStartingPositions[pn][pc][1];
+			switch (pn) {
+				case 'B':
+					wB.push(new Bishop('white', file, rank));
+					break;
+				case 'N':
+					wN.push(new Knight('white', file, rank));
+					break;
+				case 'K':
+					wK.push(new King('white', file, rank));
+					break;
+				case 'P':
+					wP.push(new Pawn('white', file, rank));
+					break;
+				case 'Q':
+					wQ.push(new Queen('white', file, rank));
+					break;
+				case 'R':
+					wR.push(new Rook('white', file, rank));
+					break;
+			}
+		}
+	}
+
+	for (var pn in pieceNames) {
+		for (var pc = 0; pc < pieceCount[pn]; pc++) {
+			var file = blackPieceStartingPositions[pn][pc][0];
+			var rank = blackPieceStartingPositions[pn][pc][1];
+			switch (pn) {
+				case 'B':
+					bB.push(new Bishop('black', file, rank));
+					break;
+				case 'N':
+					bN.push(new Knight('black', file, rank));
+					break;
+				case 'K':
+					bK.push(new King('black', file, rank));
+					break;
+				case 'P':
+					bP.push(new Pawn('black', file, rank));
+					break;
+				case 'Q':
+					bQ.push(new Queen('black', file, rank));
+					break;
+				case 'R':
+					bR.push(new Rook('black', file, rank));
+					break;
+			}
+		}
+	}
 
 	var whiteDown = true;
 	drawWhite();
@@ -50,102 +152,6 @@ $.getScript('./javascripts/chess/piece.js', function() {
 	// white pieces
 
 	ctx.fillStyle = "#FFF";
-
-	var b1 = new Bishop('white', 3, 1);
-	// var bIconW = document.getElementById('bw');
-	drawOnSquare(b1.file, b1.rank, whitePieces['B']);
-	// bMoves = b.moves;
-	// for (var m in bMoves) {
-	// 	drawOnSquare(bMoves[m][0], bMoves[m][1], 'BA');
-	// }
-
-	var b2 = new Bishop('white', 6, 1);
-	drawOnSquare(b2.file, b2.rank, whitePieces['B']);
-
-	var k = new King('white', 5, 1);
-	drawOnSquare(k.file, k.rank, whitePieces['K']);
-	// kMoves = k.moves;
-	// for (var m in kMoves) {
-	// 	drawOnSquare(kMoves[m][0], kMoves[m][1], 'KA');
-	// }
-
-	var n = new Knight('white', 2, 1);
-	drawOnSquare(n.file, n.rank, whitePieces['N']);
-
-	var n = new Knight('white', 7, 1);
-	drawOnSquare(n.file, n.rank, whitePieces['N']);
-
-	for (var i = 1; i <= 8; i++) {
-		var p = new Pawn('white', i, 2);
-		drawOnSquare(p.file, p.rank, whitePieces['P']);
-	}
-
-	var q = new Queen('white', 4, 1);
-	drawOnSquare(q.file, q.rank, whitePieces['Q']);
-	// qMoves = q.moves;
-	// for (var m in qMoves) {
-	// 	drawOnSquare(qMoves[m][0], qMoves[m][1], 'QA');
-	// }
-
-	var r = new Rook('white', 1, 1);
-	drawOnSquare(r.file, r.rank, whitePieces['R']);
-	// rMoves = r.moves;
-	// for (var m in rMoves) {
-	// 	drawOnSquare(rMoves[m][0], rMoves[m][1], 'RA');
-	// }
-
-	var r = new Rook('white', 8, 1);
-	drawOnSquare(r.file, r.rank, whitePieces['R']);
-
-	// black Pieces
-
-	ctx.fillStyle = "#000";
-
-	var b1 = new Bishop('white', 3, 8);
-	// var bIconW = document.getElementById('bw');
-	drawOnSquare(b1.file, b1.rank, blackPieces['B']);
-	// bMoves = b.moves;
-	// for (var m in bMoves) {
-	// 	drawOnSquare(bMoves[m][0], bMoves[m][1], 'BA');
-	// }
-
-	var b2 = new Bishop('white', 6, 8);
-	drawOnSquare(b2.file, b2.rank, blackPieces['B']);
-
-	var k = new King('white', 5, 8);
-	drawOnSquare(k.file, k.rank, blackPieces['K']);
-	// kMoves = k.moves;
-	// for (var m in kMoves) {
-	// 	drawOnSquare(kMoves[m][0], kMoves[m][1], 'KA');
-	// }
-
-	var n = new Knight('white', 2, 8);
-	drawOnSquare(n.file, n.rank, blackPieces['N']);
-
-	var n = new Knight('white', 7, 8);
-	drawOnSquare(n.file, n.rank, blackPieces['N']);
-
-	for (var i = 1; i <= 8; i++) {
-		var p = new Pawn('white', i, 7);
-		drawOnSquare(p.file, p.rank, blackPieces['P']);
-	}
-
-	var q = new Queen('white', 4, 8);
-	drawOnSquare(q.file, q.rank, blackPieces['Q']);
-	// qMoves = q.moves;
-	// for (var m in qMoves) {
-	// 	drawOnSquare(qMoves[m][0], qMoves[m][1], 'QA');
-	// }
-
-	var r = new Rook('white', 1, 8);
-	drawOnSquare(r.file, r.rank, blackPieces['R']);
-	// rMoves = r.moves;
-	// for (var m in rMoves) {
-	// 	drawOnSquare(rMoves[m][0], rMoves[m][1], 'RA');
-	// }
-
-	var r = new Rook('white', 8, 8);
-	drawOnSquare(r.file, r.rank, blackPieces['R']);
 
 	/**
 	 * Draw the board with white at the bottom
@@ -196,6 +202,7 @@ $.getScript('./javascripts/chess/piece.js', function() {
 				}
 			}
 		}
+		drawPieces();
 	}
 
 	/**
@@ -208,10 +215,12 @@ $.getScript('./javascripts/chess/piece.js', function() {
 
 		// redraw border to overwrite existing text
 		// ctx.fillStyle = "#F5F5DC";
-		class Knight extends Piece {
-
-	}
+		ctx.fillStyle = "#000";
 		ctx.fillRect(0, 0, squareSize * 10, squareSize * 10);
+
+		ctx.textAlign = "center";
+		ctx.textBaseline = "middle"; 
+		ctx.font = "20px serif";
 
 		for (var r = 0; r < 10; r++) {
 			for (var f = 0; f < 10; f++) {
@@ -243,17 +252,36 @@ $.getScript('./javascripts/chess/piece.js', function() {
 				}
 			}
 		}
+		drawPieces();
 	}
 
 	function drawPieces() {
-		if (whiteDown) {
-
+		// draw white pieces
+		for (var pieceType in whitePieces) {
+			var pieces = whitePieces[pieceType];
+			for (var i in pieces) {
+				var piece = pieces[i];
+				var file = piece._file;
+				var rank = piece.rank;
+				var symbol = whitePieceSymbols[pieceType];
+				drawOnSquare(file, rank, symbol);
+			}
 		}
-		else {
 
+		// draw black pieces
+		ctx.fillStyle = "#000";
+		for (var pieceType in blackPieces) {
+			var pieces = blackPieces[pieceType];
+			for (var i in pieces) {
+				var piece = pieces[i];
+				var file = piece._file;
+				var rank = piece.rank;
+				var symbol = blackPieceSymbols[pieceType];
+				drawOnSquare(file, rank, symbol);
+			}
 		}
 	}
-	
+
 	/**
 	 * Maps the x and y co-ordinates to a 8x8 grid with 1-indexing
 	 * @param {number} x - e.offsetX
@@ -262,7 +290,7 @@ $.getScript('./javascripts/chess/piece.js', function() {
 	 */
 
 	function getSquare(x, y) {
-		console.log(x, y);
+		// console.log(x, y);
 		var file = Math.floor(x/squareSize);
 		var rank = Math.floor(y/squareSize);
 		if (whiteDown) {
@@ -309,13 +337,9 @@ $.getScript('./javascripts/chess/piece.js', function() {
 		var coordinates = getCoordinates(file, rank);
 		// console.log(coordinates);
 		// ctx.fillStyle = "#000FFF";
-		ctx.font = squareSize +"px serif";
+		ctx.font = squareSize + "px serif";
 		// ctx.fillText(image, 210, 540);
 		ctx.fillText(image, coordinates[0] + (0.5 * squareSize), coordinates[1] + (0.5 * squareSize));
 		// ctx.drawImage(image, coordinates[0] + (0.5 * squareSize), coordinates[1] + (0.5 * squareSize));
 	}
-});
-
-$(document).ready(function() {
-	
 });
