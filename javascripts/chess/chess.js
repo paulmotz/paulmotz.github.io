@@ -2,6 +2,7 @@
  * TODOs
  * Visual:
  * -Make the occupied square one color and all attacking squares another (for testing)
+ * -Overwrite the orange stroke as necessary
  *
  * Logic:
  * - is the king in check
@@ -16,6 +17,7 @@ $(document).ready(function() {
 	var width = parseInt($board.css('width'));
 	var squareSize = height/10;
 	var lineWidth = 5;
+	var markedSquares = new Set();
 
 	$board.on('click', function(e) {
 		var x = e.offsetX;
@@ -25,14 +27,27 @@ $(document).ready(function() {
 		if (x > squareSize && y > squareSize && x < 9 * squareSize && y < 9 * squareSize) {
 			var square = getSquare(x, y);  
 			var c = getCoordinates(square[0], square[1]);
-			ctx.rect(c[0] +lineWidth/2, c[1] + lineWidth/2, squareSize - lineWidth, squareSize - lineWidth);
+			ctx.rect(c[0] +lineWidth/2, c[1] + lineWidth/2, squareSize - lineWidth, squareSize - lineWidth);			
 			ctx.lineWidth = lineWidth;
 			ctx.strokeStyle = "orange";
 			ctx.stroke();
-		}
-
-		// console.log(getSquare(x, y));
-		
+			// var index = squareToIndex(square);
+			// for (var ms of markedSquares.keys()) {
+			// 	var oldSquare = indexToSquare(ms);
+			// 	var oldCoordinates = getCoordinates(oldSquare[0], oldSquare[1]);
+			// 	console.log(oldSquare);
+			// 	if ((oldSquare[0] + oldSquare[1]) % 2 === 1) {
+			// 		ctx.fillStyle = "#999";
+			// 	}
+			// 	else {
+			// 		ctx.fillStyle = "#444";
+			// 	}
+			// 	ctx.fillRect(oldSquare[0] * squareSize, (9 - oldSquare[1]) * squareSize, squareSize, squareSize);
+			// 	markedSquares.delete(ms);
+			// }
+			// markedSquares.add(index);
+			// console.log(markedSquares);
+		}		
 	});
 
 	$('input[type=radio]').change(function() {
@@ -90,8 +105,7 @@ $(document).ready(function() {
 									  'Q' : [[4, 8]],
 									  'R' : [[1, 8], [8, 8]]};
 
-	// b1 = new Bishop('white', 3, 1);
-
+	// initilize white pieces
 	for (var pn in pieceNames) {
 		for (var pc = 0; pc < pieceCount[pn]; pc++) {
 			var file = whitePieceStartingPositions[pn][pc][0];
@@ -119,6 +133,9 @@ $(document).ready(function() {
 		}
 	}
 
+	
+
+	// initilize black pieces
 	for (var pn in pieceNames) {
 		for (var pc = 0; pc < pieceCount[pn]; pc++) {
 			var file = blackPieceStartingPositions[pn][pc][0];
@@ -146,10 +163,11 @@ $(document).ready(function() {
 		}
 	}
 
+	console.log(bP[0].moves);
+	console.log(whitePieces);
+
 	var whiteDown = true;
 	drawWhite();
-
-	// white pieces
 
 	ctx.fillStyle = "#FFF";
 
@@ -162,7 +180,6 @@ $(document).ready(function() {
 		whiteDown = true;
 		
 		// redraw border to overwrite existing text
-		// ctx.fillStyle = "#F5F5DC";
 		ctx.fillStyle = "#000";
 		ctx.fillRect(0, 0, squareSize * 10, squareSize * 10);
 
@@ -189,16 +206,11 @@ $(document).ready(function() {
 				else {
 					if ((r + f) % 2 === 1) {
 						ctx.fillStyle = "#444";
-						// ctx.fillStyle = "#689B56";
-						// ctx.fillStyle = "#302013";
-						ctx.fillRect(f * squareSize, r * squareSize, squareSize, squareSize);
 					}
 					else {
 						ctx.fillStyle = "#999";
-						// ctx.fillStyle = "#ECEFD0";
-						// ctx.fillStyle = "#eadabf";
-						ctx.fillRect(f * squareSize, r * squareSize, squareSize, squareSize);
 					}
+					ctx.fillRect(f * squareSize, r * squareSize, squareSize, squareSize);
 				}
 			}
 		}
@@ -214,7 +226,6 @@ $(document).ready(function() {
 		whiteDown = false;
 
 		// redraw border to overwrite existing text
-		// ctx.fillStyle = "#F5F5DC";
 		ctx.fillStyle = "#000";
 		ctx.fillRect(0, 0, squareSize * 10, squareSize * 10);
 
@@ -241,14 +252,11 @@ $(document).ready(function() {
 				else {
 					if ((r + f) % 2 === 1) {
 						ctx.fillStyle = "#444";
-						// ctx.fillStyle = "#689B56";
-						ctx.fillRect(f * squareSize, r * squareSize, squareSize, squareSize);
 					}
 					else {
 						ctx.fillStyle = "#999";
-						// ctx.fillStyle = "#ECEFD0";
-						ctx.fillRect(f * squareSize, r * squareSize, squareSize, squareSize);
 					}
+					ctx.fillRect(f * squareSize, r * squareSize, squareSize, squareSize);
 				}
 			}
 		}
@@ -283,6 +291,39 @@ $(document).ready(function() {
 	}
 
 	/**
+	 * Maps the rank and file of a square to an integer that is unique among other squares
+	 * @param {number} file - the square's file: 1 - 8
+	 * @param {number} rank - the square's rank: 1 - 8
+	 * @return {number} index - the indicex of the square: 1 - 64
+	 */
+
+	function squareToIndex(file, rank) {
+		return (rank - 1) * 8 + file;
+	}
+
+	/**
+	 * Maps the rank and file of a square to an integer that is unique among other squares
+	 * @param {number[]} square - the square's file, two numbers: 1 - 8
+	 * @return {number} index - the indicex of the square: 1 - 64
+	 */
+
+	function squareToIndex(square) {
+		return (square[1] - 1) * 8 + square[0];
+	}
+
+	/**
+	 * Maps the rank and file of a square to an integer that is unique among other squares
+	 * @param {number} index - the indicex of the square: 1 - 64
+	 * @return {number[]} square - the indices of the square in the form [file, rank]
+	 */
+
+	function indexToSquare(index) {
+		var file = index % 8 === 0 ? 8 : index % 8;
+		// if (file === 0)
+		return [file, Math.ceil(index / 8)];
+	}
+
+	/**
 	 * Maps the x and y co-ordinates to a 8x8 grid with 1-indexing
 	 * @param {number} x - e.offsetX
 	 * @param {number} y - e.offsetY
@@ -290,18 +331,14 @@ $(document).ready(function() {
 	 */
 
 	function getSquare(x, y) {
-		// console.log(x, y);
 		var file = Math.floor(x/squareSize);
 		var rank = Math.floor(y/squareSize);
 		if (whiteDown) {
 			var square = [file, 9 - rank];
-			// var square = files[file] + (9 - rank).toString();
 		}
 		else {
-			var square = [rank, 9 - file];
-			// var square = files[9 - file] + rank.toString();
+			var square = [9-file, rank];
 		}
-		// console.log(square);
 		return square;
 	}
 
@@ -313,7 +350,6 @@ $(document).ready(function() {
 	 */
 
 	function getCoordinates(file, rank) {
-		// console.log(file);
 		if (whiteDown) {
 			var x = file * squareSize;
 			var y = (9 - rank) * squareSize;
@@ -322,7 +358,6 @@ $(document).ready(function() {
 			var x = (9 - file) * squareSize;
 			var y = rank * squareSize;
 		}
-		// console.log(x, y);
 		return [x, y];
 	}
 
@@ -335,11 +370,28 @@ $(document).ready(function() {
 
 	function drawOnSquare(file, rank, image) {
 		var coordinates = getCoordinates(file, rank);
-		// console.log(coordinates);
 		// ctx.fillStyle = "#000FFF";
 		ctx.font = squareSize + "px serif";
 		// ctx.fillText(image, 210, 540);
 		ctx.fillText(image, coordinates[0] + (0.5 * squareSize), coordinates[1] + (0.5 * squareSize));
 		// ctx.drawImage(image, coordinates[0] + (0.5 * squareSize), coordinates[1] + (0.5 * squareSize));
+	}
+
+	/**
+	 * Draws on the square at the given co-ordinates
+	 * @param {number} file - the square's file: 1 - 8
+	 * @param {number} rank - the square's rank: 1 - 8
+	 */
+
+	function unmarkSquare(file, rank) {
+		if ((rank + file) % 2 === 1) {
+			ctx.fillStyle = "#444";
+		}
+		else {
+			ctx.fillStyle = "#999";
+		}
+		ctx.rect(c[0] +lineWidth/2, c[1] + lineWidth/2, squareSize - lineWidth, squareSize - lineWidth);			
+		ctx.lineWidth = lineWidth;
+		ctx.stroke();
 	}
 });

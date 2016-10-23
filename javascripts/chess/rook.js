@@ -1,4 +1,7 @@
 class Rook extends Piece {
+
+	// TODO:
+	// add castling as a move (maybe this is just a king move)
 	
 	/*
 	 * Creates a rook of the given color at the given location
