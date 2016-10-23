@@ -163,8 +163,11 @@ $(document).ready(function() {
 		}
 	}
 
-	console.log(bP[0].moves);
-	console.log(whitePieces);
+	// console.log(bP[0].moves);
+	// console.log(whitePieces);
+
+	var gameBoard = initializeBoard();
+	console.log(gameBoard);
 
 	var whiteDown = true;
 	drawWhite();
@@ -172,9 +175,22 @@ $(document).ready(function() {
 	ctx.fillStyle = "#FFF";
 
 	/**
+	 * Initializes a board by creating an 8x8 grid of Square objects
+	 * @return {Square[]} gameBoard - A 1-d array of 64 squares
+	 */
+	function initializeBoard() {
+		var gameBoard = [];
+		for (var r = 1; r <= 8; r++) {
+			for (var f = 1; f <= 8; f++) {
+				gameBoard.push(new Square(f, r, false, null));
+			}
+		}
+		return gameBoard;
+	}
+
+	/**
 	 * Draw the board with white at the bottom
 	 */
-
 	function drawWhite() {
 
 		whiteDown = true;
@@ -263,7 +279,12 @@ $(document).ready(function() {
 		drawPieces();
 	}
 
+	/**
+	 * Draws the pieces on the board
+	 */
+
 	function drawPieces() {
+		
 		// draw white pieces
 		for (var pieceType in whitePieces) {
 			var pieces = whitePieces[pieceType];
