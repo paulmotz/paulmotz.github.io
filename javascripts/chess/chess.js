@@ -167,7 +167,7 @@ $(document).ready(function() {
 					ctx.fillText(files[fileIndex], (f + 0.5) * squareSize, (r + 0.5) * squareSize);
 				}
 
-				// file falls off the board, writethe rank name
+				// file falls off the board, write the rank name
 				else if (f === 0 || f === 9) {
 					ctx.fillStyle = "#FFF";
 					ctx.fillText(ranks[rankIndex], (f + 0.5) * squareSize, (r + 0.5) * squareSize);
