@@ -54,11 +54,9 @@ $(document).ready(function() {
 	$('input[type=radio]').change(function() {
 		if (this.value === 'white') {
 			whiteDownNextGame = true;
-			// drawWhite();
 		}
 		else {
 			whiteDownNextGame = false;
-			// drawBlack();
 		}
 	});
 
@@ -79,21 +77,25 @@ $(document).ready(function() {
 
 	// piece objects
 	// king objects don't need to be arrays, I guess
-	var wB = [];
-	var wN = [];
-	var wK = [];
-	var wP = [];
-	var wQ = [];
-	var wR = [];
-	var bB = [];
-	var bN = [];
-	var bK = [];
-	var bP = [];
-	var bQ = [];
-	var bR = [];
+	var wB = [],
+		wN = [],
+		wK = [],
+		wP = [],
+		wQ = [],
+		wR = [];
+		bB = [],
+		bN = [],
+		bK = [],
+		bP = [],
+		bQ = [],
+		bR = [];
+
+	var colors = ['w', 'b'];
 
 	var whitePieces = {'B' : wB, 'N' : wN, 'K' : wK, 'P' : wP, 'Q' : wQ, 'R' : wR};
 	var blackPieces = {'B' : bB, 'N' : bN, 'K' : bK, 'P' : bP, 'Q' : bQ, 'R' : bR};
+
+	var allPieces = {'wB' : [], 'wN' : [], 'wK' : [], 'wP' : [], 'wQ' : [], 'wR' : [], 'bB' : [], 'bN' : [], 'bK' : [], 'bP' : [], 'bQ' : [], 'bR' : [] };
 
 	var files = ['', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', ''];
 	var ranks = ['', '1', '2', '3', '4', '5', '6', '7', '8', ''];
@@ -103,78 +105,70 @@ $(document).ready(function() {
 	var pieceCount = {'B': 2, 'N': 2, 'K': 1, 'P': 8, 'Q': 1, 'R': 2};
 
 	// https://en.wikipedia.org/wiki/Chess_symbols_in_Unicode
-	var whitePieceSymbols = {'B': '♗', 'N': '♘', 'K': '♔', 'P': '♙', 'Q': '♕', 'R': '♖'};
-	var blackPieceSymbols = {'B': '♝', 'N': '♞', 'K': '♚', 'P': '♟', 'Q': '♛', 'R': '♜'};
+	// var whitePieceSymbols = {'B': '♗', 'N': '♘', 'K': '♔', 'P': '♙', 'Q': '♕', 'R': '♖'};
+	// var blackPieceSymbols = {'B': '♝', 'N': '♞', 'K': '♚', 'P': '♟', 'Q': '♛', 'R': '♜'};
+	var pieceSymbols = {'bB': '♝', 'bN': '♞', 'bK': '♚', 'bP': '♟', 'bQ': '♛', 'bR': '♜', 'wB': '♗', 'wN': '♘', 'wK': '♔', 'wP': '♙', 'wQ': '♕', 'wR': '♖'};
 
 	// kings and queens have arrays of length 1 for convenience in later methods
-	var whitePieceStartingPositions = {'B' : [[3, 1], [6, 1]],
-									   'N' : [[2, 1], [7, 1]],
-									   'K' : [[5, 1]],
-									   'P' : [[1, 2], [2, 2], [3, 2], [4, 2], [5, 2], [6, 2], [7, 2], [8, 2]],
-									   'Q' : [[4, 1]],
-									   'R' : [[1, 1], [8, 1]]};
+	var pieceStartingPositions = {'bB' : [[3, 8], [6, 8]],
+									  'bN' : [[2, 8], [7, 8]],
+									  'bK' : [[5, 8]],
+									  'bP' : [[1, 7], [2, 7], [3, 7], [4, 7], [5, 7], [6, 7], [7, 7], [8, 7]],
+									  'bQ' : [[4, 8]],
+									  'bR' : [[1, 8], [8, 8]],
+									  'wB' : [[3, 1], [6, 1]],
+									  'wN' : [[2, 1], [7, 1]],
+									  'wK' : [[5, 1]],
+									  'wP' : [[1, 2], [2, 2], [3, 2], [4, 2], [5, 2], [6, 2], [7, 2], [8, 2]],
+									  'wQ' : [[4, 1]],
+									  'wR' : [[1, 1], [8, 1]]
+									};
 
-   var blackPieceStartingPositions = {'B' : [[3, 8], [6, 8]],
-									  'N' : [[2, 8], [7, 8]],
-									  'K' : [[5, 8]],
-									  'P' : [[1, 7], [2, 7], [3, 7], [4, 7], [5, 7], [6, 7], [7, 7], [8, 7]],
-									  'Q' : [[4, 8]],
-									  'R' : [[1, 8], [8, 8]]};
+	// var whitePieceStartingPositions = {'wB' : [[3, 1], [6, 1]],
+	// 								   'wN' : [[2, 1], [7, 1]],
+	// 								   'wK' : [[5, 1]],
+	// 								   'wP' : [[1, 2], [2, 2], [3, 2], [4, 2], [5, 2], [6, 2], [7, 2], [8, 2]],
+	// 								   'wQ' : [[4, 1]],
+	// 								   'wR' : [[1, 1], [8, 1]]};
 
-	// initilize white pieces
-	for (var pn in pieceNames) {
-		for (var pc = 0; pc < pieceCount[pn]; pc++) {
-			var file = whitePieceStartingPositions[pn][pc][0];
-			var rank = whitePieceStartingPositions[pn][pc][1];
-			switch (pn) {
-				case 'B':
-					wB.push(new Bishop('white', file, rank, pc));
-					break;
-				case 'N':
-					wN.push(new Knight('white', file, rank, pc));
-					break;
-				case 'K':
-					wK.push(new King('white', file, rank, pc, false));
-					break;
-				case 'P':
-					wP.push(new Pawn('white', file, rank, pc, false));
-					break;
-				case 'Q':
-					wQ.push(new Queen('white', file, rank, pc));
-					break;
-				case 'R':
-					wR.push(new Rook('white', file, rank, pc, false));
-					break;
-			}
-		}
-	}
+ //   var blackPieceStartingPositions = {'bB' : [[3, 8], [6, 8]],
+	// 								  'bN' : [[2, 8], [7, 8]],
+	// 								  'bK' : [[5, 8]],
+	// 								  'bP' : [[1, 7], [2, 7], [3, 7], [4, 7], [5, 7], [6, 7], [7, 7], [8, 7]],
+	// 								  'bQ' : [[4, 8]],
+	// 								  'bR' : [[1, 8], [8, 8]]};
 
-	
 
-	// initilize black pieces
-	for (var pn in pieceNames) {
-		for (var pc = 0; pc < pieceCount[pn]; pc++) {
-			var file = blackPieceStartingPositions[pn][pc][0];
-			var rank = blackPieceStartingPositions[pn][pc][1];
-			switch (pn) {
-				case 'B':
-					bB.push(new Bishop('black', file, rank));
-					break;
-				case 'N':
-					bN.push(new Knight('black', file, rank));
-					break;
-				case 'K':
-					bK.push(new King('black', file, rank));
-					break;
-				case 'P':
-					bP.push(new Pawn('black', file, rank));
-					break;
-				case 'Q':
-					bQ.push(new Queen('black', file, rank));
-					break;
-				case 'R':
-					bR.push(new Rook('black', file, rank));
-					break;
+
+	// var startingPositions = [whitePieceStartingPositions, blackPieceStartingPositions];
+
+	// initilize all pieces
+	for (var color in colors) {
+		for (var pn in pieceNames) {
+			var colorAndPiece = colors[color] + pn;
+			for (var pc = 0; pc < pieceCount[pn]; pc++) {
+				var file = pieceStartingPositions[colorAndPiece][pc][0];
+				var rank = pieceStartingPositions[colorAndPiece][pc][1];
+				switch (pn) {
+					case 'B':
+						allPieces[colorAndPiece].push(new Bishop(colors[color], file, rank, pc));
+						break;
+					case 'N':
+						allPieces[colorAndPiece].push(new Knight(colors[color], file, rank, pc));
+						break;
+					case 'K':
+						allPieces[colorAndPiece].push(new King(colors[color], file, rank, pc, false));
+						break;
+					case 'P':
+						allPieces[colorAndPiece].push(new Pawn(colors[color], file, rank, pc, false));
+						break;
+					case 'Q':
+						allPieces[colorAndPiece].push(new Queen(colors[color], file, rank, pc));
+						break;
+					case 'R':
+						allPieces[colorAndPiece].push(new Rook(colors[color], file, rank, pc, false));
+						break;
+				}
 			}
 		}
 	}
@@ -191,7 +185,7 @@ $(document).ready(function() {
 
 	drawWhite();
 
-	console.log(occupiedSquares);
+	// console.log(occupiedSquares);
 
 	ctx.fillStyle = "#FFF";
 
@@ -305,29 +299,10 @@ $(document).ready(function() {
 	 */
 
 	function drawPieces() {
-		
-		// draw white pieces
-		for (var pieceType in whitePieces) {
-			var pieces = whitePieces[pieceType];
-			for (var i in pieces) {
-				var piece = pieces[i];
-				var file = piece._file;
-				var rank = piece.rank;
-				var index = squareToIndex([file, rank]);
-				var square = gameBoard[index - 1];
-				square.occupyingPiece = piece;
-				square.occupyingPieceName = 's';
-				console.log(whitePieces);
-				occupiedSquares.add(index);
-				var symbol = whitePieceSymbols[pieceType];
-				drawOnSquare(file, rank, symbol);
-			}
-		}
 
-		// draw black pieces
-		ctx.fillStyle = "#000";
-		for (var pieceType in blackPieces) {
-			var pieces = blackPieces[pieceType];
+		for (var pieceType in allPieces) {
+			var pieces = allPieces[pieceType];
+			// console.log(pieces);
 			for (var i in pieces) {
 				var piece = pieces[i];
 				var file = piece._file;
@@ -335,9 +310,17 @@ $(document).ready(function() {
 				var index = squareToIndex([file, rank]);
 				var square = gameBoard[index - 1];
 				square.occupyingPiece = piece;
-				square.occupyingPieceName = piece;
+				square.occupyingPieceName = pieceType + i;
 				occupiedSquares.add(index);
-				var symbol = blackPieceSymbols[pieceType];
+
+				// draw the piece in the correct color
+				if (pieceType[0] === 'w') {
+					ctx.fillStyle = "#FFF";
+				}
+				else {
+					ctx.fillStyle = "#000";
+				}
+				var symbol = pieceSymbols[pieceType];
 				drawOnSquare(file, rank, symbol);
 			}
 		}
@@ -419,15 +402,15 @@ $(document).ready(function() {
 	 * Draws on the square at the given co-ordinates
 	 * @param {number} file - the square's file: 1 - 8
 	 * @param {number} rank - the square's rank: 1 - 8
-	 * @param {image} String - what to draw on the square
+	 * @param {String} symbol - what to draw on the square
 	 */
 
-	function drawOnSquare(file, rank, image) {
+	function drawOnSquare(file, rank, symbol) {
 		var coordinates = getCoordinates(file, rank);
 		// ctx.fillStyle = "#000FFF";
 		ctx.font = squareSize + "px serif";
 		// ctx.fillText(image, 210, 540);
-		ctx.fillText(image, coordinates[0] + (0.5 * squareSize), coordinates[1] + (0.5 * squareSize));
+		ctx.fillText(symbol, coordinates[0] + (0.5 * squareSize), coordinates[1] + (0.5 * squareSize));
 		// ctx.drawImage(image, coordinates[0] + (0.5 * squareSize), coordinates[1] + (0.5 * squareSize));
 	}
 
