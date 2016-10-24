@@ -12,6 +12,7 @@
 
 $(document).ready(function() {
 	var $board = $('#chessboard');
+	var delay = 0;
 
 	// TODO: what if height !== width?
 	// visual/layout variables
@@ -318,8 +319,7 @@ $(document).ready(function() {
 			}
 			var numMoves = moves.length;
 			var r = Math.floor(Math.random() * numMoves);
-			console.log(moves[r]);
-			movePiece(moves[r]);
+			setTimeout(function() { movePiece(moves[r]) }, delay);
 		}
 
 		
