@@ -11,8 +11,8 @@ class Rook extends Piece {
 	 * @param {boolean} hasMoved - whether or not the rook has moved (used for checking if castling is possible)
 	 */
 
-	constructor(color, file, rank, hasMoved) {
-		super(color, file, rank)
+	constructor(color, file, rank, id, hasMoved) {
+		super(color, file, rank, id)
 		this._hasMoved = hasMoved;
 	}
 

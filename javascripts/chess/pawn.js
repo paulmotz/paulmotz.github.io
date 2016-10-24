@@ -14,8 +14,8 @@ class Pawn extends Piece {
 	 * @param {boolean} hasMoved - whether or not the pawn has moved (used for checking if it can move two squares)
 	 */
 
-	constructor(color, file, rank, hasMoved) {
-		super(color, file, rank)
+	constructor(color, file, rank, id, hasMoved) {
+		super(color, file, rank, id)
 		this._hasMoved = hasMoved;
 	}
 

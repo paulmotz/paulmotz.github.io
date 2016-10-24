@@ -5,12 +5,14 @@ class Piece {
 	 * @param {string} color - The color of the piece: white || black
 	 * @param {number} file - file rank of the piece: 1 - 8
 	 * @param {number} rank - the rank of the piece: 1 - 8
+	 * @param {number} id - the id of the piece: 1 - 10 (where 10 = max possible number of any given piece per color)
 	 */
 
-	constructor(color, file, rank) {
+	constructor(color, file, rank, id) {
 		this._color = color;
 		this._file = file;
 		this._rank = rank;
+		this._id = id;
 	}
 
 	/**
@@ -38,6 +40,15 @@ class Piece {
 
 	get rank() {
 		return this._rank;
+	}
+
+	/**
+	 * Get the piece's id
+	 * @return {number} id - The id of the piece: 1 - 10 (where 10 = max possible number of any given piece per color)
+	 */
+
+	get id() {
+		return this._id;
 	}
 
 	/**
@@ -71,6 +82,15 @@ class Piece {
 		if (rank > 0 && rank < 9) {
 			this._rank = rank;
 		}
+	}
+
+	/**
+	 * Get the piece's id
+	 * @param {number} id - The id of the piece: 1 - 10 (where 10 = max possible number of any given piece per color)
+	 */
+
+	set id(id) {
+		this._id = id;
 	}
 
 	// TODO: not sure if this is right, read up on this

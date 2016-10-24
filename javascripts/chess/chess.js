@@ -31,7 +31,8 @@ $(document).ready(function() {
 			ctx.lineWidth = lineWidth;
 			ctx.strokeStyle = "orange";
 			ctx.stroke();
-			// var index = squareToIndex(square);
+			var index = squareToIndex(square);
+			console.log(gameBoard[index - 1]);
 			// for (var ms of markedSquares.keys()) {
 			// 	var oldSquare = indexToSquare(ms);
 			// 	var oldCoordinates = getCoordinates(oldSquare[0], oldSquare[1]);
@@ -52,11 +53,25 @@ $(document).ready(function() {
 
 	$('input[type=radio]').change(function() {
 		if (this.value === 'white') {
+			whiteDownNextGame = true;
+			// drawWhite();
+		}
+		else {
+			whiteDownNextGame = false;
+			// drawBlack();
+		}
+	});
+
+	$('.btn').on('click', function() {
+		if ($('#radio-white').is(':checked')) {
+			whiteDown = true;
 			drawWhite();
 		}
 		else {
+			whiteDown = false;
 			drawBlack();
 		}
+
 	});
 
 	var board = $board[0];
@@ -83,7 +98,8 @@ $(document).ready(function() {
 	var files = ['', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', ''];
 	var ranks = ['', '1', '2', '3', '4', '5', '6', '7', '8', ''];
 
-	var pieceNames = {'B': 'Bishop', 'N': 'Knight', 'K': 'King', 'P': 'Pawn', 'Q': 'Queen', 'R': 'Rook'};
+	var pieceNames = {'B' : 'Bishop', 'N' : 'Knight', 'K' : 'King', 'P' : 'Pawn', 'Q' : 'Queen', 'R' : 'Rook'};
+	var pieceSymbols = {'Bishop' : 'B', 'Knight' : 'N', 'King' : 'K', 'Pawn' : 'P', 'Queen' : 'Q', 'Rook' : 'R'};
 	var pieceCount = {'B': 2, 'N': 2, 'K': 1, 'P': 8, 'Q': 1, 'R': 2};
 
 	// https://en.wikipedia.org/wiki/Chess_symbols_in_Unicode
@@ -112,22 +128,22 @@ $(document).ready(function() {
 			var rank = whitePieceStartingPositions[pn][pc][1];
 			switch (pn) {
 				case 'B':
-					wB.push(new Bishop('white', file, rank));
+					wB.push(new Bishop('white', file, rank, pc));
 					break;
 				case 'N':
-					wN.push(new Knight('white', file, rank));
+					wN.push(new Knight('white', file, rank, pc));
 					break;
 				case 'K':
-					wK.push(new King('white', file, rank));
+					wK.push(new King('white', file, rank, pc, false));
 					break;
 				case 'P':
-					wP.push(new Pawn('white', file, rank));
+					wP.push(new Pawn('white', file, rank, pc, false));
 					break;
 				case 'Q':
-					wQ.push(new Queen('white', file, rank));
+					wQ.push(new Queen('white', file, rank, pc));
 					break;
 				case 'R':
-					wR.push(new Rook('white', file, rank));
+					wR.push(new Rook('white', file, rank, pc, false));
 					break;
 			}
 		}
@@ -163,14 +179,19 @@ $(document).ready(function() {
 		}
 	}
 
+	var occupiedSquares = new Set();
+
 	// console.log(bP[0].moves);
 	// console.log(whitePieces);
 
 	var gameBoard = initializeBoard();
-	console.log(gameBoard);
 
 	var whiteDown = true;
+	var whiteDownNextGame = true;
+
 	drawWhite();
+
+	console.log(occupiedSquares);
 
 	ctx.fillStyle = "#FFF";
 
@@ -182,7 +203,7 @@ $(document).ready(function() {
 		var gameBoard = [];
 		for (var r = 1; r <= 8; r++) {
 			for (var f = 1; f <= 8; f++) {
-				gameBoard.push(new Square(f, r, false, null));
+				gameBoard.push(new Square(f, r, false, null, null));
 			}
 		}
 		return gameBoard;
@@ -292,6 +313,12 @@ $(document).ready(function() {
 				var piece = pieces[i];
 				var file = piece._file;
 				var rank = piece.rank;
+				var index = squareToIndex([file, rank]);
+				var square = gameBoard[index - 1];
+				square.occupyingPiece = piece;
+				square.occupyingPieceName = 's';
+				console.log(whitePieces);
+				occupiedSquares.add(index);
 				var symbol = whitePieceSymbols[pieceType];
 				drawOnSquare(file, rank, symbol);
 			}
@@ -305,6 +332,11 @@ $(document).ready(function() {
 				var piece = pieces[i];
 				var file = piece._file;
 				var rank = piece.rank;
+				var index = squareToIndex([file, rank]);
+				var square = gameBoard[index - 1];
+				square.occupyingPiece = piece;
+				square.occupyingPieceName = piece;
+				occupiedSquares.add(index);
 				var symbol = blackPieceSymbols[pieceType];
 				drawOnSquare(file, rank, symbol);
 			}
@@ -318,9 +350,10 @@ $(document).ready(function() {
 	 * @return {number} index - the indicex of the square: 1 - 64
 	 */
 
-	function squareToIndex(file, rank) {
-		return (rank - 1) * 8 + file;
-	}
+	// function squareToIndex(file, rank) {
+	// 	console.log('hi');
+	// 	return (rank - 1) * 8 + file;
+	// }
 
 	/**
 	 * Maps the rank and file of a square to an integer that is unique among other squares
