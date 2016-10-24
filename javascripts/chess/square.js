@@ -9,10 +9,10 @@ class Square {
 	 * @param {String} pccupyingPieceName - the variable name of the occupying piece
 	 */
 
-	constructor(file, rank, isOccupied, occupyingPiece, occupyingPieceName) {
+	constructor(file, rank, occupyingPiece, occupyingPieceName) {
 		this._file = file;
 		this._rank = rank;
-		this._isOccupied = isOccupied;
+		this._index = (rank - 1) * 8 + file;
 		this._occupyingPiece = occupyingPiece;
 		this._occupyingPieceName = occupyingPieceName;
 	}
@@ -36,12 +36,21 @@ class Square {
 	}
 
 	/**
+	 * Get the square's rank
+	 * @return {number} rank - The rank of the square: 1 - 8
+	 */
+
+	get index() {
+		return this._index;
+	}
+
+	/**
 	 * Is the square occupied?
 	 * @return {boolean} isOccupied - Whether the square is occupied
 	 */
-	get isOccupied() {
-		return this._isOccupied;
-	}
+	// get isOccupied() {
+	// 	return this.occupyingPiece === null;
+	// }
 
 	/**
 	 * Get the square's occupying piece (if there is one)

@@ -16,6 +16,10 @@ class Bishop extends Piece {
 		while (rank > 1 && file > 1 && file <= 8){
 			file--;
 			rank--;
+			var index = squareToIndex([file, rank]) - 1;
+			if (occupiedSquares[index]) {
+				break;
+			}
 			moves.push([file, rank]);
 		}
 
@@ -26,6 +30,10 @@ class Bishop extends Piece {
 		while (rank > 1 && file >= 1 && file < 8){
 			file++;
 			rank--;
+			var index = squareToIndex([file, rank]) - 1;
+			if (occupiedSquares[index]) {
+				break;
+			}
 			moves.push([file, rank]);
 		}
 
@@ -36,6 +44,10 @@ class Bishop extends Piece {
 		while (rank < 8 && file > 1 && file <= 8){
 			file--;
 			rank++;
+			var index = squareToIndex([file, rank]) - 1;
+			if (occupiedSquares[index]) {
+				break;
+			}
 			moves.push([file, rank]);
 		}
 
@@ -46,6 +58,10 @@ class Bishop extends Piece {
 		while (rank < 8 && file >= 1 && file < 8){
 			rank++;
 			file++;
+			var index = squareToIndex([file, rank]) - 1;
+			if (occupiedSquares[index]) {
+				break;
+			}
 			moves.push([file, rank]);
 		}
 

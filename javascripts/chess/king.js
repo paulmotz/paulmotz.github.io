@@ -32,7 +32,7 @@ class King extends Piece {
  							  [file - 1, rank - 1], [file, rank - 1], [file + 1, rank - 1] ];
 
 		var moves = possibleMoves.filter(function(square){
-			return square[0] > 0 && square[0] < 9 && square[1] > 0 && square[1] < 9;
+			return square[0] > 0 && square[0] < 9 && square[1] > 0 && square[1] < 9 && !occupiedSquares[squareToIndex([square[0], square[1]]) - 1];
 		});
 
 		return moves;

@@ -27,23 +27,33 @@ class Pawn extends Piece {
  		var moves = [];
 
  		// white pawns move up the ranks
- 		if (color === 'white') {
- 			moves.push([file, rank + 1]);
+ 		if (color === 'w') {
+ 			if (!occupiedSquares[squareToIndex([file, rank + 1]) - 1]) {
+ 				moves.push([file, rank + 1]);
 
- 			// a white pawn has not moved if it is on the 2nd rank
- 			if (rank === 2) {
- 				moves.push([file, rank + 2]);
- 			}
+ 				// a white pawn has not moved if it is on the 2nd rank
+ 				// this has to be nested since if the square one rank above is blocked, the pawn cannot move two squares
+	 			if (rank === 2) {
+	 				if (!occupiedSquares[squareToIndex([file, rank + 2]) - 1]) {
+		 				moves.push([file, rank + 2]);
+		 			}
+	 			}
+ 			}	
  		}
 
  		// black pawns move down the ranks
  		else {
- 			moves.push([file, rank - 1]);
+ 			if (!occupiedSquares[squareToIndex([file, rank - 1]) - 1]) {
+ 				moves.push([file, rank - 1]);
 
- 			// a black pawn has not moved if it is on the 7th rank
- 			if (rank === 7) {
- 				moves.push([file, rank - 2]);
- 			}
+ 				// a black pawn has not moved if it is on the 7th rank
+ 				// this has to be nested since if the square one rank below is blocked, the pawn cannot move two squares
+	 			if (rank === 7) {
+	 				if (!occupiedSquares[squareToIndex([file, rank - 2]) - 1]) {
+		 				moves.push([file, rank - 2]);
+		 			}
+	 			}
+ 			}	
  		}
 
  		return moves;

@@ -16,6 +16,10 @@ class Queen extends Piece {
 		while (rank > 1 && file > 1 && file <= 8){
 			file--;
 			rank--;
+			var index = squareToIndex([file, rank]) - 1;
+			if (occupiedSquares[index]) {
+				break;
+			}
 			moves.push([file, rank]);
 		}
 
@@ -26,6 +30,10 @@ class Queen extends Piece {
 		while (rank > 1 && file >= 1 && file < 8){
 			file++;
 			rank--;
+			var index = squareToIndex([file, rank]) - 1;
+			if (occupiedSquares[index]) {
+				break;
+			}
 			moves.push([file, rank]);
 		}
 
@@ -36,6 +44,10 @@ class Queen extends Piece {
 		while (rank < 8 && file > 1 && file <= 8){
 			file--;
 			rank++;
+			var index = squareToIndex([file, rank]) - 1;
+			if (occupiedSquares[index]) {
+				break;
+			}
 			moves.push([file, rank]);
 		}
 
@@ -46,6 +58,10 @@ class Queen extends Piece {
 		while (rank < 8 && file >= 1 && file < 8){
 			rank++;
 			file++;
+			var index = squareToIndex([file, rank]) - 1;
+			if (occupiedSquares[index]) {
+				break;
+			}
 			moves.push([file, rank]);
 		}
 
@@ -55,6 +71,10 @@ class Queen extends Piece {
 		// moves towards the left
 		while (file > 1) {
 			file--;
+			var index = squareToIndex([file, rank]) - 1;
+			if (occupiedSquares[index]) {
+				break;
+			}
 			moves.push([file, rank]);
 		}
 
@@ -63,6 +83,10 @@ class Queen extends Piece {
 		// moves towards the right
 		while (file < 8) {
 			file++;
+			var index = squareToIndex([file, rank]) - 1;
+			if (occupiedSquares[index]) {
+				break;
+			}
 			moves.push([file, rank]);
 		}
 
@@ -71,6 +95,10 @@ class Queen extends Piece {
 		// moves towards the bottom
 		while (rank > 1) {
 			rank--;
+			var index = squareToIndex([file, rank]) - 1;
+			if (occupiedSquares[index]) {
+				break;
+			}
 			moves.push([file, rank]);
 		}
 
@@ -79,6 +107,10 @@ class Queen extends Piece {
 		// moves towards the top
 		while (rank < 8) {
 			rank++;
+			var index = squareToIndex([file, rank]) - 1;
+			if (occupiedSquares[index]) {
+				break;
+			}
 			moves.push([file, rank]);
 		}
 

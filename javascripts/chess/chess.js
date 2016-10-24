@@ -5,9 +5,12 @@
  * -Overwrite the orange stroke as necessary
  *
  * Logic:
+ * - pieces stop moving when they hit an occupied square regardless of the occupying pieces' color (ie: no capturing yet)
  * - is the king in check
  * - is the piece pinned (moving it in a certain direction leaves the king in check)
 */
+
+var occupiedSquares = Array(64);
 
 $(document).ready(function() {
 	var $board = $('#chessboard');
@@ -53,6 +56,11 @@ $(document).ready(function() {
 									  'bR' : [[1, 8], [8, 8]]
 									};
 
+
+	var piecePositions = {};
+	
+	// var piecePositions = jQuery.extend({}, pieceStartingPositions);
+
 	// represent all pieces as entries in arrays for dynamic access (kings could be single entry, I guess)
 	var allPieces = {'wB' : [], 'wN' : [], 'wK' : [], 'wP' : [], 'wQ' : [], 'wR' : [], 'bB' : [], 'bN' : [], 'bK' : [], 'bP' : [], 'bQ' : [], 'bR' : [] };
 
@@ -61,7 +69,7 @@ $(document).ready(function() {
 
 	var whiteDown = true;
 
-	var occupiedSquares = new Set();
+	
 
 	$board.on('click', function(e) {
 		var x = e.offsetX;
@@ -88,44 +96,14 @@ $(document).ready(function() {
 			whiteDown = false;
 		}
 		drawBoard();
-		// newGame();
+		newGame();
 
 	});
 
-	// initilize all pieces
-	for (var color in colors) {
-		for (var pn in pieceNames) {
-			var colorAndPiece = colors[color] + pn;
-			for (var pc = 0; pc < pieceCount[pn]; pc++) {
-				var file = pieceStartingPositions[colorAndPiece][pc][0];
-				var rank = pieceStartingPositions[colorAndPiece][pc][1];
-				switch (pn) {
-					case 'B':
-						allPieces[colorAndPiece].push(new Bishop(colors[color], file, rank, pc));
-						break;
-					case 'N':
-						allPieces[colorAndPiece].push(new Knight(colors[color], file, rank, pc));
-						break;
-					case 'K':
-						allPieces[colorAndPiece].push(new King(colors[color], file, rank, pc, false));
-						break;
-					case 'P':
-						allPieces[colorAndPiece].push(new Pawn(colors[color], file, rank, pc, false));
-						break;
-					case 'Q':
-						allPieces[colorAndPiece].push(new Queen(colors[color], file, rank, pc));
-						break;
-					case 'R':
-						allPieces[colorAndPiece].push(new Rook(colors[color], file, rank, pc, false));
-						break;
-				}
-			}
-		}
-	}
+	initializePieces();
 	drawBoard();
-
-	// console.log(occupiedSquares);
-
+	initializeBoard();
+	
 	ctx.fillStyle = "#FFF";
 
 	/**
@@ -140,6 +118,39 @@ $(document).ready(function() {
 			}
 		}
 		return gameBoard;
+	}
+
+	// initilize all pieces TODO: header
+	function initializePieces() {
+ 		for (var color in colors) {
+			for (var pn in pieceNames) {
+				var colorAndPiece = colors[color] + pn;
+				for (var pc = 0; pc < pieceCount[pn]; pc++) {
+					var file = pieceStartingPositions[colorAndPiece][pc][0];
+					var rank = pieceStartingPositions[colorAndPiece][pc][1];
+					switch (pn) {
+						case 'B':
+							allPieces[colorAndPiece].push(new Bishop(colors[color], file, rank, pc));
+							break;
+						case 'N':
+							allPieces[colorAndPiece].push(new Knight(colors[color], file, rank, pc));
+							break;
+						case 'K':
+							allPieces[colorAndPiece].push(new King(colors[color], file, rank, pc, false));
+							break;
+						case 'P':
+							allPieces[colorAndPiece].push(new Pawn(colors[color], file, rank, pc, false));
+							break;
+						case 'Q':
+							allPieces[colorAndPiece].push(new Queen(colors[color], file, rank, pc));
+							break;
+						case 'R':
+							allPieces[colorAndPiece].push(new Rook(colors[color], file, rank, pc, false));
+							break;
+					}
+				}
+			}
+		}
 	}
 
 	/**
@@ -175,7 +186,7 @@ $(document).ready(function() {
 
 				// draw square
 				else {
-					if ((r + f) % 2 === 1) {
+					if ((f + r) % 2 === 1) {
 						ctx.fillStyle = "#444";
 					}
 					else {
@@ -193,6 +204,7 @@ $(document).ready(function() {
 	 */
 
 	function drawPieces() {
+		// console.log(allPieces);
 		for (var pieceType in allPieces) {
 			var pieces = allPieces[pieceType];
 			// console.log(pieces);
@@ -204,8 +216,8 @@ $(document).ready(function() {
 				var square = gameBoard[index - 1];
 				square.occupyingPiece = piece;
 				square.occupyingPieceName = pieceType + i;
-				occupiedSquares.add(index);
-
+				occupiedSquares[index - 1] = pieceType + i;
+				
 				// draw the piece in the correct color
 				if (pieceType[0] === 'w') {
 					ctx.fillStyle = "#FFF";
@@ -217,47 +229,134 @@ $(document).ready(function() {
 				drawOnSquare(file, rank, symbol);
 			}
 		}
+		// console.log(occupiedSquares);
 	}
 
 	/**
-	 * Maps the rank and file of a square to an integer that is unique among other squares
-	 * @param {number[]} square - the square's file, two numbers: 1 - 8
-	 * @return {number} index - the indicex of the square: 1 - 64
+	 * Starts a new game
 	 */
 
-	function squareToIndex(square) {
-		return (square[1] - 1) * 8 + square[0];
+	function newGame() {
+
+		initializeBoard();
+		drawBoard();
+
+		// initialize piecePositions array based on starting positions
+		for (var key in pieceStartingPositions) {
+			piecePositions[key] = [];
+			for (var i in pieceStartingPositions[key]) {
+				piecePositions[key].push(pieceStartingPositions[key][i]);
+			}
+		}
+
+		var whiteInCheckmate = false;
+		var blackInCheckmate = false;
+		var count = 0; // to prevent infinite loops during development
+		whiteMove();
+		// while (!whiteInCheckmate && !blackInCheckmate && count < 1000) {
+		// 	whiteMove();
+		// 	blackMove();
+		// 	count++; 
+		// }
 	}
 
 	/**
-	 * Maps the rank and file of a square to an integer that is unique among other squares
-	 * @param {number} index - the indicex of the square: 1 - 64
-	 * @return {number[]} square - the indices of the square in the form [file, rank]
+	 * Moves a white piece
 	 */
 
-	function indexToSquare(index) {
-		var file = index % 8 === 0 ? 8 : index % 8;
-		// if (file === 0)
-		return [file, Math.ceil(index / 8)];
+	function whiteMove() {
+
+		// construct array of possible moves
+		var moves = [];
+		for (pieceTypes in allPieces) {
+			var pieceType = pieceTypes[1];
+			if (pieceTypes[0] === 'w') {
+				var pieceArray = allPieces[pieceTypes];
+				for (var piece in pieceArray) {
+					console.log(pieceArray[piece]);
+					var pieceMoves = pieceArray[piece].moves;
+					for (var i in pieceMoves) {
+						var move =  {'piece' : pieceTypes, 'id' : piece, 'move' : pieceMoves[i]};
+						moves.push(move);
+						// console.log(move);
+						// console.log("piece is a: " + pieceTypes + " with ID: " + piece + " one move is : " + pieceMoves[i]);
+						// console.log(pieceMoves[i]);
+						// console.log(pieceArray);
+						// console.log(pieceMoves);
+						// console.log("piece is a: " + pieceTypes + " with ID: " + piece + " and moves : " + pieceMoves);
+					}
+					// console.log(pieceMoves);
+				}
+			}
+		}
+		// console.log(allPieces);
+		// console.log(moves);
+		console.log(occupiedSquares);
+		var numMoves = moves.length;
+		var r = Math.floor(Math.random() * numMoves);
+		movePiece(moves[r]);
 	}
 
 	/**
-	 * Maps the x and y co-ordinates to a 8x8 grid with 1-indexing
-	 * @param {number} x - e.offsetX
-	 * @param {number} y - e.offsetY
-	 * @return {number[]} square - the indices of the square in the form [file, rank]
+	 * Moves a black piece
 	 */
 
-	function getSquare(x, y) {
-		var file = Math.floor(x/squareSize);
-		var rank = Math.floor(y/squareSize);
-		if (whiteDown) {
-			var square = [file, 9 - rank];
+	function blackMove() {
+
+	}
+
+	/**
+	 * Moves a piece on the board
+	 * @param {object} move - an object consisting of the piece's color, type, id (an int) and the square to move to
+	 */
+
+	function movePiece(move) {
+
+		var color = move.piece[0];
+		var piece = move.piece;
+		var id = move.id;
+		var file = move.move[0];
+		var rank = move.move[1];
+		var newIndex = squareToIndex(move.move);
+		// console.log(newIndex);
+
+		// draw the piece in the correct color
+		if (color === 'w') {
+			ctx.fillStyle = "#FFF";
 		}
 		else {
-			var square = [9-file, rank];
+			ctx.fillStyle = "#000";
 		}
-		return square;
+		var symbol = pieceSymbols[piece];
+		drawOnSquare(file, rank, symbol);
+
+		// console.log(occupiedSquares);
+		// console.log(piecePositions[piece][id]);
+		var oldSquare = piecePositions[piece][id];
+		var oldIndex = squareToIndex(oldSquare);
+		piecePositions[piece][id] = move.move; // update position of piece
+		// console.log(piecePositions);
+		// console.log(pieceStartingPositions);
+		occupiedSquares[oldIndex - 1] = null;
+		occupiedSquares[newIndex - 1] = piece + id;
+		// console.log(occupiedSquares);
+		drawOverPiece(oldSquare);
+
+
+
+
+
+		// var piece = pieces[i];
+		// var file = piece._file;
+		// var rank = piece.rank;
+		// var index = squareToIndex([file, rank]);
+		// var square = gameBoard[index - 1];
+		// square.occupyingPiece = piece;
+		// square.occupyingPieceName = pieceType + i;
+		// occupiedSquares[index - 1] = pieceType + i;
+						
+		// var symbol = pieceSymbols[pieceType];
+		// drawOnSquare(file, rank, symbol);
 	}
 
 	/**
@@ -280,6 +379,25 @@ $(document).ready(function() {
 	}
 
 	/**
+	 * Maps the x and y co-ordinates to a 8x8 grid with 1-indexing
+	 * @param {number} x - e.offsetX
+	 * @param {number} y - e.offsetY
+	 * @return {number[]} square - the indices of the square in the form [file, rank]
+	 */
+
+	function getSquare(x, y) {
+		var file = Math.floor(x/squareSize);
+		var rank = Math.floor(y/squareSize);
+		if (whiteDown) {
+			var square = [file, 9 - rank];
+		}
+		else {
+			var square = [9-file, rank];
+		}
+		return square;
+	}
+
+	/**
 	 * Draws on the square at the given co-ordinates
 	 * @param {number} file - the square's file: 1 - 8
 	 * @param {number} rank - the square's rank: 1 - 8
@@ -293,6 +411,25 @@ $(document).ready(function() {
 		// ctx.fillText(image, 210, 540);
 		ctx.fillText(symbol, coordinates[0] + (0.5 * squareSize), coordinates[1] + (0.5 * squareSize));
 		// ctx.drawImage(image, coordinates[0] + (0.5 * squareSize), coordinates[1] + (0.5 * squareSize));
+	}
+
+	/**
+	 * Draws over a piece at the square at the given co-ordinates
+	 * @param {number} file - the square's file: 1 - 8
+	 * @param {number} rank - the square's rank: 1 - 8
+	 */
+
+	function drawOverPiece(square) {
+		var file = square[0];
+		var rank = square[1];
+		var coordinates = getCoordinates(file, rank);
+		if ((file + rank) % 2 === 0) {
+			ctx.fillStyle = "#444";
+		}
+		else {
+			ctx.fillStyle = "#999";
+		}
+		ctx.fillRect(coordinates[0], coordinates[1], squareSize, squareSize);
 	}
 
 	/**
@@ -313,3 +450,25 @@ $(document).ready(function() {
 		ctx.stroke();
 	}
 });
+
+/**
+ * Maps the rank and file of a square to an integer that is unique among other squares
+ * @param {number[]} square - the square's file, two numbers: 1 - 8
+ * @return {number} index - the indicex of the square: 1 - 64
+ */
+
+function squareToIndex(square) {
+	return (square[1] - 1) * 8 + square[0];
+}
+
+/**
+ * Maps the rank and file of a square to an integer that is unique among other squares
+ * @param {number} index - the indicex of the square: 1 - 64
+ * @return {number[]} square - the indices of the square in the form [file, rank]
+ */
+
+function indexToSquare(index) {
+	var file = index % 8 === 0 ? 8 : index % 8;
+	// if (file === 0)
+	return [file, Math.ceil(index / 8)];
+}
