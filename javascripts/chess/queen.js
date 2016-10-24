@@ -6,7 +6,7 @@ class Queen extends Piece {
 	 * @return {number[][]} moves - the moves of the Queen as an array of co-ordinates (also an array)
 	 */
 
-	get moves() {
+	moves(occupiedSquares) {
 		var moves = [];
 
 		var file = this._file;

@@ -19,7 +19,7 @@ class Pawn extends Piece {
 		this._hasMoved = hasMoved;
 	}
 
-	get moves() {
+	moves(occupiedSquares) {
 		var color = this.color;
  		var file = this._file;
  		var rank = this._rank;

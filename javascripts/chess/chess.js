@@ -10,8 +10,6 @@
  * - is the piece pinned (moving it in a certain direction leaves the king in check)
 */
 
-var occupiedSquares = Array(64);
-
 $(document).ready(function() {
 	var $board = $('#chessboard');
 
@@ -58,6 +56,8 @@ $(document).ready(function() {
 
 
 	var piecePositions = {};
+
+	var occupiedSquares;
 	
 	// var piecePositions = jQuery.extend({}, pieceStartingPositions);
 
@@ -95,14 +95,11 @@ $(document).ready(function() {
 		else {
 			whiteDown = false;
 		}
-		drawBoard();
 		newGame();
 
 	});
 
-	initializePieces();
-	drawBoard();
-	initializeBoard();
+	newGame();
 	
 	ctx.fillStyle = "#FFF";
 
@@ -110,6 +107,7 @@ $(document).ready(function() {
 	 * Initializes a board by creating an 8x8 grid of Square objects
 	 * @return {Square[]} gameBoard - A 1-d array of 64 squares
 	 */
+
 	function initializeBoard() {
 		var gameBoard = [];
 		for (var r = 1; r <= 8; r++) {
@@ -120,8 +118,16 @@ $(document).ready(function() {
 		return gameBoard;
 	}
 
-	// initilize all pieces TODO: header
+	/**
+	 * Initializes all the pieces 
+	 */
+
 	function initializePieces() {
+
+		// reset allPieces object
+		for (var key in allPieces) {
+			allPieces[key] = [];
+		}
  		for (var color in colors) {
 			for (var pn in pieceNames) {
 				var colorAndPiece = colors[color] + pn;
@@ -156,6 +162,7 @@ $(document).ready(function() {
 	/**
 	 * Draw the board
 	 */
+
 	function drawBoard() {
 
 		// redraw border to overwrite existing text
@@ -204,7 +211,7 @@ $(document).ready(function() {
 	 */
 
 	function drawPieces() {
-		// console.log(allPieces);
+		occupiedSquares = Array(64); // reset the occupied squares if it is a new game
 		for (var pieceType in allPieces) {
 			var pieces = allPieces[pieceType];
 			// console.log(pieces);
@@ -229,7 +236,6 @@ $(document).ready(function() {
 				drawOnSquare(file, rank, symbol);
 			}
 		}
-		// console.log(occupiedSquares);
 	}
 
 	/**
@@ -238,6 +244,7 @@ $(document).ready(function() {
 
 	function newGame() {
 
+		initializePieces();
 		initializeBoard();
 		drawBoard();
 
@@ -266,35 +273,60 @@ $(document).ready(function() {
 
 	function whiteMove() {
 
-		// construct array of possible moves
-		var moves = [];
-		for (pieceTypes in allPieces) {
-			var pieceType = pieceTypes[1];
-			if (pieceTypes[0] === 'w') {
-				var pieceArray = allPieces[pieceTypes];
-				for (var piece in pieceArray) {
-					console.log(pieceArray[piece]);
-					var pieceMoves = pieceArray[piece].moves;
-					for (var i in pieceMoves) {
-						var move =  {'piece' : pieceTypes, 'id' : piece, 'move' : pieceMoves[i]};
-						moves.push(move);
-						// console.log(move);
-						// console.log("piece is a: " + pieceTypes + " with ID: " + piece + " one move is : " + pieceMoves[i]);
-						// console.log(pieceMoves[i]);
-						// console.log(pieceArray);
-						// console.log(pieceMoves);
-						// console.log("piece is a: " + pieceTypes + " with ID: " + piece + " and moves : " + pieceMoves);
+		// if human is white, allow him/her to move
+		if (whiteDown) {
+			// console.log(allPieces);
+			// console.log(occupiedSquares);
+			// console.log(allPieces['wN'][0].moves(occupiedSquares));
+
+			$board.on('click', function(e) {
+				var x = e.offsetX;
+				var y = e.offsetY;
+
+				if (x > squareSize && y > squareSize && x < 9 * squareSize && y < 9 * squareSize) {
+					var square = getSquare(x, y);  
+					var index = squareToIndex(square);
+					var selectedPiece = occupiedSquares[index - 1];
+
+					// if the clicked square has a piece in it, get its moves
+					if (selectedPiece) {
+						var pieceName = selectedPiece.slice(0, 2);
+						var id = selectedPiece[2]; // only need one digit since id can never be greater than 9 (8 pawns promoted to B/N/R)
+						var moves = allPieces[pieceName][id].moves(occupiedSquares);
+					}				
+				}
+			});
+		}
+
+		// if computer is white, pick a random move
+		else {
+
+			// construct array of possible moves
+			var moves = [];
+			for (pieceTypes in allPieces) {
+				var pieceType = pieceTypes[1];
+				if (pieceTypes[0] === 'w') {
+					var pieceArray = allPieces[pieceTypes];
+					for (var piece in pieceArray) {
+						var pieceMoves = pieceArray[piece].moves(occupiedSquares);
+						for (var i in pieceMoves) {
+							var move =  {'piece' : pieceTypes, 'id' : piece, 'move' : pieceMoves[i]};
+							moves.push(move);
+						}
 					}
-					// console.log(pieceMoves);
 				}
 			}
+			var numMoves = moves.length;
+			var r = Math.floor(Math.random() * numMoves);
+			console.log(moves[r]);
+			movePiece(moves[r]);
 		}
-		// console.log(allPieces);
-		// console.log(moves);
-		console.log(occupiedSquares);
-		var numMoves = moves.length;
-		var r = Math.floor(Math.random() * numMoves);
-		movePiece(moves[r]);
+
+		
+
+		
+
+		
 	}
 
 	/**
