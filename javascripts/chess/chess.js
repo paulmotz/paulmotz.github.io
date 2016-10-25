@@ -34,7 +34,7 @@ $(document).ready(function() {
 	var colors = ['w', 'b'];
 
 	var pieceNames = {'B' : 'Bishop', 'N' : 'Knight', 'K' : 'King', 'P' : 'Pawn', 'Q' : 'Queen', 'R' : 'Rook'};
-	var pieceSymbols = {'Bishop' : 'B', 'Knight' : 'N', 'King' : 'K', 'Pawn' : 'P', 'Queen' : 'Q', 'Rook' : 'R'};
+	var pieceAbbreviations = {'Bishop' : 'B', 'Knight' : 'N', 'King' : 'K', 'Pawn' : 'P', 'Queen' : 'Q', 'Rook' : 'R'};
 	var pieceCount = {'B': 2, 'N': 2, 'K': 1, 'P': 8, 'Q': 1, 'R': 2};
 
 	// https://en.wikipedia.org/wiki/Chess_symbols_in_Unicode
@@ -62,32 +62,16 @@ $(document).ready(function() {
 	
 	// var piecePositions = jQuery.extend({}, pieceStartingPositions);
 
-	// represent all pieces as entries in arrays for dynamic access (kings could be single entry, I guess)
+	// represent all pieces as entries in arrays for dynamic access (kings could have been single entry)
 	var allPieces = {'wB' : [], 'wN' : [], 'wK' : [], 'wP' : [], 'wQ' : [], 'wR' : [], 'bB' : [], 'bN' : [], 'bK' : [], 'bP' : [], 'bQ' : [], 'bR' : [] };
 
 	// create an array of 64 square objects
 	var gameBoard = initializeBoard();
 
 	var whiteDown = true;
+	var whiteToMove = true;
 
-	
-
-	$board.on('click', function(e) {
-		var x = e.offsetX;
-		var y = e.offsetY;
-
-		// make sure the user clicked on the board
-		if (x > squareSize && y > squareSize && x < 9 * squareSize && y < 9 * squareSize) {
-			var square = getSquare(x, y);  
-			var c = getCoordinates(square[0], square[1]);
-			ctx.rect(c[0] +lineWidth/2, c[1] + lineWidth/2, squareSize - lineWidth, squareSize - lineWidth);			
-			ctx.lineWidth = lineWidth;
-			ctx.strokeStyle = "orange";
-			ctx.stroke();
-			var index = squareToIndex(square);
-			console.log(gameBoard[index - 1]);
-		}		
-	});
+	var markedSquares = new Set();
 
 	$('.btn').on('click', function() {
 		if ($('#radio-white').is(':checked')) {
@@ -221,20 +205,12 @@ $(document).ready(function() {
 				var file = piece._file;
 				var rank = piece.rank;
 				var index = squareToIndex([file, rank]);
-				var square = gameBoard[index - 1];
-				square.occupyingPiece = piece;
-				square.occupyingPieceName = pieceType + i;
+				// var square = gameBoard[index - 1];
+				// square.occupyingPiece = piece;
+				// square.occupyingPieceName = pieceType + i;
 				occupiedSquares[index - 1] = pieceType + i;
-				
-				// draw the piece in the correct color
-				if (pieceType[0] === 'w') {
-					ctx.fillStyle = "#FFF";
-				}
-				else {
-					ctx.fillStyle = "#000";
-				}
 				var symbol = pieceSymbols[pieceType];
-				drawOnSquare(file, rank, symbol);
+				drawOnSquare(file, rank, symbol, pieceType[0]);
 			}
 		}
 	}
@@ -244,9 +220,7 @@ $(document).ready(function() {
 	 */
 
 	function newGame() {
-
 		initializePieces();
-		initializeBoard();
 		drawBoard();
 
 		// initialize piecePositions array based on starting positions
@@ -260,7 +234,7 @@ $(document).ready(function() {
 		var whiteInCheckmate = false;
 		var blackInCheckmate = false;
 		var count = 0; // to prevent infinite loops during development
-		whiteMove();
+		move('w');
 		// while (!whiteInCheckmate && !blackInCheckmate && count < 1000) {
 		// 	whiteMove();
 		// 	blackMove();
@@ -269,50 +243,89 @@ $(document).ready(function() {
 	}
 
 	/**
-	 * Moves a white piece
+	 * Generates or listens for a move
 	 */
 
-	function whiteMove() {
+	function move(color) {
 
-		// if human is white, allow him/her to move
-		if (whiteDown) {
-			// console.log(allPieces);
-			// console.log(occupiedSquares);
-			// console.log(allPieces['wN'][0].moves(occupiedSquares));
-
+		// if human is moving, allow him/her to move
+		if (whiteDown && color === 'w' || !whiteDown && color === 'b') {
+			var fromTo = [];
+			var moves = [];
+			var selectedPiece = '';
 			$board.on('click', function(e) {
-				var x = e.offsetX;
-				var y = e.offsetY;
+				var x0 = e.offsetX;
+				var y0 = e.offsetY;
 
-				if (x > squareSize && y > squareSize && x < 9 * squareSize && y < 9 * squareSize) {
-					var square = getSquare(x, y);  
-					var index = squareToIndex(square);
-					var selectedPiece = occupiedSquares[index - 1];
+				if (x0 > squareSize && y0 > squareSize && x0 < 9 * squareSize && y0 < 9 * squareSize) {
+					var square = getSquare(x0, y0);
+					var index = squareToIndex(square);					
+					fromTo.push(index);
 
-					// if the clicked square has a piece in it, get its moves
-					if (selectedPiece) {
+					// if the two clicked squares represent a valid move, move the piece
+					if (moves.indexOf(index) !== -1) {
+						var nextMove =  {'piece' : selectedPiece.slice(0, 2), 'id' : selectedPiece[2], 'move' : square};
+						movePiece(nextMove);
+						fromTo = [];
+						console.log($board);
+
+						// TODO: this prevents multiple click events being bound to the board.
+						// However, I REALLY don't like this solution.
+						$(this).off(e);
+						if (color === 'w') move('b');
+						else move('w');
+					}
+
+					// reset the move sequence if it is invalid
+					else if (fromTo.length === 2) {
+						for (var s in fromTo) {
+							redrawSquare(fromTo[s]);
+						}
+						fromTo = [];
+					}
+
+					else {
+						selectedPiece = occupiedSquares[index - 1];
+					}
+					
+					// if the clicked square has a piece of the correct color in it, get its moves
+					if (selectedPiece && selectedPiece[0] === color && fromTo.length === 1) {
+						ctx.beginPath();
+						var c = getCoordinates(square[0], square[1]);
+						ctx.rect(c[0] +lineWidth/2, c[1] + lineWidth/2, squareSize - lineWidth, squareSize - lineWidth);			
+						ctx.lineWidth = lineWidth;
+						ctx.strokeStyle = "orange";
+						ctx.stroke();
+						ctx.closePath();
 						var pieceName = selectedPiece.slice(0, 2);
 						var id = selectedPiece[2]; // only need one digit since id can never be greater than 9 (8 pawns promoted to B/N/R)
-						var moves = allPieces[pieceName][id].moves(occupiedSquares);
-					}				
+						moves = allPieces[pieceName][id].moves(occupiedSquares).map(squareToIndex);
+					}	
+
+					// reset move to empty array so that the next click will be the "from" part of the move
+					else {
+						fromTo = [];
+					}
 				}
 			});
 		}
 
-		// if computer is white, pick a random move
+		// if computer is moving, pick a random move
 		else {
 
 			// construct array of possible moves
 			var moves = [];
 			for (pieceTypes in allPieces) {
 				var pieceType = pieceTypes[1];
-				if (pieceTypes[0] === 'w') {
+
+				// only get moves from the correct color of pieces
+				if (pieceTypes[0] === color) {
 					var pieceArray = allPieces[pieceTypes];
 					for (var piece in pieceArray) {
 						var pieceMoves = pieceArray[piece].moves(occupiedSquares);
 						for (var i in pieceMoves) {
-							var move =  {'piece' : pieceTypes, 'id' : piece, 'move' : pieceMoves[i]};
-							moves.push(move);
+							var m =  {'piece' : pieceTypes, 'id' : piece, 'move' : pieceMoves[i]};
+							moves.push(m);
 						}
 					}
 				}
@@ -320,26 +333,14 @@ $(document).ready(function() {
 			var numMoves = moves.length;
 			var r = Math.floor(Math.random() * numMoves);
 			setTimeout(function() { movePiece(moves[r]) }, delay);
+			if (color === 'w') move('b');
+			else move('w');
 		}
-
-		
-
-		
-
-		
-	}
-
-	/**
-	 * Moves a black piece
-	 */
-
-	function blackMove() {
-
 	}
 
 	/**
 	 * Moves a piece on the board
-	 * @param {object} move - an object consisting of the piece's color, type, id (an int) and the square to move to
+	 * @param {object} move - an object consisting of the piece, its id (an int) and the square to move to
 	 */
 
 	function movePiece(move) {
@@ -350,45 +351,21 @@ $(document).ready(function() {
 		var file = move.move[0];
 		var rank = move.move[1];
 		var newIndex = squareToIndex(move.move);
-		// console.log(newIndex);
-
-		// draw the piece in the correct color
-		if (color === 'w') {
-			ctx.fillStyle = "#FFF";
-		}
-		else {
-			ctx.fillStyle = "#000";
-		}
 		var symbol = pieceSymbols[piece];
-		drawOnSquare(file, rank, symbol);
+		drawOnSquare(file, rank, symbol, color);
 
-		// console.log(occupiedSquares);
-		// console.log(piecePositions[piece][id]);
 		var oldSquare = piecePositions[piece][id];
 		var oldIndex = squareToIndex(oldSquare);
 		piecePositions[piece][id] = move.move; // update position of piece
-		// console.log(piecePositions);
-		// console.log(pieceStartingPositions);
 		occupiedSquares[oldIndex - 1] = null;
 		occupiedSquares[newIndex - 1] = piece + id;
-		// console.log(occupiedSquares);
 		drawOverPiece(oldSquare);
+		updateMoves(piece, id);
+	}
 
-
-
-
-
-		// var piece = pieces[i];
-		// var file = piece._file;
-		// var rank = piece.rank;
-		// var index = squareToIndex([file, rank]);
-		// var square = gameBoard[index - 1];
-		// square.occupyingPiece = piece;
-		// square.occupyingPieceName = pieceType + i;
-		// occupiedSquares[index - 1] = pieceType + i;
-						
-		// var symbol = pieceSymbols[pieceType];
-		// drawOnSquare(file, rank, symbol);
+	function updateMoves(piece, id) {
+		// console.log(piecePositions);
+		// console.log(occupiedSquares);
 	}
 
 	/**
@@ -434,15 +411,19 @@ $(document).ready(function() {
 	 * @param {number} file - the square's file: 1 - 8
 	 * @param {number} rank - the square's rank: 1 - 8
 	 * @param {String} symbol - what to draw on the square
+	 * @param {String} color - the piece's color: w or b
 	 */
 
-	function drawOnSquare(file, rank, symbol) {
+	function drawOnSquare(file, rank, symbol, color) {
+		if (color === 'w') {
+			ctx.fillStyle = "#FFF";
+		}
+		else {
+			ctx.fillStyle = "#000";
+		}
 		var coordinates = getCoordinates(file, rank);
-		// ctx.fillStyle = "#000FFF";
 		ctx.font = squareSize + "px serif";
-		// ctx.fillText(image, 210, 540);
 		ctx.fillText(symbol, coordinates[0] + (0.5 * squareSize), coordinates[1] + (0.5 * squareSize));
-		// ctx.drawImage(image, coordinates[0] + (0.5 * squareSize), coordinates[1] + (0.5 * squareSize));
 	}
 
 	/**
@@ -465,21 +446,43 @@ $(document).ready(function() {
 	}
 
 	/**
+	 * Redraws a square and (if occupied) its piece at the given index
+	 * @param {number} index - the square's index: 1 - 63
+	 */
+
+	function redrawSquare(index) {
+		var square = indexToSquare(index);
+		drawOverPiece(square);
+		unmarkSquare(square[0], square[1]);
+		var piece = occupiedSquares[index - 1];
+		
+		// if redrawn square had a piece on it, redraw it
+		if (piece) {
+			var color = piece[0];
+			drawOnSquare(square[0], square[1], pieceSymbols[piece.slice(0, 2)], color);
+		}	
+	}
+
+
+	/**
 	 * Draws on the square at the given co-ordinates
 	 * @param {number} file - the square's file: 1 - 8
 	 * @param {number} rank - the square's rank: 1 - 8
 	 */
 
 	function unmarkSquare(file, rank) {
-		if ((rank + file) % 2 === 1) {
-			ctx.fillStyle = "#444";
+		ctx.beginPath();
+		if ((rank + file) % 2 === 0) {
+			ctx.strokeStyle = "#444";
 		}
 		else {
-			ctx.fillStyle = "#999";
+			ctx.strokeStyle = "#999";
 		}
-		ctx.rect(c[0] +lineWidth/2, c[1] + lineWidth/2, squareSize - lineWidth, squareSize - lineWidth);			
+		var c = getCoordinates(file, rank);
+		ctx.rect(c[0] + lineWidth/2, c[1] + lineWidth/2, squareSize - lineWidth, squareSize - lineWidth);			
 		ctx.lineWidth = lineWidth;
 		ctx.stroke();
+		ctx.closePath();
 	}
 });
 
