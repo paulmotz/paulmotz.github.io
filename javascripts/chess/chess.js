@@ -205,9 +205,6 @@ $(document).ready(function() {
 				var file = piece._file;
 				var rank = piece.rank;
 				var index = squareToIndex([file, rank]);
-				// var square = gameBoard[index - 1];
-				// square.occupyingPiece = piece;
-				// square.occupyingPieceName = pieceType + i;
 				occupiedSquares[index - 1] = pieceType + i;
 				var symbol = pieceSymbols[pieceType];
 				drawOnSquare(file, rank, symbol, pieceType[0]);
