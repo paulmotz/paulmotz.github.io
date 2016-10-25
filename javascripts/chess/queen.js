@@ -18,6 +18,9 @@ class Queen extends Piece {
 			rank--;
 			var index = squareToIndex([file, rank]) - 1;
 			if (occupiedSquares[index]) {
+				if (occupiedSquares[index][0] !== this.color) {
+					moves.push([file, rank]);
+				}
 				break;
 			}
 			moves.push([file, rank]);
@@ -32,6 +35,9 @@ class Queen extends Piece {
 			rank--;
 			var index = squareToIndex([file, rank]) - 1;
 			if (occupiedSquares[index]) {
+				if (occupiedSquares[index][0] !== this.color) {
+					moves.push([file, rank]);
+				}
 				break;
 			}
 			moves.push([file, rank]);
@@ -46,6 +52,9 @@ class Queen extends Piece {
 			rank++;
 			var index = squareToIndex([file, rank]) - 1;
 			if (occupiedSquares[index]) {
+				if (occupiedSquares[index][0] !== this.color) {
+					moves.push([file, rank]);
+				}
 				break;
 			}
 			moves.push([file, rank]);
@@ -60,6 +69,9 @@ class Queen extends Piece {
 			file++;
 			var index = squareToIndex([file, rank]) - 1;
 			if (occupiedSquares[index]) {
+				if (occupiedSquares[index][0] !== this.color) {
+					moves.push([file, rank]);
+				}
 				break;
 			}
 			moves.push([file, rank]);
@@ -73,6 +85,9 @@ class Queen extends Piece {
 			file--;
 			var index = squareToIndex([file, rank]) - 1;
 			if (occupiedSquares[index]) {
+				if (occupiedSquares[index][0] !== this.color) {
+					moves.push([file, rank]);
+				}
 				break;
 			}
 			moves.push([file, rank]);
@@ -85,6 +100,9 @@ class Queen extends Piece {
 			file++;
 			var index = squareToIndex([file, rank]) - 1;
 			if (occupiedSquares[index]) {
+				if (occupiedSquares[index][0] !== this.color) {
+					moves.push([file, rank]);
+				}
 				break;
 			}
 			moves.push([file, rank]);
@@ -97,6 +115,9 @@ class Queen extends Piece {
 			rank--;
 			var index = squareToIndex([file, rank]) - 1;
 			if (occupiedSquares[index]) {
+				if (occupiedSquares[index][0] !== this.color) {
+					moves.push([file, rank]);
+				}
 				break;
 			}
 			moves.push([file, rank]);
@@ -109,6 +130,9 @@ class Queen extends Piece {
 			rank++;
 			var index = squareToIndex([file, rank]) - 1;
 			if (occupiedSquares[index]) {
+				if (occupiedSquares[index][0] !== this.color) {
+					moves.push([file, rank]);
+				}
 				break;
 			}
 			moves.push([file, rank]);

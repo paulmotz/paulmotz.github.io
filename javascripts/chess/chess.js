@@ -261,10 +261,15 @@ $(document).ready(function() {
 
 					// if the two clicked squares represent a valid move, move the piece
 					if (moves.indexOf(index) !== -1) {
+
 						var nextMove =  {'piece' : selectedPiece.slice(0, 2), 'id' : selectedPiece[2], 'move' : square};
 						movePiece(nextMove);
 						fromTo = [];
-						console.log($board);
+
+						// console.log(occupiedSquares);
+						// console.log(allPieces[selectedPiece.slice(0, 2)][selectedPiece[2]].moves(occupiedSquares));
+
+						allPieces[selectedPiece.slice(0, 2)][selectedPiece[2]].moves(occupiedSquares)
 
 						// TODO: this prevents multiple click events being bound to the board.
 						// However, I REALLY don't like this solution.
@@ -297,6 +302,9 @@ $(document).ready(function() {
 						var pieceName = selectedPiece.slice(0, 2);
 						var id = selectedPiece[2]; // only need one digit since id can never be greater than 9 (8 pawns promoted to B/N/R)
 						moves = allPieces[pieceName][id].moves(occupiedSquares).map(squareToIndex);
+						// console.log(allPieces);
+						// console.log(piecePositions);
+						// console.log(allPieces[pieceName][id]);
 					}	
 
 					// reset move to empty array so that the next click will be the "from" part of the move
@@ -354,6 +362,8 @@ $(document).ready(function() {
 		var oldSquare = piecePositions[piece][id];
 		var oldIndex = squareToIndex(oldSquare);
 		piecePositions[piece][id] = move.move; // update position of piece
+		allPieces[piece][id].file = move.move[0];
+		allPieces[piece][id].rank = move.move[1];
 		occupiedSquares[oldIndex - 1] = null;
 		occupiedSquares[newIndex - 1] = piece + id;
 		drawOverPiece(oldSquare);
@@ -486,10 +496,13 @@ $(document).ready(function() {
 /**
  * Maps the rank and file of a square to an integer that is unique among other squares
  * @param {number[]} square - the square's file, two numbers: 1 - 8
- * @return {number} index - the indicex of the square: 1 - 64
+ * @return {number} index - the index of the square: 1 - 64
  */
 
 function squareToIndex(square) {
+	if (square[0]  < 1 && square[0] > 8 && square[1] < 1 && square[1] > 8) {
+		return undefined;
+	}
 	return (square[1] - 1) * 8 + square[0];
 }
 
