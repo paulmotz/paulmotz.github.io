@@ -356,6 +356,11 @@ $(document).ready(function() {
 		var file = move.move[0];
 		var rank = move.move[1];
 		var newIndex = squareToIndex(move.move);
+
+		if (occupiedSquares[newIndex - 1]) {
+			capturePiece(occupiedSquares[newIndex  - 1], move.move);
+		}
+
 		var symbol = pieceSymbols[piece];
 		drawOnSquare(file, rank, symbol, color);
 
@@ -368,6 +373,22 @@ $(document).ready(function() {
 		occupiedSquares[newIndex - 1] = piece + id;
 		drawOverPiece(oldSquare);
 		updateMoves(piece, id);
+	}
+
+	/**
+	 * Removes a piece from the board and the game
+	 * @param {String} pieceToCapture - the string representation (colorPieceIndex) of the piece being captured
+	 * @index {number[]} square - the indices of the square of the piece being captured in the form [file, rank]
+	 * 
+	 */
+
+	function capturePiece(pieceToCapture, square) {
+		var piece = pieceToCapture.slice(0, 2);
+		var i = pieceToCapture[2];
+		var pieceType = allPieces[piece];
+		pieceType.splice(pieceType.indexOf(pieceType[i]), 1);
+		console.log(allPieces);
+		drawOverPiece(square);
 	}
 
 	function updateMoves(piece, id) {
