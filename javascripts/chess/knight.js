@@ -15,10 +15,8 @@ class Knight extends Piece {
  							  [file - 1, rank - 2], [file + 1, rank - 2] ];
 
 		var moves = possibleMoves.filter(function(square) {
-			// console.log(file, rank);
-			// console.log(color);
-			// console.log(color(), occupiedSquares[squareToIndex([square[0], square[1]]) - 1]);
-			return square[0] > 0 && square[0] < 9 && square[1] > 0 && square[1] < 9 && !occupiedSquares[squareToIndex([square[0], square[1]]) - 1];
+			return square[0] > 0 && square[0] < 9 && square[1] > 0 && square[1] < 9 && 
+			(!occupiedSquares[squareToIndex([square[0], square[1]]) - 1] || occupiedSquares[squareToIndex([square[0], square[1]]) - 1][0] !== color);
 		});
 
 		return moves;
