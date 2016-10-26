@@ -2,7 +2,7 @@
  * TODOs
  *
  * Logic:
- * - add castling
+ * - add castling rule checks (can't castle through check or if in check)
  * - add en passant
  * - is the king in check
  * - is the piece pinned (moving it in a certain direction leaves the king in check)
@@ -202,7 +202,6 @@ $(document).ready(function() {
 		occupiedSquares = Array(64); // reset the occupied squares if it is a new game
 		for (var pieceType in allPieces) {
 			var pieces = allPieces[pieceType];
-			// console.log(pieces);
 			for (var i in pieces) {
 				var piece = pieces[i];
 				var file = piece._file;
@@ -477,7 +476,7 @@ $(document).ready(function() {
 		var i = pieceToCapture[2];
 		var pieceType = allPieces[piece];
 		pieceType.splice(pieceType.indexOf(pieceType[i]), 1);
-		console.log(allPieces);
+		// console.log(allPieces);
 		drawOverPiece(square);
 	}
 
