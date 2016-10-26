@@ -16,7 +16,10 @@ class Rook extends Piece {
 		this._hasMoved = hasMoved;
 	}
 
-	// TODO: account for pieces that could be blocking the rook
+	hasMoved() {
+		return this._hasMoved;
+	}
+
 	/**
 	 * Get the Rook's moves
 	 * @return {number[][]} moves - the moves of the Rook as an array of co-ordinates (also an array)
@@ -89,5 +92,19 @@ class Rook extends Piece {
 		return moves;
 	}
 
+	/**
+ 	 * Get whether the rook has moved
+ 	 */
 
+ 	get hasMoved() {
+		return this._hasMoved;
+	}
+
+ 	/**
+ 	 * Keep track of whether the rook has moved
+ 	 */
+
+ 	set hasMoved(hasMoved) {
+		this._hasMoved = hasMoved;
+	}
 }

@@ -1,9 +1,9 @@
 class King extends Piece {
 	
 	// TODO:
+	// castling: king cannot castle while in check, cannot castle through check
 	// check if the piece is in check
 	// check if castling will put the piece in check
-	// add castling as a move
 	// restrict move if move would place the king in check
 
 	/*
@@ -28,6 +28,7 @@ class King extends Piece {
  		var color = this._color;
  		var file = this._file;
  		var rank = this._rank;
+ 		var hasMoved = this._hasMoved;
  		var possibleMoves = [ [file - 1, rank + 1], [file, rank + 1], [file + 1, rank + 1], 
  							  [file - 1, rank],                       [file + 1, rank], 
  							  [file - 1, rank - 1], [file, rank - 1], [file + 1, rank - 1] ];
@@ -37,8 +38,32 @@ class King extends Piece {
 			(!occupiedSquares[squareToIndex([square[0], square[1]]) - 1] || occupiedSquares[squareToIndex([square[0], square[1]]) - 1][0] !== color);			
 		});
 
-		// console.log(moves);
+		// queenside castling
+		if (!hasMoved && allPieces[color+'R'][0] && !allPieces[color+'R'][0].hasMoved && !occupiedSquares[squareToIndex([file - 1, rank]) - 1] && !occupiedSquares[squareToIndex([file - 2, rank]) - 1]) {
+			moves.push([file - 2, rank]);
+		}
+
+		// kingside castling
+		if (!hasMoved && allPieces[color+'R'][1] && !allPieces[color+'R'][1].hasMoved && !occupiedSquares[squareToIndex([file + 1, rank]) - 1] && !occupiedSquares[squareToIndex([file + 2, rank]) - 1]) {
+			moves.push([file + 2, rank]);
+		}
 
 		return moves;
  	}
+
+ 	/**
+ 	 * Get whether the king has moved
+ 	 */
+
+ 	get hasMoved() {
+		return this._hasMoved;
+	}
+
+ 	/**
+ 	 * Keep track of whether the king has moved
+ 	 */
+
+ 	set hasMoved(hasMoved) {
+		this._hasMoved = hasMoved;
+	}
 }

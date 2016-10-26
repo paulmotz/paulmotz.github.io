@@ -1,14 +1,14 @@
 /**
  * TODOs
- * Visual:
- * -Make the occupied square one color and all attacking squares another (for testing)
- * -Overwrite the orange stroke as necessary
  *
  * Logic:
- * - pieces stop moving when they hit an occupied square regardless of the occupying pieces' color (ie: no capturing yet)
+ * - add castling
+ * - add en passant
  * - is the king in check
  * - is the piece pinned (moving it in a certain direction leaves the king in check)
 */
+
+var allPieces;
 
 $(document).ready(function() {
 	var $board = $('#chessboard');
@@ -29,6 +29,9 @@ $(document).ready(function() {
 	var ranks = ['', '1', '2', '3', '4', '5', '6', '7', '8', ''];
 
 	// game/logic variables
+
+	// used for checking 50-move draw rule
+	var moveCounter;
 
 	// the two players' colors
 	var colors = ['w', 'b'];
@@ -63,7 +66,7 @@ $(document).ready(function() {
 	// var piecePositions = jQuery.extend({}, pieceStartingPositions);
 
 	// represent all pieces as entries in arrays for dynamic access (kings could have been single entry)
-	var allPieces = {'wB' : [], 'wN' : [], 'wK' : [], 'wP' : [], 'wQ' : [], 'wR' : [], 'bB' : [], 'bN' : [], 'bK' : [], 'bP' : [], 'bQ' : [], 'bR' : [] };
+	allPieces = {'wB' : [], 'wN' : [], 'wK' : [], 'wP' : [], 'wQ' : [], 'wR' : [], 'bB' : [], 'bN' : [], 'bK' : [], 'bP' : [], 'bQ' : [], 'bR' : [] };
 
 	// create an array of 64 square objects
 	var gameBoard = initializeBoard();
@@ -217,6 +220,7 @@ $(document).ready(function() {
 	 */
 
 	function newGame() {
+		moveCounter = 0;
 		initializePieces();
 		drawBoard();
 
@@ -245,6 +249,10 @@ $(document).ready(function() {
 
 	function move(color) {
 
+		// isCheckMate();
+		moveCounter++;
+		checkDraw();
+
 		// if human is moving, allow him/her to move
 		if (whiteDown && color === 'w' || !whiteDown && color === 'b') {
 			var fromTo = [];
@@ -264,12 +272,44 @@ $(document).ready(function() {
 
 						var nextMove =  {'piece' : selectedPiece.slice(0, 2), 'id' : selectedPiece[2], 'move' : square};
 						movePiece(nextMove);
+
+						var pieceType = selectedPiece[1];
+
+						// if a king or rook moves, set its hasMoved status to true
+						if (pieceType === 'K' || pieceType === 'R' && !allPieces[selectedPiece.slice(0, 2)][selectedPiece[2]].hasMoved) {
+							allPieces[selectedPiece.slice(0, 2)][selectedPiece[2]].hasMoved = true;
+						}
+
+						// if (pieceType === 'K' && Math.abs(fromTo[0] - fromTo[1]) === 2) {
+						// 	castleRook(color, fromTo);
+						// }
+
+						// kingside castling
+						if (pieceType === 'K' && fromTo[0] - fromTo[1] === -2) {
+							if (color === 'w') {
+								var rookMove = {'piece' : 'wR', 'id' : 1, 'move' : [6, 1]};
+							}
+							else {
+								var rookMove = {'piece' : 'bR', 'id' : 1, 'move' : [6, 8]};
+							}
+							movePiece(rookMove);
+						}
+
+						// queenside castling
+						if (pieceType === 'K' && fromTo[0] - fromTo[1] === 2) {
+							if (color === 'w') {
+								var rookMove = {'piece' : 'wR', 'id' : 0, 'move' : [4, 1]};
+							}
+							else {
+								var rookMove = {'piece' : 'bR', 'id' : 0, 'move' : [4, 8]};
+							}
+							movePiece(rookMove);
+						}
+
 						fromTo = [];
 
-						// console.log(occupiedSquares);
-						// console.log(allPieces[selectedPiece.slice(0, 2)][selectedPiece[2]].moves(occupiedSquares));
-
-						allPieces[selectedPiece.slice(0, 2)][selectedPiece[2]].moves(occupiedSquares)
+						
+						allPieces[selectedPiece.slice(0, 2)][selectedPiece[2]].moves(occupiedSquares);
 
 						// TODO: this prevents multiple click events being bound to the board.
 						// However, I REALLY don't like this solution.
@@ -286,6 +326,7 @@ $(document).ready(function() {
 						fromTo = [];
 					}
 
+					// the piece in the first square the user clicked
 					else {
 						selectedPiece = occupiedSquares[index - 1];
 					}
@@ -302,9 +343,6 @@ $(document).ready(function() {
 						var pieceName = selectedPiece.slice(0, 2);
 						var id = selectedPiece[2]; // only need one digit since id can never be greater than 9 (8 pawns promoted to B/N/R)
 						moves = allPieces[pieceName][id].moves(occupiedSquares).map(squareToIndex);
-						// console.log(allPieces);
-						// console.log(piecePositions);
-						// console.log(allPieces[pieceName][id]);
 					}	
 
 					// reset move to empty array so that the next click will be the "from" part of the move
@@ -350,6 +388,11 @@ $(document).ready(function() {
 
 	function movePiece(move) {
 
+		// pawn moves reset the fifty-move rule counter
+		if (move.piece[1] === 'P') {
+			moveCounter = 0;
+		}
+
 		var color = move.piece[0];
 		var piece = move.piece;
 		var id = move.id;
@@ -376,13 +419,60 @@ $(document).ready(function() {
 	}
 
 	/**
+	 * Checks to see if the game is a draw
+	 */
+
+	function checkDraw() {
+		checkDrawIn();
+		checkDrawRep();
+		checkDraw50();
+		isStalemate();
+	}
+
+	/**
+	 * Checks to see if the game is a draw by insufficient mating material
+	 */
+
+	function checkDrawIn() {
+
+	}
+
+	/**
+	 * Checks to see if the game is a draw by repetition
+	 */
+
+	function checkDrawRep() {
+
+	}
+
+	/**
+	 * Checks to see if the game is a draw by the fifty-move rule
+	 */
+
+	function checkDraw50() {
+		if (moveCounter === 50) {
+			alert("Draw by fifty-move rule");
+		}
+	}
+
+	/**
+	 * Checks to see if the game is a draw by stalemate
+	 */
+
+	function isStalemate() {
+
+	}
+
+	/**
 	 * Removes a piece from the board and the game
 	 * @param {String} pieceToCapture - the string representation (colorPieceIndex) of the piece being captured
 	 * @index {number[]} square - the indices of the square of the piece being captured in the form [file, rank]
-	 * 
 	 */
 
 	function capturePiece(pieceToCapture, square) {
+
+		// captures reset the fifty-move rule counter
+		moveCounter = 0;
 		var piece = pieceToCapture.slice(0, 2);
 		var i = pieceToCapture[2];
 		var pieceType = allPieces[piece];
