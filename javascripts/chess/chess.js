@@ -11,6 +11,7 @@
 */
 
 var allPieces;
+// var gameRunning = false;
 
 $(document).ready(function() {
 	var $board = $('#chessboard');
@@ -85,14 +86,15 @@ $(document).ready(function() {
 		else {
 			whiteDown = false;
 		}
-		newGame();
 
+		// turn off click events bound to the board before starting a new game
+		$board.off('click');
+		newGame();
 	});
 
 	initializePieces();
 	drawBoard();
-	// newGame();
-	
+	newGame();
 	ctx.fillStyle = "#FFF";
 
 	/**
@@ -223,6 +225,8 @@ $(document).ready(function() {
 	 */
 
 	function newGame() {
+
+		// gameRunning = true;
 		moveCounter = 0;
 		initializePieces();
 		drawBoard();
@@ -237,13 +241,7 @@ $(document).ready(function() {
 
 		var whiteInCheckmate = false;
 		var blackInCheckmate = false;
-		var count = 0; // to prevent infinite loops during development
 		move('w');
-		// while (!whiteInCheckmate && !blackInCheckmate && count < 1000) {
-		// 	whiteMove();
-		// 	blackMove();
-		// 	count++; 
-		// }
 	}
 
 	/**
@@ -251,6 +249,9 @@ $(document).ready(function() {
 	 */
 
 	function move(color) {
+
+		console.log(occupiedSquares);
+		console.log(allPieces);
 
 		// isCheckMate();
 		moveCounter++;
@@ -312,8 +313,10 @@ $(document).ready(function() {
 
 						fromTo = [];
 
-						
-						allPieces[selectedPiece.slice(0, 2)][selectedPiece[2]].moves(occupiedSquares);
+						var piece = selectedPiece.slice(0, 2);
+						var id = selectedPiece[2];
+						var index = findPieceIndex(piece, id);
+						allPieces[piece][index].moves(occupiedSquares);
 
 						// TODO: this prevents multiple click events being bound to the board.
 						// However, I REALLY don't like this solution.
@@ -347,7 +350,12 @@ $(document).ready(function() {
 						ctx.closePath();
 						var pieceName = selectedPiece.slice(0, 2);
 						var id = selectedPiece[2]; // only need one digit since id can never be greater than 9 (8 pawns promoted to B/N/R)
-						moves = allPieces[pieceName][id].moves(occupiedSquares).map(squareToIndex);
+						var index = findPieceIndex(pieceName, id);
+						moves = allPieces[pieceName][index].moves(occupiedSquares).map(squareToIndex);
+
+
+						// moves = allPieces[pieceName][id].moves(occupiedSquares).map(squareToIndex);
+						console.log(moves);
 					}	
 
 					// reset move to empty array so that the next click will be the "from" part of the move
@@ -416,22 +424,12 @@ $(document).ready(function() {
 		var oldIndex = squareToIndex(oldSquare);
 		piecePositions[piece][id] = move.move; // update position of piece
 
-		var pieceType = allPieces[piece];
-
-		// find piece with matching id (can't use indices since capturing shifts)
-		for (var p = 0; p < pieceType.length; p++) {
-
-			// different type (.id is a string, id is a number), so use == operator
-			if (pieceType[p].id == id) {
-				allPieces[piece][p].file = move.move[0];
-				allPieces[piece][p].rank = move.move[1];
-			}
-		}
-
+		var index = findPieceIndex(piece, id);
+		allPieces[piece][index].file = move.move[0];
+		allPieces[piece][index].rank = move.move[1];
 		occupiedSquares[oldIndex - 1] = null;
 		occupiedSquares[newIndex - 1] = piece + id;
 		drawOverPiece(oldSquare);
-		updateMoves(piece, id);
 	}
 
 	/**
@@ -446,17 +444,10 @@ $(document).ready(function() {
 		moveCounter = 0;
 
 		var piece = pieceToCapture.slice(0, 2);
-		var i = pieceToCapture[2];
+		var id = pieceToCapture[2];
 		var pieceType = allPieces[piece];
-
-		// find and remove piece with matching id (can't use indices since capturing shifts)
-		for (var p = 0; p < pieceType.length; p++) {
-
-			// different type (.id is a string, id is a number), so use == operator
-			if (pieceType[p].id == pieceToCapture[2]) {
-				pieceType.splice(p, 1);
-			}
-		}
+		var index = findPieceIndex(piece, id);
+		pieceType.splice(index, 1);
 		drawOverPiece(square);
 	}
 
@@ -507,9 +498,25 @@ $(document).ready(function() {
 
 	}
 
-	function updateMoves(piece, id) {
-		// console.log(piecePositions);
-		// console.log(occupiedSquares);
+	/**
+	 * Returns the piece's location in its corresponding array. Due to captures, the piece's id may !== its index
+	 * @param {String} piece - the piece type to find an index for (eg. wP for white pawn)
+	 * @param {number} id - the piece's id
+	 * @return {number} index 
+	 */
+
+	function findPieceIndex(piece, id) {
+
+		var pieceType = allPieces[piece];
+
+		// find and remove piece with matching id (can't use indices since capturing shifts)
+		for (var p = 0; p < pieceType.length; p++) {
+
+			// different type (.id is a string, id is a number), so use == operator
+			if (pieceType[p].id == id) {
+				return p;
+			}
+		}
 	}
 
 	/**
