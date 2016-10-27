@@ -3,7 +3,6 @@ class Pawn extends Piece {
 	// TODO:
 	// pawn promotion
 	// en passant
-	// capturing
 	// 
 
 	/*
@@ -11,19 +10,16 @@ class Pawn extends Piece {
 	 * @param {string} color - The color of the pawn: white || black
 	 * @param {number} file - file rank of the pawn: 1 - 8
 	 * @param {number} rank - the rank of the pawn: 1 - 8
-	 * @param {boolean} hasMoved - whether or not the pawn has moved (used for checking if it can move two squares)
 	 */
 
 	constructor(color, file, rank, id, hasMoved) {
 		super(color, file, rank, id)
-		this._hasMoved = hasMoved;
 	}
 
 	moves(occupiedSquares) {
 		var color = this.color;
  		var file = this._file;
  		var rank = this._rank;
- 		var hasMoved = this._hasMoved;
  		var moves = [];
 
  		// white pawns move up the ranks

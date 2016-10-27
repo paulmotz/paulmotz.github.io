@@ -11,7 +11,6 @@
 */
 
 var allPieces;
-// var gameRunning = false;
 
 $(document).ready(function() {
 	var $board = $('#chessboard');
@@ -66,8 +65,6 @@ $(document).ready(function() {
 
 	var occupiedSquares;
 	
-	// var piecePositions = jQuery.extend({}, pieceStartingPositions);
-
 	// represent all pieces as entries in arrays for dynamic access (kings could have been single entry)
 	allPieces = {'wB' : [], 'wN' : [], 'wK' : [], 'wP' : [], 'wQ' : [], 'wR' : [], 'bB' : [], 'bN' : [], 'bK' : [], 'bP' : [], 'bQ' : [], 'bR' : [] };
 
@@ -139,7 +136,7 @@ $(document).ready(function() {
 							allPieces[colorAndPiece].push(new King(colors[color], file, rank, pc, false));
 							break;
 						case 'P':
-							allPieces[colorAndPiece].push(new Pawn(colors[color], file, rank, pc, false));
+							allPieces[colorAndPiece].push(new Pawn(colors[color], file, rank, pc));
 							break;
 						case 'Q':
 							allPieces[colorAndPiece].push(new Queen(colors[color], file, rank, pc));
@@ -225,8 +222,6 @@ $(document).ready(function() {
 	 */
 
 	function newGame() {
-
-		// gameRunning = true;
 		moveCounter = 0;
 		initializePieces();
 		drawBoard();
@@ -321,7 +316,6 @@ $(document).ready(function() {
 						// TODO: this prevents multiple click events being bound to the board.
 						// However, I REALLY don't like this solution.
 						$(this).off(e);
-
 						if (color === 'w') move('b');
 						else move('w');
 					}
@@ -352,10 +346,6 @@ $(document).ready(function() {
 						var id = selectedPiece[2]; // only need one digit since id can never be greater than 9 (8 pawns promoted to B/N/R)
 						var index = findPieceIndex(pieceName, id);
 						moves = allPieces[pieceName][index].moves(occupiedSquares).map(squareToIndex);
-
-
-						// moves = allPieces[pieceName][id].moves(occupiedSquares).map(squareToIndex);
-						console.log(moves);
 					}	
 
 					// reset move to empty array so that the next click will be the "from" part of the move
@@ -658,6 +648,5 @@ function squareToIndex(square) {
 
 function indexToSquare(index) {
 	var file = index % 8 === 0 ? 8 : index % 8;
-	// if (file === 0)
 	return [file, Math.ceil(index / 8)];
 }
