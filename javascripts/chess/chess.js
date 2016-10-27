@@ -347,6 +347,7 @@ $(document).ready(function() {
 						var pieceName = selectedPiece.slice(0, 2);
 						var id = selectedPiece[2]; // only need one digit since id can never be greater than 9 (8 pawns promoted to B/N/R)
 						moves = allPieces[pieceName][id].moves(occupiedSquares).map(squareToIndex);
+						console.log(moves);
 					}	
 
 					// reset move to empty array so that the next click will be the "from" part of the move
