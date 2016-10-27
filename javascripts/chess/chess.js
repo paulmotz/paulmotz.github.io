@@ -418,29 +418,23 @@ $(document).ready(function() {
 		var oldIndex = squareToIndex(oldSquare);
 		piecePositions[piece][id] = move.move; // update position of piece
 
-		console.log(allPieces);
-		console.log("move piece: " + piece + " " + id);
+		// console.log(allPieces);
+		// console.log("move piece: " + piece + " " + id);
 
 		var pieceType = allPieces[piece];
 
 		// find piece with matching id (can't use indices since capturing shifts)
 		for (var p = 0; p < pieceType.length; p++) {
-			// console.log(pieceType[p].id);
-			// console.log(id);
 
 			// different type (.id is a string, id is a number), so use == operator
 			if (pieceType[p].id == id) {
-				// console.log('t');
-				// console.log(move);
-				// console.log(pieceType[p].id);
 				allPieces[piece][p].file = move.move[0];
 				allPieces[piece][p].rank = move.move[1];
-				console.log(allPieces[piece][pieceType[p].id]);
 			}
 		}
 
-		console.log(allPieces);
-		console.log("move piece: " + piece + " " + id);
+		// console.log(allPieces);
+		// console.log("move piece: " + piece + " " + id);
 
 		occupiedSquares[oldIndex - 1] = null;
 		occupiedSquares[newIndex - 1] = piece + id;
@@ -456,7 +450,7 @@ $(document).ready(function() {
 
 	function capturePiece(pieceToCapture, square) {
 
-		// console.log(pieceToCapture);
+		console.log(pieceToCapture);
 
 		// captures reset the fifty-move rule counter
 		moveCounter = 0;
@@ -464,7 +458,17 @@ $(document).ready(function() {
 		var piece = pieceToCapture.slice(0, 2);
 		var i = pieceToCapture[2];
 		var pieceType = allPieces[piece];
-		pieceType.splice(pieceType.indexOf(pieceType[i]), 1);
+
+		// find piece with matching id (can't use indices since capturing shifts)
+		for (var p = 0; p < pieceType.length; p++) {
+
+			// different type (.id is a string, id is a number), so use == operator
+			if (pieceType[p].id == pieceToCapture[2]) {
+				pieceType.splice(p, 1);
+			}
+		}
+
+		// pieceType.splice(pieceType.indexOf(pieceType[i]), 1);
 		// console.log(allPieces);
 		drawOverPiece(square);
 	}
