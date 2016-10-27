@@ -3,9 +3,11 @@
  *
  * Logic:
  * - add castling rule checks (can't castle through check or if in check)
+ * - pawn promotion
  * - add en passant
  * - is the king in check
  * - is the piece pinned (moving it in a certain direction leaves the king in check)
+ * - draw rules
 */
 
 var allPieces;
@@ -248,6 +250,9 @@ $(document).ready(function() {
 
 	function move(color) {
 
+		console.log(allPieces);
+		console.log(occupiedSquares);
+
 		// isCheckMate();
 		moveCounter++;
 		checkDraw();
@@ -366,7 +371,7 @@ $(document).ready(function() {
 					for (var piece in pieceArray) {
 						var pieceMoves = pieceArray[piece].moves(occupiedSquares);
 						for (var i in pieceMoves) {
-							var m =  {'piece' : pieceTypes, 'id' : piece, 'move' : pieceMoves[i]};
+							var m =  {'piece' : pieceTypes, 'id' : pieceArray[piece].id, 'move' : pieceMoves[i]};
 							moves.push(m);
 						}
 					}
@@ -374,6 +379,8 @@ $(document).ready(function() {
 			}
 			var numMoves = moves.length;
 			var r = Math.floor(Math.random() * numMoves);
+			console.log(moves);
+			console.log(moves[r]);
 			setTimeout(function() { movePiece(moves[r]) }, delay);
 			if (color === 'w') move('b');
 			else move('w');
@@ -409,12 +416,56 @@ $(document).ready(function() {
 		var oldSquare = piecePositions[piece][id];
 		var oldIndex = squareToIndex(oldSquare);
 		piecePositions[piece][id] = move.move; // update position of piece
-		allPieces[piece][id].file = move.move[0];
-		allPieces[piece][id].rank = move.move[1];
+
+		// console.log(allPieces);
+		// console.log("move piece: " + piece + " " + id);
+
+		var pieceType = allPieces[piece];
+
+		// find piece with matching id (can't use indices since capturing shifts)
+		for (var p = 0; p < pieceType.length; p++) {
+			// console.log(pieceType[p].id);
+			// console.log(id);
+
+			// different type (.id is a string, id is a number), so use == operator
+			if (pieceType[p].id == id) {
+				// console.log('t');
+				// console.log(move);
+				// console.log(pieceType[p].id);
+				allPieces[piece][p].file = move.move[0];
+				allPieces[piece][p].rank = move.move[1];
+				console.log(allPieces[piece][pieceType[p].id]);
+			}
+		}
+
+		// console.log(allPieces);
+		// console.log("move piece: " + piece + " " + id);
+
 		occupiedSquares[oldIndex - 1] = null;
 		occupiedSquares[newIndex - 1] = piece + id;
 		drawOverPiece(oldSquare);
 		updateMoves(piece, id);
+	}
+
+	/**
+	 * Removes a piece from the board and the game
+	 * @param {String} pieceToCapture - the string representation (colorPieceIndex) of the piece being captured
+	 * @index {number[]} square - the indices of the square of the piece being captured in the form [file, rank]
+	 */
+
+	function capturePiece(pieceToCapture, square) {
+
+		// console.log(pieceToCapture);
+
+		// captures reset the fifty-move rule counter
+		moveCounter = 0;
+
+		var piece = pieceToCapture.slice(0, 2);
+		var i = pieceToCapture[2];
+		var pieceType = allPieces[piece];
+		pieceType.splice(pieceType.indexOf(pieceType[i]), 1);
+		// console.log(allPieces);
+		drawOverPiece(square);
 	}
 
 	/**
@@ -449,7 +500,9 @@ $(document).ready(function() {
 	 */
 
 	function checkDraw50() {
-		if (moveCounter === 50) {
+
+		// a turn if one move from each player
+		if (moveCounter === 100) {
 			alert("Draw by fifty-move rule");
 		}
 	}
@@ -460,24 +513,6 @@ $(document).ready(function() {
 
 	function isStalemate() {
 
-	}
-
-	/**
-	 * Removes a piece from the board and the game
-	 * @param {String} pieceToCapture - the string representation (colorPieceIndex) of the piece being captured
-	 * @index {number[]} square - the indices of the square of the piece being captured in the form [file, rank]
-	 */
-
-	function capturePiece(pieceToCapture, square) {
-
-		// captures reset the fifty-move rule counter
-		moveCounter = 0;
-		var piece = pieceToCapture.slice(0, 2);
-		var i = pieceToCapture[2];
-		var pieceType = allPieces[piece];
-		pieceType.splice(pieceType.indexOf(pieceType[i]), 1);
-		// console.log(allPieces);
-		drawOverPiece(square);
 	}
 
 	function updateMoves(piece, id) {
