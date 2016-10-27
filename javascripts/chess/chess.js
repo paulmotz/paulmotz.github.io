@@ -89,7 +89,9 @@ $(document).ready(function() {
 
 	});
 
-	newGame();
+	initializePieces();
+	drawBoard();
+	// newGame();
 	
 	ctx.fillStyle = "#FFF";
 
@@ -250,9 +252,6 @@ $(document).ready(function() {
 
 	function move(color) {
 
-		console.log(allPieces);
-		console.log(occupiedSquares);
-
 		// isCheckMate();
 		moveCounter++;
 		checkDraw();
@@ -263,6 +262,7 @@ $(document).ready(function() {
 			var moves = [];
 			var selectedPiece = '';
 			$board.on('click', function(e) {
+
 				var x0 = e.offsetX;
 				var y0 = e.offsetY;
 
@@ -318,6 +318,7 @@ $(document).ready(function() {
 						// TODO: this prevents multiple click events being bound to the board.
 						// However, I REALLY don't like this solution.
 						$(this).off(e);
+
 						if (color === 'w') move('b');
 						else move('w');
 					}
@@ -334,7 +335,7 @@ $(document).ready(function() {
 					else {
 						selectedPiece = occupiedSquares[index - 1];
 					}
-					
+
 					// if the clicked square has a piece of the correct color in it, get its moves
 					if (selectedPiece && selectedPiece[0] === color && fromTo.length === 1) {
 						ctx.beginPath();
@@ -347,7 +348,6 @@ $(document).ready(function() {
 						var pieceName = selectedPiece.slice(0, 2);
 						var id = selectedPiece[2]; // only need one digit since id can never be greater than 9 (8 pawns promoted to B/N/R)
 						moves = allPieces[pieceName][id].moves(occupiedSquares).map(squareToIndex);
-						console.log(moves);
 					}	
 
 					// reset move to empty array so that the next click will be the "from" part of the move
@@ -380,8 +380,6 @@ $(document).ready(function() {
 			}
 			var numMoves = moves.length;
 			var r = Math.floor(Math.random() * numMoves);
-			console.log(moves);
-			console.log(moves[r]);
 			setTimeout(function() { movePiece(moves[r]) }, delay);
 			if (color === 'w') move('b');
 			else move('w');
@@ -418,9 +416,6 @@ $(document).ready(function() {
 		var oldIndex = squareToIndex(oldSquare);
 		piecePositions[piece][id] = move.move; // update position of piece
 
-		// console.log(allPieces);
-		// console.log("move piece: " + piece + " " + id);
-
 		var pieceType = allPieces[piece];
 
 		// find piece with matching id (can't use indices since capturing shifts)
@@ -432,9 +427,6 @@ $(document).ready(function() {
 				allPieces[piece][p].rank = move.move[1];
 			}
 		}
-
-		// console.log(allPieces);
-		// console.log("move piece: " + piece + " " + id);
 
 		occupiedSquares[oldIndex - 1] = null;
 		occupiedSquares[newIndex - 1] = piece + id;
@@ -450,8 +442,6 @@ $(document).ready(function() {
 
 	function capturePiece(pieceToCapture, square) {
 
-		console.log(pieceToCapture);
-
 		// captures reset the fifty-move rule counter
 		moveCounter = 0;
 
@@ -459,7 +449,7 @@ $(document).ready(function() {
 		var i = pieceToCapture[2];
 		var pieceType = allPieces[piece];
 
-		// find piece with matching id (can't use indices since capturing shifts)
+		// find and remove piece with matching id (can't use indices since capturing shifts)
 		for (var p = 0; p < pieceType.length; p++) {
 
 			// different type (.id is a string, id is a number), so use == operator
@@ -467,9 +457,6 @@ $(document).ready(function() {
 				pieceType.splice(p, 1);
 			}
 		}
-
-		// pieceType.splice(pieceType.indexOf(pieceType[i]), 1);
-		// console.log(allPieces);
 		drawOverPiece(square);
 	}
 
