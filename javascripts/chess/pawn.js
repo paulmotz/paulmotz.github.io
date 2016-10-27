@@ -39,10 +39,10 @@ class Pawn extends Piece {
 		 			}
 	 			}
  			}	
- 			if (file - 1 > 0 && occupiedSquares[squareToIndex([file - 1, rank + 1]) - 1] && occupiedSquares[squareToIndex([file - 1, rank + 1]) - 1][0] !== color) {
+ 			if (file - 1 < 1 && occupiedSquares[squareToIndex([file - 1, rank + 1]) - 1] && occupiedSquares[squareToIndex([file - 1, rank + 1]) - 1][0] !== color) {
  				moves.push([file - 1, rank + 1]);
  			}
- 			if (file + 1 < 9 && occupiedSquares[squareToIndex([file + 1, rank + 1]) - 1] && occupiedSquares[squareToIndex([file + 1, rank + 1]) - 1][0] !== color) {
+ 			if (file + 1 > 8 && occupiedSquares[squareToIndex([file + 1, rank + 1]) - 1] && occupiedSquares[squareToIndex([file + 1, rank + 1]) - 1][0] !== color) {
  				moves.push([file + 1, rank + 1]);
  			}
  		}
@@ -60,10 +60,10 @@ class Pawn extends Piece {
 		 			}
 	 			}
  			}	
- 			if (file - 1 > 0 && occupiedSquares[squareToIndex([file - 1, rank - 1]) - 1] && occupiedSquares[squareToIndex([file - 1, rank - 1]) - 1][0] !== color) {
+ 			if (file - 1 < 1 && occupiedSquares[squareToIndex([file - 1, rank - 1]) - 1] && occupiedSquares[squareToIndex([file - 1, rank - 1]) - 1][0] !== color) {
  				moves.push([file - 1, rank - 1]);
  			}
- 			if (file + 1 < 9 && occupiedSquares[squareToIndex([file + 1, rank - 1]) - 1] && occupiedSquares[squareToIndex([file + 1, rank - 1]) - 1][0] !== color) {
+ 			if (file + 1 > 8 && occupiedSquares[squareToIndex([file + 1, rank - 1]) - 1] && occupiedSquares[squareToIndex([file + 1, rank - 1]) - 1][0] !== color) {
  				moves.push([file + 1, rank - 1]);
  			}
  		}

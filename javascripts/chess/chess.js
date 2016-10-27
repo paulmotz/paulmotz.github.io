@@ -417,8 +417,8 @@ $(document).ready(function() {
 		var oldIndex = squareToIndex(oldSquare);
 		piecePositions[piece][id] = move.move; // update position of piece
 
-		// console.log(allPieces);
-		// console.log("move piece: " + piece + " " + id);
+		console.log(allPieces);
+		console.log("move piece: " + piece + " " + id);
 
 		var pieceType = allPieces[piece];
 
@@ -438,8 +438,8 @@ $(document).ready(function() {
 			}
 		}
 
-		// console.log(allPieces);
-		// console.log("move piece: " + piece + " " + id);
+		console.log(allPieces);
+		console.log("move piece: " + piece + " " + id);
 
 		occupiedSquares[oldIndex - 1] = null;
 		occupiedSquares[newIndex - 1] = piece + id;
