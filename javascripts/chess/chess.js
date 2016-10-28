@@ -45,7 +45,7 @@ $(document).ready(function() {
 	// https://en.wikipedia.org/wiki/Chess_symbols_in_Unicode
 	var pieceSymbols = {'bB': '♝', 'bN': '♞', 'bK': '♚', 'bP': '♟', 'bQ': '♛', 'bR': '♜', 'wB': '♗', 'wN': '♘', 'wK': '♔', 'wP': '♙', 'wQ': '♕', 'wR': '♖'};
 
-	// kings and queens have arrays of length 1 for convenience in later methods
+	// // kings and queens have arrays of length 1 for convenience in later methods
 	var pieceStartingPositions = {'wB' : [[3, 1], [6, 1]],
 									  'wN' : [[2, 1], [7, 1]],
 									  'wK' : [[5, 1]],
@@ -59,6 +59,21 @@ $(document).ready(function() {
 									  'bQ' : [[4, 8]],
 									  'bR' : [[1, 8], [8, 8]]
 									};
+
+
+	// // remove pieces for testing purposes
+	// var pieceCount = {'B': 2, 'N': 2, 'K': 1, 'P': 5, 'Q': 1, 'R': 2};
+	// var pieceNames = {'K' : 'King', 'P' : 'Pawn', 'R' : 'Rook'};
+
+	// // kings and queens have arrays of length 1 for convenience in later methods
+	// var pieceStartingPositions = {
+	// 							  'wK' : [[5, 1]],
+	// 							  'wP' : [[1, 2], [4, 2], [5, 2], [6, 2], [8, 2]],
+	// 							  'wR' : [[1, 1], [8, 1]],
+	// 							  'bK' : [[5, 8]],
+	// 							  'bP' : [[1, 7], [4, 7], [5, 7], [6, 7], [8, 7]],
+	// 							  'bR' : [[1, 8], [8, 8]]
+	// 							};
 
 
 	var piecePositions = {};
@@ -245,8 +260,8 @@ $(document).ready(function() {
 
 	function move(color) {
 
-		console.log(occupiedSquares);
-		console.log(allPieces);
+		// console.log(occupiedSquares);
+		// console.log(allPieces);
 
 		// isCheckMate();
 		moveCounter++;
@@ -276,34 +291,12 @@ $(document).ready(function() {
 						var pieceType = selectedPiece[1];
 
 						// if a king or rook moves, set its hasMoved status to true
-						if (pieceType === 'K' || pieceType === 'R' && !allPieces[selectedPiece.slice(0, 2)][selectedPiece[2]].hasMoved) {
-							allPieces[selectedPiece.slice(0, 2)][selectedPiece[2]].hasMoved = true;
-						}
-
-						// if (pieceType === 'K' && Math.abs(fromTo[0] - fromTo[1]) === 2) {
-						// 	castleRook(color, fromTo);
+						// if (pieceType === 'K' || pieceType === 'R' && !allPieces[selectedPiece.slice(0, 2)][selectedPiece[2]].hasMoved) {
+						// 	allPieces[selectedPiece.slice(0, 2)][selectedPiece[2]].hasMoved = true;
 						// }
 
-						// kingside castling
-						if (pieceType === 'K' && fromTo[0] - fromTo[1] === -2) {
-							if (color === 'w') {
-								var rookMove = {'piece' : 'wR', 'id' : 1, 'move' : [6, 1]};
-							}
-							else {
-								var rookMove = {'piece' : 'bR', 'id' : 1, 'move' : [6, 8]};
-							}
-							movePiece(rookMove);
-						}
-
-						// queenside castling
-						if (pieceType === 'K' && fromTo[0] - fromTo[1] === 2) {
-							if (color === 'w') {
-								var rookMove = {'piece' : 'wR', 'id' : 0, 'move' : [4, 1]};
-							}
-							else {
-								var rookMove = {'piece' : 'bR', 'id' : 0, 'move' : [4, 8]};
-							}
-							movePiece(rookMove);
+						if (pieceType === 'K' && Math.abs(fromTo[0] - fromTo[1]) === 2) {
+							castle(indexToSquare(fromTo[1]));
 						}
 
 						fromTo = [];
@@ -378,9 +371,71 @@ $(document).ready(function() {
 			}
 			var numMoves = moves.length;
 			var r = Math.floor(Math.random() * numMoves);
-			setTimeout(function() { movePiece(moves[r]) }, delay);
+
+			// TODO: check for castling
+			var compMove = moves[r];
+			var piece = compMove.piece;
+			var pieceType = piece[1];
+			var pieceId = piece + compMove.id;
+
+			// check for castling
+			if (pieceType === 'K') {
+				if (!allPieces[piece][compMove.id].hasMoved) {
+
+					// piece is known to be king that has not yet moved (so its location is [5, 1] or [5, 8])
+					var king = allPieces[piece][0];
+					var newSquare = compMove.move;
+
+					castle(newSquare);
+
+					// this is the king's first move, set its hasMoved property to true
+					allPieces[piece][compMove.id].hasMoved = true;
+				}
+			}
+
+			// movePiece checks whether a king or rook has moved. This should be done after checking for castling
+			movePiece(moves[r]);
+
+			// setTimeout(function() { movePiece(moves[r]) }, delay);
 			if (color === 'w') move('b');
 			else move('w');
+		}
+	}
+
+	/**
+	 * Moves a rook as part of castling
+	 * @param {number[]} kingSquare - the file and rank of the king's move
+	 */
+	function castle(kingsSquare) {
+		if (kingsSquare[0] === 3) {
+
+			// white
+			if (kingsSquare[1] === 1) {
+				var rookMove = {'piece' : 'wR', 'id' : 0, 'move' : [4, 1]};
+			}
+
+			// black
+			else {
+				var rookMove = {'piece' : 'bR', 'id' : 0, 'move' : [4, 8]};
+			}
+
+			movePiece(rookMove);
+		}
+
+		// kingside castling
+		else if (kingsSquare[0] === 7) {
+
+			// white
+			if (kingsSquare[1] === 1) {
+				var rookMove = {'piece' : 'wR', 'id' : 1, 'move' : [6, 1]};
+			}
+
+			// black
+			else {
+				var rookMove = {'piece' : 'bR', 'id' : 1, 'move' : [6, 8]};
+			}
+
+			movePiece(rookMove);
 		}
 	}
 
@@ -391,17 +446,17 @@ $(document).ready(function() {
 
 	function movePiece(move) {
 
-		// pawn moves reset the fifty-move rule counter
-		if (move.piece[1] === 'P') {
-			moveCounter = 0;
-		}
-
 		var color = move.piece[0];
 		var piece = move.piece;
 		var id = move.id;
 		var file = move.move[0];
 		var rank = move.move[1];
 		var newIndex = squareToIndex(move.move);
+
+		// pawn moves reset the fifty-move rule counter
+		if (move.piece[1] === 'P') {
+			moveCounter = 0;
+		}
 
 		if (occupiedSquares[newIndex - 1]) {
 			capturePiece(occupiedSquares[newIndex  - 1], move.move);
@@ -417,6 +472,11 @@ $(document).ready(function() {
 		var index = findPieceIndex(piece, id);
 		allPieces[piece][index].file = move.move[0];
 		allPieces[piece][index].rank = move.move[1];
+
+		// if the piece is a king or rook, record the fact that it has moved
+		if (piece[1] === 'K' || piece[1] === 'R') {
+			allPieces[piece][index].hasMoved = true;
+		}
 		occupiedSquares[oldIndex - 1] = null;
 		occupiedSquares[newIndex - 1] = piece + id;
 		drawOverPiece(oldSquare);
