@@ -3,11 +3,13 @@
  *
  * Logic:
  * - add castling rule checks (can't castle through check or if in check)
- * - pawn promotion
  * - add en passant
  * - is the king in check
  * - is the piece pinned (moving it in a certain direction leaves the king in check)
  * - draw rules
+ *
+ * Check:
+ * - pawn promotion
 */
 
 var allPieces;
@@ -146,28 +148,43 @@ $(document).ready(function() {
 				for (var pc = 0; pc < pieceCount[pn]; pc++) {
 					var file = pieceStartingPositions[colorAndPiece][pc][0];
 					var rank = pieceStartingPositions[colorAndPiece][pc][1];
-					switch (pn) {
-						case 'B':
-							allPieces[colorAndPiece].push(new Bishop(colors[color], file, rank, pc));
-							break;
-						case 'N':
-							allPieces[colorAndPiece].push(new Knight(colors[color], file, rank, pc));
-							break;
-						case 'K':
-							allPieces[colorAndPiece].push(new King(colors[color], file, rank, pc, false));
-							break;
-						case 'P':
-							allPieces[colorAndPiece].push(new Pawn(colors[color], file, rank, pc));
-							break;
-						case 'Q':
-							allPieces[colorAndPiece].push(new Queen(colors[color], file, rank, pc));
-							break;
-						case 'R':
-							allPieces[colorAndPiece].push(new Rook(colors[color], file, rank, pc, false));
-							break;
-					}
+					addPiece(colorAndPiece, file, rank, pc, false);
 				}
 			}
+		}
+	}
+
+	/**
+	 * adds a piece to the allPieces object
+	 * @param {String} colorAndPiece - the color and piece of the piece ie: wB = white bishop
+	 * @param {number} file - the file of the new piece
+	 * @param {number} rank - the rank of the new piece
+	 * @param {number} id - the id of the new piece
+	 * @param {boolean} hasMoved - whether the piece has moved or not (used to check if castling is allowed)
+	 */
+
+	function addPiece(colorAndPiece, file, rank, id, hasMoved) {
+		var color = colorAndPiece[0];
+		var piece = colorAndPiece[1];
+		switch (piece) {
+			case 'B':
+				allPieces[colorAndPiece].push(new Bishop(color, file, rank, id));
+				break;
+			case 'N':
+				allPieces[colorAndPiece].push(new Knight(color, file, rank, id));
+				break;
+			case 'K':
+				allPieces[colorAndPiece].push(new King(color, file, rank, id, hasMoved));
+				break;
+			case 'P':
+				allPieces[colorAndPiece].push(new Pawn(color, file, rank, id));
+				break;
+			case 'Q':
+				allPieces[colorAndPiece].push(new Queen(color, file, rank, id));
+				break;
+			case 'R':
+				allPieces[colorAndPiece].push(new Rook(color, file, rank, id, hasMoved));
+				break;
 		}
 	}
 
@@ -311,10 +328,6 @@ $(document).ready(function() {
 						var piece = selectedPiece.slice(0, 2);
 						var id = selectedPiece[2];
 						var index = findPieceIndex(piece, id);
-						// console.log(allPieces);
-						// console.log(piece);
-						// console.log(index);
-						// allPieces[piece][index].moves(occupiedSquares);
 
 						// TODO: this prevents multiple click events being bound to the board.
 						// However, I REALLY don't like this solution.
@@ -455,13 +468,19 @@ $(document).ready(function() {
 			allPieces[piece][index].hasMoved = true;
 		}
 
+		occupiedSquares[oldIndex - 1] = null;
+		occupiedSquares[newIndex - 1] = piece + id;
+
 		// the piece is a pawn that has reached the last rank
 		if (piece[1] === 'P' && newSquare[1] === 8 || newSquare[1] === 1) {
 			promote(piece, index, newIndex, newSquare);
 		}
 
-		occupiedSquares[oldIndex - 1] = null;
-		occupiedSquares[newIndex - 1] = piece + id;
+		// piece and id are incorrect if there was a pawn promotion
+		// TODO: refactor so that this else isn't necessary
+		else {
+			occupiedSquares[newIndex - 1] = piece + id;
+		}
 		drawOverPiece(oldSquare);
 	}
 
@@ -473,40 +492,28 @@ $(document).ready(function() {
 	 */
 
 	function promote(piece, pieceIndex, newIndex, newSquare) {
-		// console.log(piece, pieceIndex, newIndex, newSquare);
+
+		// newIndex is calculated using 1-indexing, it is only used for array accesses in this function
+		newIndex--;
 		var color = piece[0];
 		var file = newSquare[0];
 		var rank = newSquare[1];
-		var pieces = ['B', 'N', 'Q', 'R'];
 		if (humanTurn) {
-			// alert("choose your piece")
+			var pieceName = $('input[name=piece]:checked').val();
 		}
 		else {
+			var pieces = ['B', 'N', 'Q', 'R'];
 			var pieceName = pieces[Math.floor(Math.random() * pieces.length)];
-			var newPiece = color + pieceName;
-			var index = allPieces[newPiece].length > 0 ? allPieces[newPiece][allPieces[newPiece].length - 1].id + 1 : allPieces[newPiece].length
-
-			switch (pieceName) {
-				case 'B':
-					allPieces[newPiece].push(new Bishop(color, file, rank, allPieces[newPiece].length));
-					break;
-				case 'N':
-					allPieces[newPiece].push(new Knight(color, file, rank, allPieces[newPiece].length));
-					break;
-				case 'Q':
-					allPieces[newPiece].push(new Queen(color, file, rank, allPieces[newPiece].length));
-					break;
-				case 'R':
-					allPieces[newPiece].push(new Rook(color, file, rank, allPieces[newPiece].length, true)); // ensure rook won't be used for castling
-					break;
-			}
-			occupiedSquares[newIndex - 1] = newPiece + index;
-			var symbol = pieceSymbols[newPiece];
-			drawOverPiece(newSquare);
-			drawOnSquare(file, rank, symbol, newPiece[0]);
 		}
+		var newPiece = color + pieceName;
+		var index = allPieces[newPiece].length > 0 ? allPieces[newPiece][allPieces[newPiece].length - 1].id + 1 : allPieces[newPiece].length;
+		var symbol = pieceSymbols[newPiece];
+		drawOverPiece(newSquare);
+		drawOnSquare(file, rank, symbol, newPiece[0]);
+		addPiece(newPiece, file, rank, index, true);
 		allPieces[piece].splice(pieceIndex, 1);
-		console.log(allPieces);
+		var pieceId = newPiece + index;
+		occupiedSquares[newIndex] = pieceId;
 	}
 
 	/**
