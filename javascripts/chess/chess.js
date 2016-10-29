@@ -61,19 +61,19 @@ $(document).ready(function() {
 									};
 
 
-	// // remove pieces for testing purposes
-	// var pieceCount = {'B': 2, 'N': 2, 'K': 1, 'P': 5, 'Q': 1, 'R': 2};
-	// var pieceNames = {'K' : 'King', 'P' : 'Pawn', 'R' : 'Rook'};
+	// remove pieces for testing purposes
+	var pieceCount = {'B': 2, 'N': 2, 'K': 1, 'P': 8, 'Q': 1, 'R': 2};
+	var pieceNames = {'K' : 'King', 'P' : 'Pawn', 'R' : 'Rook'};
 
-	// // kings and queens have arrays of length 1 for convenience in later methods
-	// var pieceStartingPositions = {
-	// 							  'wK' : [[5, 1]],
-	// 							  'wP' : [[1, 2], [4, 2], [5, 2], [6, 2], [8, 2]],
-	// 							  'wR' : [[1, 1], [8, 1]],
-	// 							  'bK' : [[5, 8]],
-	// 							  'bP' : [[1, 7], [4, 7], [5, 7], [6, 7], [8, 7]],
-	// 							  'bR' : [[1, 8], [8, 8]]
-	// 							};
+	// kings and queens have arrays of length 1 for convenience in later methods
+	var pieceStartingPositions = {
+								  'wK' : [[5, 1]],
+								  'bP' : [[1, 2], [2, 2], [3, 2], [4, 2], [5, 2], [6, 2], [7, 2], [8, 2]],
+								  'wR' : [[1, 1], [8, 1]],
+								  'bK' : [[5, 8]],
+								  'wP' : [[1, 7], [2, 7], [3, 7], [4, 7], [5, 7], [6, 7], [7, 7], [8, 7]],
+								  'bR' : [[1, 8], [8, 8]]
+								};
 
 
 	var piecePositions = {};
@@ -87,6 +87,7 @@ $(document).ready(function() {
 	var gameBoard = initializeBoard();
 
 	var whiteDown = true;
+	var humanTurn;
 	var whiteToMove = true;
 
 	var markedSquares = new Set();
@@ -269,6 +270,7 @@ $(document).ready(function() {
 
 		// if human is moving, allow him/her to move
 		if (whiteDown && color === 'w' || !whiteDown && color === 'b') {
+			humanTurn = true;
 			var fromTo = [];
 			var moves = [];
 			var selectedPiece = '';
@@ -304,7 +306,10 @@ $(document).ready(function() {
 						var piece = selectedPiece.slice(0, 2);
 						var id = selectedPiece[2];
 						var index = findPieceIndex(piece, id);
-						allPieces[piece][index].moves(occupiedSquares);
+						// console.log(allPieces);
+						// console.log(piece);
+						// console.log(index);
+						// allPieces[piece][index].moves(occupiedSquares);
 
 						// TODO: this prevents multiple click events being bound to the board.
 						// However, I REALLY don't like this solution.
@@ -351,6 +356,8 @@ $(document).ready(function() {
 
 		// if computer is moving, pick a random move
 		else {
+
+			humanTurn = false;
 
 			// construct array of possible moves
 			var moves = [];
@@ -403,6 +410,82 @@ $(document).ready(function() {
 	}
 
 	/**
+	 * Moves a piece on the board
+	 * @param {object} move - an object consisting of the piece, its id (an int) and the square to move to
+	 */
+
+	function movePiece(move) {
+
+		var color = move.piece[0];
+		var piece = move.piece;
+		var id = move.id;
+		var newSquare = move.move
+		var newIndex = squareToIndex(newSquare);
+		var file = newSquare[0];
+		var rank = newSquare[1];
+
+		// pawn moves reset the fifty-move rule counter
+		if (move.piece[1] === 'P') {
+			moveCounter = 0;
+		}
+
+		if (occupiedSquares[newIndex - 1]) {
+			capturePiece(occupiedSquares[newIndex  - 1], newSquare);
+		}
+
+		var symbol = pieceSymbols[piece];
+		drawOnSquare(file, rank, symbol, color);
+
+		var oldSquare = piecePositions[piece][id];
+		var oldIndex = squareToIndex(oldSquare);
+		piecePositions[piece][id] = newSquare; // update position of piece
+
+		var index = findPieceIndex(piece, id);
+		allPieces[piece][index].file = newSquare[0];
+		allPieces[piece][index].rank = newSquare[1];
+
+		// the piece is a king or rook, record the fact that it has moved
+		if (piece[1] === 'K' || piece[1] === 'R') {
+			allPieces[piece][index].hasMoved = true;
+		}
+
+		// the piece is a pawn that has reached the last rank
+		if (piece[1] === 'P' && newSquare[1] === 8 || newSquare[1] === 1) {
+			promote(piece, index, newIndex, newSquare);
+		}
+
+		occupiedSquares[oldIndex - 1] = null;
+		occupiedSquares[newIndex - 1] = piece + id;
+		drawOverPiece(oldSquare);
+	}
+
+	/** Promotes a pawn to a non-king piece (B, N, Q, R)
+	 * @param {string} piece - the color and type of the piece
+	 * @param {number} pieceIndex - the index of the piece in its corresponding array
+	 * @param {number} newIndex - the index of the square the pawn is moving to
+	 * @param {number[]} newSquare - the square the pawn is moving to
+	 */
+
+	function promote(piece, pieceIndex, newIndex, newSquare) {
+		console.log(piece, pieceIndex, newIndex, newSquare);
+		var color = piece[0];
+		var pieces = ['B', 'N', 'Q', 'R'];
+		if (humanTurn) {
+			alert("choose your piece")
+		}
+		else {
+			var newPiece = pieces[Math.floor(Math.random() * numMoves)];
+		}
+		allPieces[piece].splice(pieceIndex, 1);
+		allPieces
+		occupiedSquares[newIndex - 1] = 'red';
+		// console.log(newIndex);
+		// console.log(occupiedSquares[newIndex - 1]);
+		// console.log(occupiedSquares);
+		// drawOverPiece(newSquare);
+	}
+
+	/**
 	 * Moves a rook as part of castling
 	 * @param {number[]} kingSquare - the file and rank of the king's move
 	 */
@@ -437,49 +520,6 @@ $(document).ready(function() {
 
 			movePiece(rookMove);
 		}
-	}
-
-	/**
-	 * Moves a piece on the board
-	 * @param {object} move - an object consisting of the piece, its id (an int) and the square to move to
-	 */
-
-	function movePiece(move) {
-
-		var color = move.piece[0];
-		var piece = move.piece;
-		var id = move.id;
-		var file = move.move[0];
-		var rank = move.move[1];
-		var newIndex = squareToIndex(move.move);
-
-		// pawn moves reset the fifty-move rule counter
-		if (move.piece[1] === 'P') {
-			moveCounter = 0;
-		}
-
-		if (occupiedSquares[newIndex - 1]) {
-			capturePiece(occupiedSquares[newIndex  - 1], move.move);
-		}
-
-		var symbol = pieceSymbols[piece];
-		drawOnSquare(file, rank, symbol, color);
-
-		var oldSquare = piecePositions[piece][id];
-		var oldIndex = squareToIndex(oldSquare);
-		piecePositions[piece][id] = move.move; // update position of piece
-
-		var index = findPieceIndex(piece, id);
-		allPieces[piece][index].file = move.move[0];
-		allPieces[piece][index].rank = move.move[1];
-
-		// if the piece is a king or rook, record the fact that it has moved
-		if (piece[1] === 'K' || piece[1] === 'R') {
-			allPieces[piece][index].hasMoved = true;
-		}
-		occupiedSquares[oldIndex - 1] = null;
-		occupiedSquares[newIndex - 1] = piece + id;
-		drawOverPiece(oldSquare);
 	}
 
 	/**
