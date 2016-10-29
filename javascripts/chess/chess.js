@@ -62,18 +62,18 @@ $(document).ready(function() {
 
 
 	// remove pieces for testing purposes
-	var pieceCount = {'B': 2, 'N': 2, 'K': 1, 'P': 8, 'Q': 1, 'R': 2};
-	var pieceNames = {'K' : 'King', 'P' : 'Pawn', 'R' : 'Rook'};
+	// var pieceCount = {'B': 2, 'N': 2, 'K': 1, 'P': 8, 'Q': 1, 'R': 2};
+	// var pieceNames = {'K' : 'King', 'P' : 'Pawn', 'R' : 'Rook'};
 
-	// kings and queens have arrays of length 1 for convenience in later methods
-	var pieceStartingPositions = {
-								  'wK' : [[5, 1]],
-								  'bP' : [[1, 2], [2, 2], [3, 2], [4, 2], [5, 2], [6, 2], [7, 2], [8, 2]],
-								  'wR' : [[1, 1], [8, 1]],
-								  'bK' : [[5, 8]],
-								  'wP' : [[1, 7], [2, 7], [3, 7], [4, 7], [5, 7], [6, 7], [7, 7], [8, 7]],
-								  'bR' : [[1, 8], [8, 8]]
-								};
+	// // kings and queens have arrays of length 1 for convenience in later methods
+	// var pieceStartingPositions = {
+	// 							  'wK' : [[5, 1]],
+	// 							  'bP' : [[1, 2], [2, 2], [3, 2], [4, 2], [5, 2], [6, 2], [7, 2], [8, 2]],
+	// 							  'wR' : [[1, 1], [8, 1]],
+	// 							  'bK' : [[5, 8]],
+	// 							  'wP' : [[1, 7], [2, 7], [3, 7], [4, 7], [5, 7], [6, 7], [7, 7], [8, 7]],
+	// 							  'bR' : [[1, 8], [8, 8]]
+	// 							};
 
 
 	var piecePositions = {};
@@ -93,13 +93,18 @@ $(document).ready(function() {
 	var markedSquares = new Set();
 
 	$('.btn').on('click', function() {
-		if ($('#radio-white').is(':checked')) {
-			whiteDown = true;
-		}
-		else {
-			whiteDown = false;
-		}
-
+		$('.radio-piece').each(function() {
+			var selection = $(this).parent().find('input');
+			var piece = selection.val();
+			if ($('#radio-white').is(':checked')) {
+				whiteDown = true;
+				$(this).parent().find('label').html(pieceSymbols['w' + piece] + " " + pieceNames[piece]);
+			}
+			else {
+				whiteDown = false;
+				$(this).parent().find('label').html(pieceSymbols['b' + piece] + " " + pieceNames[piece]);
+			}
+		});
 		// turn off click events bound to the board before starting a new game
 		$board.off('click');
 		newGame();
@@ -379,7 +384,6 @@ $(document).ready(function() {
 			var numMoves = moves.length;
 			var r = Math.floor(Math.random() * numMoves);
 
-			// TODO: check for castling
 			var compMove = moves[r];
 			var piece = compMove.piece;
 			var pieceType = piece[1];
@@ -436,11 +440,13 @@ $(document).ready(function() {
 		var symbol = pieceSymbols[piece];
 		drawOnSquare(file, rank, symbol, color);
 
-		var oldSquare = piecePositions[piece][id];
-		var oldIndex = squareToIndex(oldSquare);
-		piecePositions[piece][id] = newSquare; // update position of piece
-
 		var index = findPieceIndex(piece, id);
+
+		// var oldSquare = piecePositions[piece][id];
+		var oldSquare = [allPieces[piece][index].file, allPieces[piece][index].rank];
+		var oldIndex = squareToIndex(oldSquare);
+		// piecePositions[piece][id] = newSquare; // update position of piece
+
 		allPieces[piece][index].file = newSquare[0];
 		allPieces[piece][index].rank = newSquare[1];
 
@@ -467,33 +473,53 @@ $(document).ready(function() {
 	 */
 
 	function promote(piece, pieceIndex, newIndex, newSquare) {
-		console.log(piece, pieceIndex, newIndex, newSquare);
+		// console.log(piece, pieceIndex, newIndex, newSquare);
 		var color = piece[0];
+		var file = newSquare[0];
+		var rank = newSquare[1];
 		var pieces = ['B', 'N', 'Q', 'R'];
 		if (humanTurn) {
-			alert("choose your piece")
+			// alert("choose your piece")
 		}
 		else {
-			var newPiece = pieces[Math.floor(Math.random() * numMoves)];
+			var pieceName = pieces[Math.floor(Math.random() * pieces.length)];
+			var newPiece = color + pieceName;
+			var index = allPieces[newPiece].length > 0 ? allPieces[newPiece][allPieces[newPiece].length - 1].id + 1 : allPieces[newPiece].length
+
+			switch (pieceName) {
+				case 'B':
+					allPieces[newPiece].push(new Bishop(color, file, rank, allPieces[newPiece].length));
+					break;
+				case 'N':
+					allPieces[newPiece].push(new Knight(color, file, rank, allPieces[newPiece].length));
+					break;
+				case 'Q':
+					allPieces[newPiece].push(new Queen(color, file, rank, allPieces[newPiece].length));
+					break;
+				case 'R':
+					allPieces[newPiece].push(new Rook(color, file, rank, allPieces[newPiece].length, true)); // ensure rook won't be used for castling
+					break;
+			}
+			occupiedSquares[newIndex - 1] = newPiece + index;
+			var symbol = pieceSymbols[newPiece];
+			drawOverPiece(newSquare);
+			drawOnSquare(file, rank, symbol, newPiece[0]);
 		}
 		allPieces[piece].splice(pieceIndex, 1);
-		allPieces
-		occupiedSquares[newIndex - 1] = 'red';
-		// console.log(newIndex);
-		// console.log(occupiedSquares[newIndex - 1]);
-		// console.log(occupiedSquares);
-		// drawOverPiece(newSquare);
+		console.log(allPieces);
 	}
 
 	/**
 	 * Moves a rook as part of castling
 	 * @param {number[]} kingSquare - the file and rank of the king's move
 	 */
-	function castle(kingsSquare) {
-		if (kingsSquare[0] === 3) {
+	function castle(kingSquare) {
+
+		// queenside castling
+		if (kingSquare[0] === 3) {
 
 			// white
-			if (kingsSquare[1] === 1) {
+			if (kingSquare[1] === 1) {
 				var rookMove = {'piece' : 'wR', 'id' : 0, 'move' : [4, 1]};
 			}
 
@@ -506,10 +532,10 @@ $(document).ready(function() {
 		}
 
 		// kingside castling
-		else if (kingsSquare[0] === 7) {
+		else if (kingSquare[0] === 7) {
 
 			// white
-			if (kingsSquare[1] === 1) {
+			if (kingSquare[1] === 1) {
 				var rookMove = {'piece' : 'wR', 'id' : 1, 'move' : [6, 1]};
 			}
 

@@ -1,6 +1,11 @@
 #chessboard {
 	display: block;
-	margin: auto;
+	/*margin: auto;*/
+	margin: 15px auto;
 	/*color: blue;*/
 	/*background-color: #F5F5DC;*/
+}
+
+.rules {
+	text-align: left;
 }
