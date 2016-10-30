@@ -16,12 +16,6 @@ var allPieces;
 
 $(document).ready(function() {
 
-	// resize();
-
-	// $(window).on('resize', function() {
-	// 	resize();
-	// });
-
 	var $board = $('#chessboard');
 	var delay = 0;
 
@@ -41,8 +35,12 @@ $(document).ready(function() {
 
 	// game/logic variables
 
+	// display the number of moves
+	// TODO: maybe later, algebraic notation can be displayed
+	var moveCounter = 0;
+
 	// used for checking 50-move draw rule
-	var moveCounter;
+	var drawMoveCounter;
 
 	// the two players' colors
 	var colors = ['w', 'b'];
@@ -268,6 +266,7 @@ $(document).ready(function() {
 
 	function newGame() {
 		moveCounter = 0;
+		drawMoveCounter = 0;
 		initializePieces();
 		drawBoard();
 
@@ -290,11 +289,10 @@ $(document).ready(function() {
 
 	function move(color) {
 
-		console.log(occupiedSquares);
-		console.log(allPieces);
+		// console.log(occupiedSquares);
+		// console.log(allPieces);
 
 		// isCheckMate();
-		moveCounter++;
 		checkDraw();
 
 		// if human is moving, allow him/her to move
@@ -335,6 +333,8 @@ $(document).ready(function() {
 						var piece = selectedPiece.slice(0, 2);
 						var id = selectedPiece[2];
 						var index = findPieceIndex(piece, id);
+
+						updateMoves(color);
 
 						// TODO: this prevents multiple click events being bound to the board.
 						// However, I REALLY don't like this solution.
@@ -427,6 +427,8 @@ $(document).ready(function() {
 			// movePiece checks whether a king or rook has moved. This should be done after checking for castling
 			movePiece(moves[r]);
 
+			updateMoves(color);
+
 			// setTimeout(function() { movePiece(moves[r]) }, delay);
 			if (color === 'w') move('b');
 			else move('w');
@@ -450,7 +452,7 @@ $(document).ready(function() {
 
 		// pawn moves reset the fifty-move rule counter
 		if (move.piece[1] === 'P') {
-			moveCounter = 0;
+			drawMoveCounter = 0;
 		}
 
 		if (occupiedSquares[newIndex - 1]) {
@@ -571,7 +573,7 @@ $(document).ready(function() {
 	function capturePiece(pieceToCapture, square) {
 
 		// captures reset the fifty-move rule counter
-		moveCounter = 0;
+		drawMoveCounter = 0;
 
 		var piece = pieceToCapture.slice(0, 2);
 		var id = pieceToCapture[2];
@@ -615,7 +617,7 @@ $(document).ready(function() {
 	function checkDraw50() {
 
 		// a turn if one move from each player
-		if (moveCounter === 100) {
+		if (drawMoveCounter === 50) {
 			alert("Draw by fifty-move rule");
 		}
 	}
@@ -765,6 +767,14 @@ $(document).ready(function() {
 		ctx.stroke();
 		ctx.closePath();
 	}
+
+	function updateMoves(color) {
+		if (color === 'w') {
+			moveCounter++;
+			$('#move-counter').html(moveCounter);
+			drawMoveCounter++;
+		}
+	}
 });
 
 /**
@@ -789,12 +799,4 @@ function squareToIndex(square) {
 function indexToSquare(index) {
 	var file = index % 8 === 0 ? 8 : index % 8;
 	return [file, Math.ceil(index / 8)];
-}
-
-function resize() {
-	var $board = $('#chessboard');
-	var width = parseInt($board.css('width'));
-	// console.log(width);
-	$board.css('height', width);
-	// $('#chessboard').outerHeight($(window).height()-$("#chessboard").offset().top- Math.abs($("#chessboard").outerHeight(true) - $("#chessboard").outerHeight()));
 }

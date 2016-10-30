@@ -39,7 +39,7 @@ class King extends Piece {
 		});
 
 		// queenside castling
-		if (!hasMoved && allPieces[color+'R'][0] && !allPieces[color+'R'][0].hasMoved && !occupiedSquares[squareToIndex([file - 1, rank]) - 1] && !occupiedSquares[squareToIndex([file - 2, rank]) - 1]) {
+		if (!hasMoved && allPieces[color+'R'][0] && !allPieces[color+'R'][0].hasMoved && !occupiedSquares[squareToIndex([file - 1, rank]) - 1] && !occupiedSquares[squareToIndex([file - 2, rank]) - 1] && !occupiedSquares[squareToIndex([file - 3, rank]) - 1]) {
 			moves.push([file - 2, rank]);
 		}
 
