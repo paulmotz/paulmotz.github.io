@@ -1,6 +1,5 @@
 class Queen extends Piece {
 
-	// TODO: account for pieces that could be blocking the bishop
 	/**
 	 * Get the Queen's moves
 	 * @return {number[][]} moves - the moves of the Queen as an array of co-ordinates (also an array)

@@ -15,6 +15,13 @@
 var allPieces;
 
 $(document).ready(function() {
+
+	// resize();
+
+	// $(window).on('resize', function() {
+	// 	resize();
+	// });
+
 	var $board = $('#chessboard');
 	var delay = 0;
 
@@ -22,8 +29,8 @@ $(document).ready(function() {
 	// visual/layout variables
 	var height = parseInt($board.css('height'));
 	var width = parseInt($board.css('width'));
-	var squareSize = height/10;
-	var lineWidth = 5;
+	var squareSize = height / 10;
+	var lineWidth = height / 100;
 
 	var markedSquares = new Set();
 
@@ -283,8 +290,8 @@ $(document).ready(function() {
 
 	function move(color) {
 
-		// console.log(occupiedSquares);
-		// console.log(allPieces);
+		console.log(occupiedSquares);
+		console.log(allPieces);
 
 		// isCheckMate();
 		moveCounter++;
@@ -472,7 +479,7 @@ $(document).ready(function() {
 		occupiedSquares[newIndex - 1] = piece + id;
 
 		// the piece is a pawn that has reached the last rank
-		if (piece[1] === 'P' && newSquare[1] === 8 || newSquare[1] === 1) {
+		if (piece[1] === 'P' && (newSquare[1] === 8 || newSquare[1] === 1)) {
 			promote(piece, index, newIndex, newSquare);
 		}
 
@@ -782,4 +789,12 @@ function squareToIndex(square) {
 function indexToSquare(index) {
 	var file = index % 8 === 0 ? 8 : index % 8;
 	return [file, Math.ceil(index / 8)];
+}
+
+function resize() {
+	var $board = $('#chessboard');
+	var width = parseInt($board.css('width'));
+	// console.log(width);
+	$board.css('height', width);
+	// $('#chessboard').outerHeight($(window).height()-$("#chessboard").offset().top- Math.abs($("#chessboard").outerHeight(true) - $("#chessboard").outerHeight()));
 }

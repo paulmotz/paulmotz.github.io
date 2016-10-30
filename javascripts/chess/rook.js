@@ -1,8 +1,5 @@
 class Rook extends Piece {
 
-	// TODO:
-	// add castling as a move (maybe this is just a king move)
-	
 	/*
 	 * Creates a rook of the given color at the given location
 	 * @param {string} color - The color of the rook: white || black

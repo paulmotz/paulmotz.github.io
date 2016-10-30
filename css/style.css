@@ -11,10 +11,14 @@ svg {
   /*background-color: orange;*/
 }
 
-h1, h2, h3, h4 {
+h1, h2, h3 {
   /*font-size: 40px;*/
   /*line-height: 48px;*/
   text-align: center;
+}
+
+h4 {
+  text-align: left;
 }
 
 .description {
@@ -64,7 +68,7 @@ svg {
 }
 
 .options {
-  text-align: center;
+  text-align: left;
   margin-top: 0px;
 }
 

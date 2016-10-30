@@ -34,47 +34,46 @@
 		<div id="header">
 		</div>
 		<div class='row'>
-			<div class='col-lg-2 col-xs-1'>
-			</div>
+			<div class='col-lg-2 col-xs-1'></div>
 			<div class='col-lg-8 col-xs-10'>
-				<div class='row'>
-					<h2 class="title">Dummy Chess</h2>
-					<p class="">
-						Play as the colour of your choice.
-						Your foolish opponent  will make a random move.<br>
-						If you want to win a game of chess, you have come to the right place.<br>
-						For a challenge, try to <em>lose</em> the game.<br>
-						Move pieces by clicking on the piece and then where you want to move the piece
-					</p>
+				<h2 class="title">Dummy Chess</h2>
+				<p class="">
+					Play as the colour of your choice.
+					Your foolish opponent  will make a random move.<br>
+					If you want to win a game of chess, you have come to the right place.<br>
+					For a challenge, try to <em>lose</em> the game.<br>
+					Move pieces by clicking on the piece and then where you want to move the piece
+				</p>
+			</div>
+			<div class='col-lg-2 col-xs-1'></div>
+		</div>
+		<div class='row'>
+			<div class='col-lg-2 col-xs-1'></div>
+			<div class='col-lg-6 col-xs-8'>
+				<canvas id="chessboard" width="500" height="500">
+				</canvas>
+			</div>
+			<div class='col-lg-2 col-xs-2 text-left'>
+				<h4 class="title">Settings</h4>
+				<div class='options'>
+					<h4>Play as:</h4>
+					<div class="radio"><input id="radio-white" class="radio-color" type="radio" name="color" value="white" checked><label>White</input></label></div>
+					<div class="radio"><input id="radio-black" class="radio-color" type="radio" name="color" value="black"><label>Black</input></label></div>
+				</div>
+				<div class='options'>
+					<h4>Player's pawns promote to:</h4>
+					<div class="radio"><input id="radio-bishop" class="radio-piece" type="radio" name="piece" value="B"/><label>♗ Bishop</label></div>
+					<div class="radio"><input id="radio-knight" class="radio-piece" type="radio" name="piece" value="N"/><label>♘ Knight</label></div>
+					<div class="radio"><input id="radio-queen" class="radio-piece" type="radio" name="piece" value="Q" checked/><label>♕ Queen</label></div>
+					<div class="radio"><input id="radio-rook" class="radio-piece" type="radio" name="piece" value="R"/><label>♖ Rook</label></div>
 				</div>
 				<div class='row'>
-					<canvas id="chessboard" width="500" height="500">
-					</canvas>
+					<div class='col-xs-12 text-center'>
+						<button type="button" class="btn">New Game</button>
+					</div>
 				</div>
 			</div>
 			<div class='col-lg-2 col-xs-1'>
-			</div>
-		</div>
-		<div class='row'>
-			<div class='col-xs-12 text-center'>
-				<button type="button" class="btn">New Game</button>
-			</div>
-		</div>
-		<div class='row'>
-			<div class='col-xs-12'>
-				<h4 class="title">Settings</h4>
-				<div class='row options'>
-					<h4>Play as:</h4>
-					<div class="radio-inline"><label><input id="radio-white" class="radio-color" type="radio" name="color" value="white" checked>White</input></label></div>
-					<div class="radio-inline"><label><input id="radio-black" class="radio-color" type="radio" name="color" value="black">Black</input></label></div>
-				</div>
-				<div class='row options'>
-					<h4>Player's pawns promote to:</h4>
-					<div class="radio-inline"><input id="radio-bishop" class="radio-piece" type="radio" name="piece" value="B"/><label>♗ Bishop</label></div>
-					<div class="radio-inline"><input id="radio-knight" class="radio-piece" type="radio" name="piece" value="N"/><label>♘ Knight</label></div>
-					<div class="radio-inline"><input id="radio-queen" class="radio-piece" type="radio" name="piece" value="Q" checked/><label>♕ Queen</label></div>
-					<div class="radio-inline"><input id="radio-rook" class="radio-piece" type="radio" name="piece" value="R"/><label>♖ Rook</label></div>
-				</div>
 			</div>
 		</div>
 		

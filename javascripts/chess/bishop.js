@@ -1,6 +1,5 @@
 class Bishop extends Piece {
 
-	// TODO: account for pieces that could be blocking the bishop
 	/**
 	 * Get the Bishop's moves
 	 * @return {number[][]} moves - the moves of the Bishop as an array of co-ordinates (also an array)

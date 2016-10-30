@@ -1,9 +1,7 @@
 class Pawn extends Piece {
 
 	// TODO:
-	// pawn promotion
 	// en passant
-	// 
 
 	/*
 	 * Creates a pawn of the given color at the given location
