@@ -480,11 +480,13 @@ $(document).ready(function() {
 
 		// capture was en passant
 		if (piece[1] === 'P' && enPassantPawn) {
-			if (occupiedSquares[newIndex - 9] === enPassantPawn) {
+
+			// need to specify color otherwise consecutive two-square pawn moves trigger a capture (eg: e4 followed by e5 captures the e4 pawn)
+			if (color === 'w' && occupiedSquares[newIndex - 9] === enPassantPawn) {
 				capturePiece(enPassantPawn, [file, rank - 1]);
 				occupiedSquares[newIndex - 9] = null;
 			}
-			else if (occupiedSquares[newIndex + 7] === enPassantPawn) {
+			else if (color === 'b' && occupiedSquares[newIndex + 7] === enPassantPawn) {
 				capturePiece(enPassantPawn, [file, rank + 1]);
 				occupiedSquares[newIndex + 7] = null;
 			}
