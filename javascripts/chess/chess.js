@@ -271,14 +271,16 @@ $(document).ready(function() {
 
 		var whiteInCheckmate = false;
 		var blackInCheckmate = false;
-		move('w');
+		move('w', 'b');
 	}
 
 	/**
 	 * Generates or listens for a move
+	 * @param {String} currentColor - the color of the piece being moved: 'w' or 'b'
+	 * @param {String} opponentColor - the color of the opponenet's pieces: 'w' or 'b'
 	 */
 
-	function move(color) {
+	function move(currentColor, opponentColor) {
 
 		// console.log(occupiedSquares);
 		// console.log(allPieces);
@@ -287,7 +289,7 @@ $(document).ready(function() {
 		checkDraw();
 
 		// if human is moving, allow him/her to move
-		if (whiteDown && color === 'w' || !whiteDown && color === 'b') {
+		if (whiteDown && currentColor === 'w' || !whiteDown && currentColor === 'b') {
 			humanTurn = true;
 			var fromTo = [];
 			var moves = [];
@@ -321,13 +323,15 @@ $(document).ready(function() {
 						var index = findPieceIndex(piece, id);
 
 						// update move counters (for display and draw checking)
-						updateMoves(color);
+						updateMoves(currentColor);
+
+						inCheck(opponentColor, currentColor);
 
 						// TODO: this prevents multiple click events being bound to the board.
 						// However, I REALLY don't like this solution.
 						$(this).off(e);
-						if (color === 'w') move('b');
-						else move('w');
+
+						move(opponentColor, currentColor);
 					}
 
 					// reset the move sequence if it is invalid
@@ -344,7 +348,7 @@ $(document).ready(function() {
 					}
 
 					// if the clicked square has a piece of the correct color in it, get its moves
-					if (selectedPiece && selectedPiece[0] === color && fromTo.length === 1) {
+					if (selectedPiece && selectedPiece[0] === currentColor && fromTo.length === 1) {
 						ctx.beginPath();
 						var c = getCoordinates(square[0], square[1]);
 						ctx.rect(c[0] +lineWidth/2, c[1] + lineWidth/2, squareSize - lineWidth, squareSize - lineWidth);			
@@ -377,7 +381,7 @@ $(document).ready(function() {
 				var pieceType = pieceTypes[1];
 
 				// only get moves from the correct color of pieces
-				if (pieceTypes[0] === color) {
+				if (pieceTypes[0] === currentColor) {
 					var pieceArray = allPieces[pieceTypes];
 					for (var piece in pieceArray) {
 						var pieceMoves = pieceArray[piece].moves(occupiedSquares);
@@ -414,11 +418,12 @@ $(document).ready(function() {
 			// movePiece checks whether a king or rook has moved. This should be done after checking for castling
 			movePiece(moves[r]);
 
-			updateMoves(color);
+			updateMoves(currentColor);
+
+			inCheck(opponentColor, currentColor);
 
 			// setTimeout(function() { movePiece(moves[r]) }, delay);
-			if (color === 'w') move('b');
-			else move('w');
+			move(opponentColor, currentColor);
 		}
 	}
 
@@ -574,9 +579,57 @@ $(document).ready(function() {
 	}
 
 	/**
+	 * Creates a new set of indices corresponding to the squares that a color is attacking
+	 * @param {String} color - the color of the pieces for which this is calculated
+	 * @return {number[]} attackedSquares - the squares that are being attacked
+	 */
+
+	function getAttackedSquares(color) {
+		var attackedSquares = new Set();
+		for (var pieceType in allPieces) {
+			if (pieceType[0] === color) {
+				var pieceArray = allPieces[pieceType];
+				for (var piece in pieceArray) {
+					var pieceMoves = pieceArray[piece].moves(occupiedSquares);
+					for (var i in pieceMoves) {
+						attackedSquares.add(squareToIndex(pieceMoves[i]));
+					}
+				}
+			}
+			
+		}
+		// console.log(squares);
+		return attackedSquares;
+	}
+
+
+
+
+	/**
+	 * Checks whether the king of the opposing color is in check
+	 * @param {String} color - the color of the king to check whether it is in check
+	 */
+
+	function inCheck(defendingColor, attackingColor) {
+
+		var attackedSquares = getAttackedSquares(attackingColor);
+		var opponentKing = allPieces[defendingColor + 'K'][0];
+
+		console.log(opponentKing);
+
+		console.log(attackedSquares);
+
+		var opponentKingIndex = squareToIndex([opponentKing.file, opponentKing.rank]);
+
+		if (attackedSquares.has(opponentKingIndex)) {
+			drawCheckSquare(defendingColor);
+		}
+	}
+
+	/**
 	 * Removes a piece from the board and the game
 	 * @param {String} pieceToCapture - the string representation (colorPieceIndex) of the piece being captured
-	 * @index {number[]} square - the indices of the square of the piece being captured in the form [file, rank]
+	 * @param {number[]} square - the indices of the square of the piece being captured in the form [file, rank]
 	 */
 
 	function capturePiece(pieceToCapture, square) {
@@ -716,6 +769,22 @@ $(document).ready(function() {
 		var coordinates = getCoordinates(file, rank);
 		ctx.font = squareSize + "px serif";
 		ctx.fillText(symbol, coordinates[0] + (0.5 * squareSize), coordinates[1] + (0.5 * squareSize));
+	}
+
+	/**
+	 * Marks the square if the king is in check
+	 * @param {String} color - the color of the king in check: 'w' or 'b'
+	 */
+
+	function drawCheckSquare(color) {
+		var king = color + 'K';
+		var file = allPieces[king][0].file;
+		var rank = allPieces[king][0].rank;
+		var symbol = pieceSymbols[king];
+		var coordinates = getCoordinates(file, rank);
+		ctx.fillStyle = "#FF0000";
+		ctx.fillRect(coordinates[0], coordinates[1], squareSize, squareSize);
+		drawOnSquare(file, rank, symbol, color);
 	}
 
 	/**
