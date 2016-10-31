@@ -13,6 +13,7 @@
 */
 
 var allPieces;
+var enPassantPawn;
 
 $(document).ready(function() {
 
@@ -70,16 +71,12 @@ $(document).ready(function() {
 
 	// remove pieces for testing purposes
 	// var pieceCount = {'B': 2, 'N': 2, 'K': 1, 'P': 8, 'Q': 1, 'R': 2};
-	// var pieceNames = {'K' : 'King', 'P' : 'Pawn', 'R' : 'Rook'};
+	// var pieceNames = {'P' : 'Pawn'};
 
 	// // kings and queens have arrays of length 1 for convenience in later methods
 	// var pieceStartingPositions = {
-	// 							  'wK' : [[5, 1]],
-	// 							  'bP' : [[1, 2], [2, 2], [3, 2], [4, 2], [5, 2], [6, 2], [7, 2], [8, 2]],
-	// 							  'wR' : [[1, 1], [8, 1]],
-	// 							  'bK' : [[5, 8]],
-	// 							  'wP' : [[1, 7], [2, 7], [3, 7], [4, 7], [5, 7], [6, 7], [7, 7], [8, 7]],
-	// 							  'bR' : [[1, 8], [8, 8]]
+	// 							  'bP' : [[1, 4], [2, 7], [3, 7], [4, 4], [5, 7], [6, 7], [7, 4], [8, 7]],
+	// 							  'wP' : [[1, 2], [2, 2], [3, 2], [4, 2], [5, 2], [6, 2], [7, 2], [8, 2]],
 	// 							};
 
 
@@ -267,6 +264,7 @@ $(document).ready(function() {
 	function newGame() {
 		moveCounter = 0;
 		drawMoveCounter = 0;
+		$('#move-counter').html(moveCounter);
 		initializePieces();
 		drawBoard();
 
@@ -319,14 +317,19 @@ $(document).ready(function() {
 
 						var pieceType = selectedPiece[1];
 
-						// if a king or rook moves, set its hasMoved status to true
-						// if (pieceType === 'K' || pieceType === 'R' && !allPieces[selectedPiece.slice(0, 2)][selectedPiece[2]].hasMoved) {
-						// 	allPieces[selectedPiece.slice(0, 2)][selectedPiece[2]].hasMoved = true;
-						// }
-
 						if (pieceType === 'K' && Math.abs(fromTo[0] - fromTo[1]) === 2) {
 							castle(indexToSquare(fromTo[1]));
 						}
+
+						// en passant
+						if (pieceType === 'P') {
+
+							if (Math.abs(fromTo[0] - fromTo[1]) === 7) {
+
+							}
+
+						} //&& (Math.abs(fromTo[0] - fromTo[1]) === 7 || Math.abs(fromTo[0] - fromTo[1]) === 9)) {
+
 
 						fromTo = [];
 
@@ -463,9 +466,9 @@ $(document).ready(function() {
 		drawOnSquare(file, rank, symbol, color);
 
 		var index = findPieceIndex(piece, id);
-
-		// var oldSquare = piecePositions[piece][id];
-		var oldSquare = [allPieces[piece][index].file, allPieces[piece][index].rank];
+		var oldFile = allPieces[piece][index].file;
+		var oldRank = allPieces[piece][index].rank;
+		var oldSquare = [oldFile, oldRank];
 		var oldIndex = squareToIndex(oldSquare);
 		// piecePositions[piece][id] = newSquare; // update position of piece
 
@@ -479,6 +482,26 @@ $(document).ready(function() {
 
 		occupiedSquares[oldIndex - 1] = null;
 		occupiedSquares[newIndex - 1] = piece + id;
+
+		// console.log(enPassantPawn);
+
+		// capture was en passant
+		if (piece[1] === 'P' && enPassantPawn && occupiedSquares[newIndex - 9] === enPassantPawn) {
+			if (color === 'w') {
+				capturePiece(enPassantPawn, [file, rank - 1]);
+			}
+			else {
+				capturePiece(enPassantPawn, [file, rank + 1]);
+			}
+		}
+
+		// if a pawn moves two squares, make it able to be captured en passant
+		if (piece[1] === 'P' && Math.abs(rank - oldRank) === 2) {
+			enPassantPawn = piece  + id;
+		}
+		else {
+			enPassantPawn = null;
+		}
 
 		// the piece is a pawn that has reached the last rank
 		if (piece[1] === 'P' && (newSquare[1] === 8 || newSquare[1] === 1)) {
@@ -772,6 +795,7 @@ $(document).ready(function() {
 		if (color === 'w') {
 			moveCounter++;
 			$('#move-counter').html(moveCounter);
+			// $('#draw-move-counter').html(50 - drawMoveCounter);
 			drawMoveCounter++;
 		}
 	}

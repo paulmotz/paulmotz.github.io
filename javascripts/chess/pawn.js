@@ -1,8 +1,5 @@
 class Pawn extends Piece {
 
-	// TODO:
-	// en passant
-
 	/*
 	 * Creates a pawn of the given color at the given location
 	 * @param {string} color - The color of the pawn: white || black
@@ -22,6 +19,7 @@ class Pawn extends Piece {
 
  		// white pawns move up the ranks
  		if (color === 'w') {
+
  			if (!occupiedSquares[squareToIndex([file, rank + 1]) - 1]) {
  				moves.push([file, rank + 1]);
 
@@ -33,16 +31,30 @@ class Pawn extends Piece {
 		 			}
 	 			}
  			}	
+
+ 			// normal capturing
  			if (file - 1 >= 1 && occupiedSquares[squareToIndex([file - 1, rank + 1]) - 1] && occupiedSquares[squareToIndex([file - 1, rank + 1]) - 1][0] !== color) {
  				moves.push([file - 1, rank + 1]);
  			}
  			if (file + 1 <= 8 && occupiedSquares[squareToIndex([file + 1, rank + 1]) - 1] && occupiedSquares[squareToIndex([file + 1, rank + 1]) - 1][0] !== color) {
  				moves.push([file + 1, rank + 1]);
  			}
+
+ 			// en passant
+ 			if (rank === 5) {
+	 			// if (file - 1 >= 1 && occupiedSquares[squareToIndex([file - 1, rank]) - 1] && occupiedSquares[squareToIndex([file - 1, rank]) - 1][0] !== color && occupiedSquares[squareToIndex([file - 1, rank]) - 1] === enPassantPawn) {
+	 				if (file - 1 >= 1 && occupiedSquares[squareToIndex([file - 1, rank]) - 1] && occupiedSquares[squareToIndex([file - 1, rank]) - 1] === enPassantPawn) {
+	 				moves.push([file - 1, rank + 1]);
+	 			}
+	 			if (file + 1 <= 8 && occupiedSquares[squareToIndex([file + 1, rank]) - 1] && occupiedSquares[squareToIndex([file + 1, rank]) - 1] === enPassantPawn) {
+	 				moves.push([file + 1, rank + 1]);
+	 			}
+	 		}
  		}
 
  		// black pawns move down the ranks
  		else {
+
  			if (!occupiedSquares[squareToIndex([file, rank - 1]) - 1]) {
  				moves.push([file, rank - 1]);
 
@@ -54,12 +66,24 @@ class Pawn extends Piece {
 		 			}
 	 			}
  			}	
+
+ 			// normal capturing
  			if (file - 1 >= 1 && occupiedSquares[squareToIndex([file - 1, rank - 1]) - 1] && occupiedSquares[squareToIndex([file - 1, rank - 1]) - 1][0] !== color) {
  				moves.push([file - 1, rank - 1]);
  			}
  			if (file + 1 <= 8 && occupiedSquares[squareToIndex([file + 1, rank - 1]) - 1] && occupiedSquares[squareToIndex([file + 1, rank - 1]) - 1][0] !== color) {
  				moves.push([file + 1, rank - 1]);
  			}
+
+ 			// en passant
+ 			if (rank === 4) {
+	 			if (file - 1 >= 1 && occupiedSquares[squareToIndex([file - 1, rank]) - 1] && occupiedSquares[squareToIndex([file - 1, rank]) - 1] === enPassantPawn) {
+	 				moves.push([file - 1, rank - 1]);
+	 			}
+	 			if (file + 1 <= 8 && occupiedSquares[squareToIndex([file + 1, rank]) - 1] && occupiedSquares[squareToIndex([file + 1, rank]) - 1] === enPassantPawn) {
+	 				moves.push([file + 1, rank - 1]);
+	 			}
+	 		}
  		}
 
  		return moves;
