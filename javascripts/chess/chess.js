@@ -70,13 +70,17 @@ $(document).ready(function() {
 
 
 	// remove pieces for testing purposes
-	// var pieceCount = {'B': 2, 'N': 2, 'K': 1, 'P': 8, 'Q': 1, 'R': 2};
+	// var pieceCount = {'B': 2, 'N': 2, 'K': 1, 'P': 1, 'Q': 1, 'R': 2};
 	// var pieceNames = {'P' : 'Pawn'};
 
 	// // kings and queens have arrays of length 1 for convenience in later methods
 	// var pieceStartingPositions = {
-	// 							  'bP' : [[1, 4], [2, 7], [3, 7], [4, 4], [5, 7], [6, 7], [7, 4], [8, 7]],
-	// 							  'wP' : [[1, 2], [2, 2], [3, 2], [4, 2], [5, 2], [6, 2], [7, 2], [8, 2]],
+	// 							  // 'bP' : [[1, 4], [2, 7], [3, 7], [4, 4], [5, 7], [6, 7], [7, 4], [8, 7]],
+	// 							  // 'wP' : [[2, 2], [2, 3], [3, 2], [4, 2], [5, 2], [6, 2], [7, 2], [8, 2]],
+	// 							  // 'bP' : [[1, 7], [2, 7], [3, 7], [4, 4], [5, 7], [6, 7], [7, 4], [8, 7]],
+	// 							  // 'wP' : [[2, 4], [2, 3], [3, 2], [4, 2], [5, 2], [6, 2], [7, 2], [8, 2]],
+	// 							  // 'bp' : [[1, 4]],
+	// 							  // 'wp' : [[2, 2]]
 	// 							};
 
 
@@ -321,16 +325,6 @@ $(document).ready(function() {
 							castle(indexToSquare(fromTo[1]));
 						}
 
-						// en passant
-						if (pieceType === 'P') {
-
-							if (Math.abs(fromTo[0] - fromTo[1]) === 7) {
-
-							}
-
-						} //&& (Math.abs(fromTo[0] - fromTo[1]) === 7 || Math.abs(fromTo[0] - fromTo[1]) === 9)) {
-
-
 						fromTo = [];
 
 						var piece = selectedPiece.slice(0, 2);
@@ -483,15 +477,16 @@ $(document).ready(function() {
 		occupiedSquares[oldIndex - 1] = null;
 		occupiedSquares[newIndex - 1] = piece + id;
 
-		// console.log(enPassantPawn);
 
 		// capture was en passant
-		if (piece[1] === 'P' && enPassantPawn && occupiedSquares[newIndex - 9] === enPassantPawn) {
-			if (color === 'w') {
+		if (piece[1] === 'P' && enPassantPawn) {
+			if (occupiedSquares[newIndex - 9] === enPassantPawn) {
 				capturePiece(enPassantPawn, [file, rank - 1]);
+				occupiedSquares[newIndex - 9] = null;
 			}
-			else {
+			else if (occupiedSquares[newIndex + 7] === enPassantPawn) {
 				capturePiece(enPassantPawn, [file, rank + 1]);
+				occupiedSquares[newIndex + 7] = null;
 			}
 		}
 
