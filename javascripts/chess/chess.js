@@ -13,6 +13,7 @@
 */
 
 var allPieces;
+var occupiedSquares;
 var enPassantPawn;
 
 $(document).ready(function() {
@@ -83,10 +84,6 @@ $(document).ready(function() {
 	// 							  // 'wp' : [[2, 2]]
 	// 							};
 
-
-	var piecePositions = {};
-
-	var occupiedSquares;
 	
 	// represent all pieces as entries in arrays for dynamic access (kings could have been single entry)
 	allPieces = {'wB' : [], 'wN' : [], 'wK' : [], 'wP' : [], 'wQ' : [], 'wR' : [], 'bB' : [], 'bN' : [], 'bK' : [], 'bP' : [], 'bQ' : [], 'bR' : [] };
@@ -272,14 +269,6 @@ $(document).ready(function() {
 		initializePieces();
 		drawBoard();
 
-		// initialize piecePositions array based on starting positions
-		for (var key in pieceStartingPositions) {
-			piecePositions[key] = [];
-			for (var i in pieceStartingPositions[key]) {
-				piecePositions[key].push(pieceStartingPositions[key][i]);
-			}
-		}
-
 		var whiteInCheckmate = false;
 		var blackInCheckmate = false;
 		move('w');
@@ -331,6 +320,7 @@ $(document).ready(function() {
 						var id = selectedPiece[2];
 						var index = findPieceIndex(piece, id);
 
+						// update move counters (for display and draw checking)
 						updateMoves(color);
 
 						// TODO: this prevents multiple click events being bound to the board.
@@ -464,7 +454,6 @@ $(document).ready(function() {
 		var oldRank = allPieces[piece][index].rank;
 		var oldSquare = [oldFile, oldRank];
 		var oldIndex = squareToIndex(oldSquare);
-		// piecePositions[piece][id] = newSquare; // update position of piece
 
 		allPieces[piece][index].file = newSquare[0];
 		allPieces[piece][index].rank = newSquare[1];
