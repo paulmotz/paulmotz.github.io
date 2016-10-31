@@ -25,6 +25,9 @@ class King extends Piece {
 	 */
 
  	moves(occupiedSquares) {
+
+ 		// console.log(attackedSquares, this._color);
+
  		var color = this._color;
  		var file = this._file;
  		var rank = this._rank;
@@ -39,12 +42,16 @@ class King extends Piece {
 		});
 
 		// queenside castling
-		if (!hasMoved && allPieces[color+'R'][0] && !allPieces[color+'R'][0].hasMoved && !occupiedSquares[squareToIndex([file - 1, rank]) - 1] && !occupiedSquares[squareToIndex([file - 2, rank]) - 1] && !occupiedSquares[squareToIndex([file - 3, rank]) - 1]) {
+		if (!hasMoved && allPieces[color+'R'][0] && !allPieces[color+'R'][0].hasMoved && 
+			!occupiedSquares[squareToIndex([file - 1, rank]) - 1] && !occupiedSquares[squareToIndex([file - 2, rank]) - 1] && !occupiedSquares[squareToIndex([file - 3, rank]) - 1] && 
+			!attackedSquares.has(squareToIndex([file, rank])) && !attackedSquares.has(squareToIndex([file - 1, rank])) && !attackedSquares.has(squareToIndex([file - 2, rank]))) {
 			moves.push([file - 2, rank]);
 		}
 
 		// kingside castling
-		if (!hasMoved && allPieces[color+'R'][1] && !allPieces[color+'R'][1].hasMoved && !occupiedSquares[squareToIndex([file + 1, rank]) - 1] && !occupiedSquares[squareToIndex([file + 2, rank]) - 1]) {
+		if (!hasMoved && allPieces[color+'R'][1] && !allPieces[color+'R'][1].hasMoved && 
+			!occupiedSquares[squareToIndex([file + 1, rank]) - 1] && !occupiedSquares[squareToIndex([file + 2, rank]) - 1] && 
+			!attackedSquares.has(squareToIndex([file, rank])) && !attackedSquares.has(squareToIndex([file + 1, rank])) && !attackedSquares.has(squareToIndex([file + 2, rank]))) {
 			moves.push([file + 2, rank]);
 		}
 

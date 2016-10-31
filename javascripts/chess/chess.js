@@ -2,19 +2,20 @@
  * TODOs
  *
  * Logic:
- * - add castling rule checks (can't castle through check or if in check)
- * - add en passant
- * - is the king in check
  * - is the piece pinned (moving it in a certain direction leaves the king in check)
  * - draw rules
+ * - captured piece moves after being captured (wR0 captured by bQ1)
  *
  * Check:
  * - pawn promotion
+ *
+ * Flexbox
 */
 
 var allPieces;
 var occupiedSquares;
 var enPassantPawn;
+var attackedSquares = new Set();
 
 $(document).ready(function() {
 
@@ -71,18 +72,22 @@ $(document).ready(function() {
 
 
 	// remove pieces for testing purposes
-	// var pieceCount = {'B': 2, 'N': 2, 'K': 1, 'P': 1, 'Q': 1, 'R': 2};
-	// var pieceNames = {'P' : 'Pawn'};
+	// var pieceCount = {'B': 2, 'N': 2, 'K': 1, 'P': 8, 'Q': 1, 'R': 2};
+	// var pieceNames = {'K' : 'King', 'R' : 'Rook'};
 
 	// // kings and queens have arrays of length 1 for convenience in later methods
-	// var pieceStartingPositions = {
-	// 							  // 'bP' : [[1, 4], [2, 7], [3, 7], [4, 4], [5, 7], [6, 7], [7, 4], [8, 7]],
-	// 							  // 'wP' : [[2, 2], [2, 3], [3, 2], [4, 2], [5, 2], [6, 2], [7, 2], [8, 2]],
-	// 							  // 'bP' : [[1, 7], [2, 7], [3, 7], [4, 4], [5, 7], [6, 7], [7, 4], [8, 7]],
-	// 							  // 'wP' : [[2, 4], [2, 3], [3, 2], [4, 2], [5, 2], [6, 2], [7, 2], [8, 2]],
-	// 							  // 'bp' : [[1, 4]],
-	// 							  // 'wp' : [[2, 2]]
-	// 							};
+	// var pieceStartingPositions = {'wB' : [[3, 1], [6, 1]],
+	// 								  'wK' : [[5, 1]],
+	// 								  'wP' : [[1, 2], [2, 2], [3, 2], [4, 2], [5, 2], [6, 2], [7, 2], [8, 2]],
+	// 								  'wQ' : [[4, 1]],
+	// 								  'wR' : [[1, 1], [7, 1]],
+	// 								  'bB' : [[3, 8], [6, 8]],
+	// 								  'bN' : [[2, 8], [7, 8]],
+	// 								  'bK' : [[5, 8]],
+	// 								  'bP' : [[1, 7], [2, 7], [3, 7], [4, 7], [5, 7], [6, 7], [7, 7], [8, 7]],
+	// 								  'bQ' : [[4, 8]],
+	// 								  'bR' : [[1, 8], [8, 8]]
+	// 								};
 
 	
 	// represent all pieces as entries in arrays for dynamic access (kings could have been single entry)
@@ -288,6 +293,8 @@ $(document).ready(function() {
 		// isCheckMate();
 		checkDraw();
 
+		attackedSquares = getAttackedSquares(opponentColor);
+
 		// if human is moving, allow him/her to move
 		if (whiteDown && currentColor === 'w' || !whiteDown && currentColor === 'b') {
 			humanTurn = true;
@@ -325,7 +332,8 @@ $(document).ready(function() {
 						// update move counters (for display and draw checking)
 						updateMoves(currentColor);
 
-						inCheck(opponentColor, currentColor);
+						// inCheck(opponentColor, currentColor);
+						// inCheck(currentColor, opponentColor);
 
 						// TODO: this prevents multiple click events being bound to the board.
 						// However, I REALLY don't like this solution.
@@ -395,6 +403,9 @@ $(document).ready(function() {
 			var numMoves = moves.length;
 			var r = Math.floor(Math.random() * numMoves);
 
+			// console.log(moves);
+			// console.log(compMove);
+
 			var compMove = moves[r];
 			var piece = compMove.piece;
 			var pieceType = piece[1];
@@ -420,7 +431,8 @@ $(document).ready(function() {
 
 			updateMoves(currentColor);
 
-			inCheck(opponentColor, currentColor);
+			// inCheck(opponentColor, currentColor);
+			// inCheck(currentColor, opponentColor);
 
 			// setTimeout(function() { movePiece(moves[r]) }, delay);
 			move(opponentColor, currentColor);
@@ -602,27 +614,25 @@ $(document).ready(function() {
 		return attackedSquares;
 	}
 
-
-
-
 	/**
 	 * Checks whether the king of the opposing color is in check
 	 * @param {String} color - the color of the king to check whether it is in check
+	 * @return {boolean} inCheck - whether or not the king is in check
 	 */
 
 	function inCheck(defendingColor, attackingColor) {
-
 		var attackedSquares = getAttackedSquares(attackingColor);
 		var opponentKing = allPieces[defendingColor + 'K'][0];
-
-		console.log(opponentKing);
-
-		console.log(attackedSquares);
-
 		var opponentKingIndex = squareToIndex([opponentKing.file, opponentKing.rank]);
 
 		if (attackedSquares.has(opponentKingIndex)) {
-			drawCheckSquare(defendingColor);
+			drawCheckSquare(defendingColor, true);
+			return true;
+		}
+
+		else {
+			drawCheckSquare(defendingColor, false);
+			return false;
 		}
 	}
 
@@ -774,15 +784,26 @@ $(document).ready(function() {
 	/**
 	 * Marks the square if the king is in check
 	 * @param {String} color - the color of the king in check: 'w' or 'b'
+	 * @param {boolean} inCheck - whether the king is in check
 	 */
 
-	function drawCheckSquare(color) {
+	function drawCheckSquare(color, inCheck) {
 		var king = color + 'K';
 		var file = allPieces[king][0].file;
 		var rank = allPieces[king][0].rank;
 		var symbol = pieceSymbols[king];
 		var coordinates = getCoordinates(file, rank);
-		ctx.fillStyle = "#FF0000";
+		if (inCheck) {
+			ctx.fillStyle = "#FF0000";
+		}
+		else {
+			if ((file + rank) % 2 === 0) {
+				ctx.fillStyle = "#444";
+			}
+			else {
+				ctx.fillStyle = "#999";
+			}
+		}
 		ctx.fillRect(coordinates[0], coordinates[1], squareSize, squareSize);
 		drawOnSquare(file, rank, symbol, color);
 	}
