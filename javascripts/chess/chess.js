@@ -301,7 +301,7 @@ $(document).ready(function() {
 		$('#turn').html(colorAbbreviations[currentColor] + " to move");
 
 		// if human is moving, allow him/her to move
-		if (whiteDown && currentColor === 'w' || !whiteDown && currentColor === 'b') {
+		// if (whiteDown && currentColor === 'w' || !whiteDown && currentColor === 'b') {
 			humanTurn = true;
 			var fromTo = [];
 			var moves = [];
@@ -367,8 +367,8 @@ $(document).ready(function() {
 						var id = selectedPiece[2]; // only need one digit since id can never be greater than 9 (8 pawns promoted to B/N/R)
 						var index = findPieceIndex(pieceName, id);
 						moves = allPieces[pieceName][index].moves().map(squareToIndex);
-						var kd = allPieces[pieceName][index].getKingDirection();
-						console.log(kd);
+						// var pd = allPieces[pieceName][index].getPinDirection();
+						// console.log(pd);
 						// var p = allPieces[pieceName][index].protectedSquares(occupiedSquares);
 						// console.log(p);
 					}	
@@ -379,67 +379,67 @@ $(document).ready(function() {
 					}
 				}
 			});
-		}
+		// }
 
-		// if computer is moving, pick a random move
-		else {
+		// // if computer is moving, pick a random move
+		// else {
 
-			humanTurn = false;
+		// 	humanTurn = false;
 
-			// construct array of possible moves
-			var moves = [];
-			for (pieceTypes in allPieces) {
-				var pieceType = pieceTypes[1];
+		// 	// construct array of possible moves
+		// 	var moves = [];
+		// 	for (pieceTypes in allPieces) {
+		// 		var pieceType = pieceTypes[1];
 
-				// only get moves from the correct color of pieces
-				if (pieceTypes[0] === currentColor) {
-					var pieceArray = allPieces[pieceTypes];
-					for (var piece in pieceArray) {
-						var pieceMoves = pieceArray[piece].moves();
-						for (var i in pieceMoves) {
-							var m =  {'piece' : pieceTypes, 'id' : pieceArray[piece].id, 'move' : pieceMoves[i]};
-							moves.push(m);
-						}
-					}
-				}
-			}
-			var numMoves = moves.length;
-			var r = Math.floor(Math.random() * numMoves);
+		// 		// only get moves from the correct color of pieces
+		// 		if (pieceTypes[0] === currentColor) {
+		// 			var pieceArray = allPieces[pieceTypes];
+		// 			for (var piece in pieceArray) {
+		// 				var pieceMoves = pieceArray[piece].moves();
+		// 				for (var i in pieceMoves) {
+		// 					var m =  {'piece' : pieceTypes, 'id' : pieceArray[piece].id, 'move' : pieceMoves[i]};
+		// 					moves.push(m);
+		// 				}
+		// 			}
+		// 		}
+		// 	}
+		// 	var numMoves = moves.length;
+		// 	var r = Math.floor(Math.random() * numMoves);
 
-			// console.log(moves);
-			// console.log(compMove);
+		// 	// console.log(moves);
+		// 	// console.log(compMove);
 
-			var compMove = moves[r];
-			var piece = compMove.piece;
-			var pieceType = piece[1];
-			var pieceId = piece + compMove.id;
+		// 	var compMove = moves[r];
+		// 	var piece = compMove.piece;
+		// 	var pieceType = piece[1];
+		// 	var pieceId = piece + compMove.id;
 
-			// check for castling
-			if (pieceType === 'K') {
-				if (!allPieces[piece][compMove.id].hasMoved) {
+		// 	// check for castling
+		// 	if (pieceType === 'K') {
+		// 		if (!allPieces[piece][compMove.id].hasMoved) {
 
-					// piece is known to be king that has not yet moved (so its location is [5, 1] or [5, 8])
-					var king = allPieces[piece][0];
-					var newSquare = compMove.move;
+		// 			// piece is known to be king that has not yet moved (so its location is [5, 1] or [5, 8])
+		// 			var king = allPieces[piece][0];
+		// 			var newSquare = compMove.move;
 
-					castle(newSquare);
+		// 			castle(newSquare);
 
-					// this is the king's first move, set its hasMoved property to true
-					allPieces[piece][compMove.id].hasMoved = true;
-				}
-			}
+		// 			// this is the king's first move, set its hasMoved property to true
+		// 			allPieces[piece][compMove.id].hasMoved = true;
+		// 		}
+		// 	}
 
-			// movePiece checks whether a king or rook has moved. This should be done after checking for castling
-			movePiece(moves[r]);
+		// 	// movePiece checks whether a king or rook has moved. This should be done after checking for castling
+		// 	movePiece(moves[r]);
 
-			updateMoves(currentColor);
+		// 	updateMoves(currentColor);
 
-			// inCheck(opponentColor, currentColor);
-			// inCheck(currentColor, opponentColor);
+		// 	// inCheck(opponentColor, currentColor);
+		// 	// inCheck(currentColor, opponentColor);
 
-			// setTimeout(function() { movePiece(moves[r]) }, delay);
-			move(opponentColor, currentColor);
-		}
+		// 	// setTimeout(function() { movePiece(moves[r]) }, delay);
+		// 	move(opponentColor, currentColor);
+		// }
 	}
 
 	/**
@@ -891,10 +891,9 @@ $(document).ready(function() {
  */
 
 function squareToIndex(square) {
-	if (square[0]  < 1 && square[0] > 8 && square[1] < 1 && square[1] > 8) {
-		return undefined;
+	if (square[0] >= 1 && square[0] <= 8 && square[1] >= 1 && square[1] <= 8) {
+		return (square[1] - 1) * 8 + square[0];
 	}
-	return (square[1] - 1) * 8 + square[0];
 }
 
 /**

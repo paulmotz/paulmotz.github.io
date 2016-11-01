@@ -100,7 +100,6 @@ class Piece {
 
 	/**
 	 * Get the piece's moves in a particular direction, used for "ranged" pieces (bishop, queen and rook)
-	 * @param {String[]} occupiedSquares - the squares that are currently occupied, array entries are piece names (eg wP3)
 	 * @param {number} file - the file that the piece is currently occupying: 1 - 8
 	 * @param {number} rank - the rank that the piece is currently occupying: 1 - 8
 	 * @param {number} f - the piece's movement between files: -1, 0, 1
@@ -131,15 +130,90 @@ class Piece {
 
 	/**
 	 * Returns the direction of the king from the piece. Used for checking for pinned pieces
-	 * @param {String[]} occupiedSquares - the squares that are currently occupied, array entries are piece names (eg wP3)
-	 * @param {number[]} kingDirection - the direction of the king from the piece, null if another piece is in the way
+	 * @return {number[]} kingDirection - the direction of the king from the piece, null if another piece is in the way
 	 */
-
 
 	getKingDirection() {
 		var file = this.file;
 		var rank = this.rank;
-		var piece = allPieces;
-		console.log(occupiedSquares);
+		var piece = occupiedSquares[squareToIndex([file, rank]) - 1];
+		var pieceType = piece[1];
+		if (pieceType === 'K') {
+			return null; // TODO: maybe this should be a special value
+		}
+		var directions = [[-1,  1], [0,  1], [1,  1],
+						  [-1,  0],          [1,  0],
+						  [-1, -1], [0, -1], [1, -1]];
+
+		for (var i in directions) {
+			var currDir = directions[i];
+			var f = currDir[0];
+			var r = currDir[1];
+			while (file + f >= 1 && file + f <= 8 && rank + r >= 1 && rank + r <= 8) {
+				file += f;
+				rank += r;
+				if (occupiedSquares[squareToIndex([file, rank]) - 1] && 
+					occupiedSquares[squareToIndex([file, rank]) - 1][0] === this.color) {
+					if (occupiedSquares[squareToIndex([file, rank]) - 1][1] === 'K') {
+						return currDir;
+					} 
+					else {
+						break;
+					}
+				}
+			}
+			file = this.file;
+			rank = this.rank;
+		}
+	}
+
+	/**
+	 * Checks to see if a piece is pinned and if so gets the direction of the pin
+	 * @return {number[]} pinDirection - the direciton of the pin, null if no pin
+	 */
+
+	getPinDirection() {
+		var kd = this.getKingDirection();
+		if (!kd) return;
+		else {
+			var file = this.file;
+			var rank = this.rank;
+			var f = -kd[0];
+			var r = -kd[1];
+
+			// diagonal move
+			if ((f + r) % 2 === 0) {
+				while (file + f >= 1 && file + f <= 8 && rank + r >= 1 && rank + r <= 8) {
+					file += f;
+					rank += r;
+					var inlinePiece = occupiedSquares[squareToIndex([file, rank]) - 1];
+					if (inlinePiece) {
+						if (inlinePiece[0] !== this.color && (inlinePiece[1] === 'B' || inlinePiece[1] === 'Q')) {
+							return inlinePiece;
+						} 
+						else {
+							break;
+						}
+					} 
+				}
+			}
+
+			// horizontal/vertical move
+			else {
+				while (file + f >= 1 && file + f <= 8 && rank + r >= 1 && rank + r <= 8) {
+					file += f;
+					rank += r;
+					var inlinePiece = occupiedSquares[squareToIndex([file, rank]) - 1];
+					if (inlinePiece) {
+						if (inlinePiece[0] !== this.color && (inlinePiece[1] === 'R' || inlinePiece[1] === 'Q')) {
+							return inlinePiece;
+						} 
+						else {
+							break;
+						}
+					} 
+				}
+			}
+		}
 	}
 }
