@@ -88,4 +88,23 @@ class Pawn extends Piece {
 
  		return moves;
  	}
+
+ 	/**
+	 * Get the squares that the Pawn protects
+	 * @return {number[][]} protectedSquares - the squares that the Pawn protects as an array of co-ordinates (also an array)
+	 */
+
+ 	protectedSquares(occupiedSquares) {
+ 		var color = this._color
+ 		var file = this._file;
+ 		var rank = this._rank;
+		var protectedSquares = color === 'w' ? [[file - 1, rank + 1], [file + 1, rank + 1]] : [[file - 1, rank - 1], [file + 1, rank - 1]];
+
+		// ensure protected squares are off the board. Only need to check file and not rank.
+		var protectedSquares = protectedSquares.filter(function(square) {
+			return square[0] > 0 && square[0] < 9;
+		});
+
+		return protectedSquares;
+ 	}
 }

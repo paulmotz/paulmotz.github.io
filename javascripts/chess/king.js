@@ -57,6 +57,28 @@ class King extends Piece {
  	}
 
  	/**
+	 * Get the squares that the King protects
+	 * @return {number[][]} protectedSquares - the squares that the King protects as an array of co-ordinates (also an array)
+	 */
+
+ 	protectedSquares(occupiedSquares) {
+ 		var color = this._color;
+ 		var file = this._file;
+ 		var rank = this._rank;
+ 		var hasMoved = this._hasMoved;
+ 		var possibleMoves = [ [file - 1, rank + 1], [file, rank + 1], [file + 1, rank + 1], 
+ 							  [file - 1, rank],                       [file + 1, rank], 
+ 							  [file - 1, rank - 1], [file, rank - 1], [file + 1, rank - 1] ];
+
+ 		// only need to check if square is on the board
+		var protectedSquares = possibleMoves.filter(function(square){
+			return square[0] > 0 && square[0] < 9 && square[1] > 0 && square[1] < 9;			
+		});
+
+		return protectedSquares;
+ 	}
+
+ 	/**
  	 * Get whether the king has moved
  	 */
 

@@ -99,15 +99,15 @@ class Piece {
 	// }
 
 	/**
-	 * Get the Rook's moves in a particular direction
+	 * Get the piece's moves in a particular direction
 	 * @param {String[]} occupiedSquares - the squares that are currently occupied, array entries are piece names (eg wP3)
-	 * @param {number} file - the file that the Rook is currently occupying: 1 - 8
-	 * @param {number} rank - the rank that the Rook is currently occupying: 1 - 8
-	 * @param {number} f - the Rook's movement between files: -1, 0, 1
-	 * @param {number} r - the Rook's movement between ranks: -1, 0, 1
-	 * @return {number[][]} moves - the moves of the Rook that have already been calculated
-	 * @param {boolean} defending - whether the move's being calculated are attacking or defending. Defending counts pieces of the same color guarded by the Rook
-	 * @return {number[][]} moves - the moves of the Rook as an array of co-ordinates (also an array)
+	 * @param {number} file - the file that the piece is currently occupying: 1 - 8
+	 * @param {number} rank - the rank that the piece is currently occupying: 1 - 8
+	 * @param {number} f - the piece's movement between files: -1, 0, 1
+	 * @param {number} r - the piece's movement between ranks: -1, 0, 1
+	 * @return {number[][]} moves - the moves of the piece that have already been calculated
+	 * @param {boolean} defending - whether the move's being calculated are attacking or defending. Defending counts pieces of the same color guarded by the piece
+	 * @return {number[][]} moves - the moves of the piece as an array of co-ordinates (also an array)
 	 */
 
 	moveOneWay(occupiedSquares, file, rank, f, r, moves, defending) {
