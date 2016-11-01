@@ -99,7 +99,7 @@ class Piece {
 	// }
 
 	/**
-	 * Get the piece's moves in a particular direction
+	 * Get the piece's moves in a particular direction, used for "ranged" pieces (bishop, queen and rook)
 	 * @param {String[]} occupiedSquares - the squares that are currently occupied, array entries are piece names (eg wP3)
 	 * @param {number} file - the file that the piece is currently occupying: 1 - 8
 	 * @param {number} rank - the rank that the piece is currently occupying: 1 - 8
@@ -110,7 +110,7 @@ class Piece {
 	 * @return {number[][]} moves - the moves of the piece as an array of co-ordinates (also an array)
 	 */
 
-	moveOneWay(occupiedSquares, file, rank, f, r, moves, defending) {
+	moveOneWay(file, rank, f, r, moves, defending) {
 		while (file + f >= 1 && file + f <= 8 && rank + r >= 1 && rank + r <= 8) {
 			file += f;
 			rank += r;
@@ -127,5 +127,19 @@ class Piece {
 			moves.push([file, rank]);
 		}
 		return moves;
+	}
+
+	/**
+	 * Returns the direction of the king from the piece. Used for checking for pinned pieces
+	 * @param {String[]} occupiedSquares - the squares that are currently occupied, array entries are piece names (eg wP3)
+	 * @param {number[]} kingDirection - the direction of the king from the piece, null if another piece is in the way
+	 */
+
+
+	getKingDirection() {
+		var file = this.file;
+		var rank = this.rank;
+		var piece = allPieces;
+		console.log(occupiedSquares);
 	}
 }

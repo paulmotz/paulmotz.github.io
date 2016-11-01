@@ -22,7 +22,7 @@ class King extends Piece {
 	 * @return {number[][]} moves - the moves of the King as an array of co-ordinates (also an array)
 	 */
 
- 	moves(occupiedSquares) {
+ 	moves() {
 
  		// console.log(attackedSquares, this._color);
 
@@ -36,7 +36,8 @@ class King extends Piece {
 
 		var moves = possibleMoves.filter(function(square){
 			return square[0] > 0 && square[0] < 9 && square[1] > 0 && square[1] < 9 && 
-			(!occupiedSquares[squareToIndex([square[0], square[1]]) - 1] || occupiedSquares[squareToIndex([square[0], square[1]]) - 1][0] !== color);			
+			(!occupiedSquares[squareToIndex([square[0], square[1]]) - 1] || occupiedSquares[squareToIndex([square[0], square[1]]) - 1][0] !== color) &&
+			!attackedSquares.has(squareToIndex(square));			
 		});
 
 		// queenside castling

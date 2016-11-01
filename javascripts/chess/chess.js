@@ -3,9 +3,10 @@
  *
  * Logic:
  * - is the piece pinned (moving it in a certain direction leaves the king in check)
- * - king's cannot take guarded pieces (square won't show up on attackedSquares)
+ * - king should not be able to move backwards when being attacked by a B, Q or R
  * - draw rules
  * - captured piece moves after being captured (wR0 captured by bQ1)
+ * - does occupiedSquares need to be passed everywhere
  *
  * Check:
  * - pawn promotion
@@ -48,6 +49,7 @@ $(document).ready(function() {
 
 	// the two players' colors
 	var colors = ['w', 'b'];
+	var colorAbbreviations = {'w' : 'White', 'b' : 'Black'};
 
 	var pieceNames = {'B' : 'Bishop', 'N' : 'Knight', 'K' : 'King', 'P' : 'Pawn', 'Q' : 'Queen', 'R' : 'Rook'};
 	var pieceAbbreviations = {'Bishop' : 'B', 'Knight' : 'N', 'King' : 'K', 'Pawn' : 'P', 'Queen' : 'Q', 'Rook' : 'R'};
@@ -296,6 +298,8 @@ $(document).ready(function() {
 
 		attackedSquares = getAttackedSquares(opponentColor);
 
+		$('#turn').html(colorAbbreviations[currentColor] + " to move");
+
 		// if human is moving, allow him/her to move
 		if (whiteDown && currentColor === 'w' || !whiteDown && currentColor === 'b') {
 			humanTurn = true;
@@ -362,7 +366,9 @@ $(document).ready(function() {
 						var pieceName = selectedPiece.slice(0, 2);
 						var id = selectedPiece[2]; // only need one digit since id can never be greater than 9 (8 pawns promoted to B/N/R)
 						var index = findPieceIndex(pieceName, id);
-						moves = allPieces[pieceName][index].moves(occupiedSquares).map(squareToIndex);
+						moves = allPieces[pieceName][index].moves().map(squareToIndex);
+						var kd = allPieces[pieceName][index].getKingDirection();
+						console.log(kd);
 						// var p = allPieces[pieceName][index].protectedSquares(occupiedSquares);
 						// console.log(p);
 					}	
@@ -389,7 +395,7 @@ $(document).ready(function() {
 				if (pieceTypes[0] === currentColor) {
 					var pieceArray = allPieces[pieceTypes];
 					for (var piece in pieceArray) {
-						var pieceMoves = pieceArray[piece].moves(occupiedSquares);
+						var pieceMoves = pieceArray[piece].moves();
 						for (var i in pieceMoves) {
 							var m =  {'piece' : pieceTypes, 'id' : pieceArray[piece].id, 'move' : pieceMoves[i]};
 							moves.push(m);
@@ -603,7 +609,7 @@ $(document).ready(function() {
 			if (pieceType[0] === color) {
 				var pieceArray = allPieces[pieceType];
 				for (var piece in pieceArray) {
-					var pieceMoves = pieceArray[piece].moves(occupiedSquares);
+					var pieceMoves = pieceArray[piece].protectedSquares();
 					for (var i in pieceMoves) {
 						attackedSquares.add(squareToIndex(pieceMoves[i]));
 					}

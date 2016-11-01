@@ -11,7 +11,7 @@ class Pawn extends Piece {
 		super(color, file, rank, id)
 	}
 
-	moves(occupiedSquares) {
+	moves() {
 		var color = this.color;
  		var file = this._file;
  		var rank = this._rank;

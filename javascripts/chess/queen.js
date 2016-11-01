@@ -6,19 +6,19 @@ class Queen extends Piece {
 	 * @return {number[][]} moves - the moves of the Queen as an array of co-ordinates (also an array)
 	 */
 
-	moves(occupiedSquares) {
+	moves() {
 		var moves = [];
 		var file = this._file;
 		var rank = this._rank;
 
-		moves = this.moveOneWay(occupiedSquares, file, rank, -1, 0, moves, false);
-		moves = this.moveOneWay(occupiedSquares, file, rank, +1, 0, moves, false);
-		moves = this.moveOneWay(occupiedSquares, file, rank, 0, -1, moves, false);
-		moves = this.moveOneWay(occupiedSquares, file, rank, 0, +1, moves, false);
-		moves = this.moveOneWay(occupiedSquares, file, rank, -1, -1, moves, false);
-		moves = this.moveOneWay(occupiedSquares, file, rank, -1, +1, moves, false);
-		moves = this.moveOneWay(occupiedSquares, file, rank, +1, -1, moves, false);
-		moves = this.moveOneWay(occupiedSquares, file, rank, +1, +1, moves, false);
+		moves = this.moveOneWay(file, rank, -1, 0, moves, false);
+		moves = this.moveOneWay(file, rank, +1, 0, moves, false);
+		moves = this.moveOneWay(file, rank, 0, -1, moves, false);
+		moves = this.moveOneWay(file, rank, 0, +1, moves, false);
+		moves = this.moveOneWay(file, rank, -1, -1, moves, false);
+		moves = this.moveOneWay(file, rank, -1, +1, moves, false);
+		moves = this.moveOneWay(file, rank, +1, -1, moves, false);
+		moves = this.moveOneWay(file, rank, +1, +1, moves, false);
 
 		return moves;
 	}
@@ -29,19 +29,19 @@ class Queen extends Piece {
 	 * @return {number[][]} protectedSquares - the squares that the Queen protects as an array of co-ordinates (also an array)
 	 */
 
-	protectedSquares(occupiedSquares) {
+	protectedSquares() {
 		var protectedSquares = [];
 		var file = this._file;
 		var rank = this._rank;
 
-		protectedSquares = this.moveOneWay(occupiedSquares, file, rank, -1, 0, protectedSquares, true);
-		protectedSquares = this.moveOneWay(occupiedSquares, file, rank, +1, 0, protectedSquares, true);
-		protectedSquares = this.moveOneWay(occupiedSquares, file, rank, 0, -1, protectedSquares, true);
-		protectedSquares = this.moveOneWay(occupiedSquares, file, rank, 0, +1, protectedSquares, true);
-		protectedSquares = this.moveOneWay(occupiedSquares, file, rank, -1, -1, protectedSquares, true);
-		protectedSquares = this.moveOneWay(occupiedSquares, file, rank, -1, +1, protectedSquares, true);
-		protectedSquares = this.moveOneWay(occupiedSquares, file, rank, +1, -1, protectedSquares, true);
-		protectedSquares = this.moveOneWay(occupiedSquares, file, rank, +1, +1, protectedSquares, true);
+		protectedSquares = this.moveOneWay(file, rank, -1, 0, protectedSquares, true);
+		protectedSquares = this.moveOneWay(file, rank, +1, 0, protectedSquares, true);
+		protectedSquares = this.moveOneWay(file, rank, 0, -1, protectedSquares, true);
+		protectedSquares = this.moveOneWay(file, rank, 0, +1, protectedSquares, true);
+		protectedSquares = this.moveOneWay(file, rank, -1, -1, protectedSquares, true);
+		protectedSquares = this.moveOneWay(file, rank, -1, +1, protectedSquares, true);
+		protectedSquares = this.moveOneWay(file, rank, +1, -1, protectedSquares, true);
+		protectedSquares = this.moveOneWay(file, rank, +1, +1, protectedSquares, true);
 
 		return protectedSquares;
 	}
