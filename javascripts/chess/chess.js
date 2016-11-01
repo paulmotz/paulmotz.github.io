@@ -74,7 +74,7 @@ $(document).ready(function() {
 
 	// remove pieces for testing purposes
 	var pieceCount = {'B': 2, 'N': 2, 'K': 1, 'P': 8, 'Q': 1, 'R': 2};
-	var pieceNames = {'K' : 'King', 'R' : 'Rook'};
+	var pieceNames = {'B': 'Bishop', 'K' : 'King', 'Q' : 'Queen', 'R' : 'Rook'};
 
 	// kings and queens have arrays of length 1 for convenience in later methods
 	var pieceStartingPositions = {'wB' : [[3, 1], [6, 1]],
@@ -363,6 +363,8 @@ $(document).ready(function() {
 						var id = selectedPiece[2]; // only need one digit since id can never be greater than 9 (8 pawns promoted to B/N/R)
 						var index = findPieceIndex(pieceName, id);
 						moves = allPieces[pieceName][index].moves(occupiedSquares).map(squareToIndex);
+						// var p = allPieces[pieceName][index].protectedSquares(occupiedSquares);
+						// console.log(p);
 					}	
 
 					// reset move to empty array so that the next click will be the "from" part of the move

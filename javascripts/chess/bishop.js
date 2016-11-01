@@ -2,6 +2,7 @@ class Bishop extends Piece {
 
 	/**
 	 * Get the Bishop's moves
+	 * @param {String[]} occupiedSquares - the squares that are currently occupied, array entries are piece names (eg wP3)
 	 * @return {number[][]} moves - the moves of the Bishop as an array of co-ordinates (also an array)
 	 */
 
@@ -11,70 +12,30 @@ class Bishop extends Piece {
 		var file = this._file;
 		var rank = this._rank;
 
-		// moves towards the bottom-left
-		while (rank > 1 && file > 1 && file <= 8){
-			file--;
-			rank--;
-			var index = squareToIndex([file, rank]) - 1;
-			if (occupiedSquares[index]) {
-				if (occupiedSquares[index][0] !== this.color) {
-					moves.push([file, rank]);
-				}
-				break;
-			}
-			moves.push([file, rank]);
-		}
+		moves = this.moveOneWay(occupiedSquares, file, rank, -1, -1, moves, false);
+		moves = this.moveOneWay(occupiedSquares, file, rank, -1, +1, moves, false);
+		moves = this.moveOneWay(occupiedSquares, file, rank, +1, -1, moves, false);
+		moves = this.moveOneWay(occupiedSquares, file, rank, +1, +1, moves, false);
 
-		file = this._file;
-		rank = this._rank;
+		return moves;
+	}
 
-		// moves towards the bottom-right
-		while (rank > 1 && file >= 1 && file < 8){
-			file++;
-			rank--;
-			var index = squareToIndex([file, rank]) - 1;
-			if (occupiedSquares[index]) {
-				if (occupiedSquares[index][0] !== this.color) {
-					moves.push([file, rank]);
-				}
-				break;
-			}
-			moves.push([file, rank]);
-		}
+	/**
+	 * Get the squares the Bishop protects
+	 * @param {String[]} occupiedSquares - the squares that are currently occupied, array entries are piece names (eg wP3)
+	 * @return {number[][]} moves - the moves of the Bishop as an array of co-ordinates (also an array)
+	 */
 
-		file = this._file;
-		rank = this._rank;
+	protectedSquares(occupiedSquares) {
+		var moves = [];
 
-		// moves towards the top-left
-		while (rank < 8 && file > 1 && file <= 8){
-			file--;
-			rank++;
-			var index = squareToIndex([file, rank]) - 1;
-			if (occupiedSquares[index]) {
-				if (occupiedSquares[index][0] !== this.color) {
-					moves.push([file, rank]);
-				}
-				break;
-			}
-			moves.push([file, rank]);
-		}
+		var file = this._file;
+		var rank = this._rank;
 
-		file = this._file;
-		rank = this._rank;
-
-		// moves towards the top-right
-		while (rank < 8 && file >= 1 && file < 8){
-			rank++;
-			file++;
-			var index = squareToIndex([file, rank]) - 1;
-			if (occupiedSquares[index]) {
-				if (occupiedSquares[index][0] !== this.color) {
-					moves.push([file, rank]);
-				}
-				break;
-			}
-			moves.push([file, rank]);
-		}
+		moves = this.moveOneWay(occupiedSquares, file, rank, -1, -1, moves, true);
+		moves = this.moveOneWay(occupiedSquares, file, rank, -1, +1, moves, true);
+		moves = this.moveOneWay(occupiedSquares, file, rank, +1, -1, moves, true);
+		moves = this.moveOneWay(occupiedSquares, file, rank, +1, +1, moves, true);
 
 		return moves;
 	}
