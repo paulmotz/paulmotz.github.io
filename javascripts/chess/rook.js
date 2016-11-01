@@ -25,67 +25,32 @@ class Rook extends Piece {
 
 	moves(occupiedSquares) {
 		var moves = [];
-
 		var file = this._file;
 		var rank = this._rank;
 
-		// moves towards the left
-		while (file > 1) {
-			file--;
-			var index = squareToIndex([file, rank]) - 1;
-			if (occupiedSquares[index]) {
-				if (occupiedSquares[index][0] !== this.color) {
-					moves.push([file, rank]);
-				}
-				break;
-			}
-			moves.push([file, rank]);
-		}
+		moves = this.moveOneWay(occupiedSquares, file, rank, -1, 0, moves, false);
+		moves = this.moveOneWay(occupiedSquares, file, rank, +1, 0, moves, false);
+		moves = this.moveOneWay(occupiedSquares, file, rank, 0, -1, moves, false);
+		moves = this.moveOneWay(occupiedSquares, file, rank, 0, +1, moves, false);
 
-		file = this._file;
+		return moves;
+	}
 
-		// moves towards the right
-		while (file < 8) {
-			file++;
-			var index = squareToIndex([file, rank]) - 1;
-			if (occupiedSquares[index]) {
-				if (occupiedSquares[index][0] !== this.color) {
-					moves.push([file, rank]);
-				}
-				break;
-			}
-			moves.push([file, rank]);
-		}
+	/**
+	 * Get the squares the rook protects
+	 * @param {String[]} occupiedSquares - the squares that are currently occupied, array entries are piece names (eg wP3)
+	 * @return {number[][]} moves - the moves of the Rook as an array of co-ordinates (also an array)
+	 */
 
-		file = this._file;
+	protectedSquares(occupiedSquares) {
+		var moves = [];
+		var file = this._file;
+		var rank = this._rank;
 
-		// moves towards the bottom
-		while (rank > 1) {
-			rank--;
-			var index = squareToIndex([file, rank]) - 1;
-			if (occupiedSquares[index]) {
-				if (occupiedSquares[index][0] !== this.color) {
-					moves.push([file, rank]);
-				}
-				break;
-			}
-			moves.push([file, rank]);
-		}
-
-		rank = this._rank;
-
-		// moves towards the top
-		while (rank < 8) {
-			rank++;
-			var index = squareToIndex([file, rank]) - 1;
-			if (occupiedSquares[index]) {
-				if (occupiedSquares[index][0] !== this.color) {
-					moves.push([file, rank]);
-				}
-				break;
-			}
-			moves.push([file, rank]);
-		}
+		moves = this.moveOneWay(occupiedSquares, file, rank, -1, 0, moves, true);
+		moves = this.moveOneWay(occupiedSquares, file, rank, +1, 0, moves, true);
+		moves = this.moveOneWay(occupiedSquares, file, rank, 0, -1, moves, true);
+		moves = this.moveOneWay(occupiedSquares, file, rank, 0, +1, moves, true);
 
 		return moves;
 	}
@@ -93,13 +58,32 @@ class Rook extends Piece {
 	/**
 	 * Get the Rook's moves in a particular direction
 	 * @param {String[]} occupiedSquares - the squares that are currently occupied, array entries are piece names (eg wP3)
-	 * @param {number} file - the file that the Rook is currently occupying
-	 * @param {number} rank - the rank that the Rook is currently occupying
+	 * @param {number} file - the file that the Rook is currently occupying: 1 - 8
+	 * @param {number} rank - the rank that the Rook is currently occupying: 1 - 8
+	 * @param {number} f - the Rook's movement between files: -1, 0, 1
+	 * @param {number} r - the Rook's movement between ranks: -1, 0, 1
+	 * @return {number[][]} moves - the moves of the Rook that have already been calculated
+	 * @param {boolean} defending - whether the move's being calculated are attacking or defending. Defending counts pieces of the same color guarded by the Rook
 	 * @return {number[][]} moves - the moves of the Rook as an array of co-ordinates (also an array)
 	 */
 
-	moveOneWay(occupiedSquares, file, rank, f, r, defending) {
-
+	moveOneWay(occupiedSquares, file, rank, f, r, moves, defending) {
+		while (file + f >= 1 && file + f <= 8 && rank + r >= 1 && rank + r <= 8) {
+			file += f;
+			rank += r;
+			var index = squareToIndex([file, rank]) - 1;
+			if (occupiedSquares[index]) {
+				if (defending) {
+					moves.push([file, rank]);
+				}
+				else if (occupiedSquares[index][0] !== this.color) {
+					moves.push([file, rank]);
+				}
+				break;
+			}
+			moves.push([file, rank]);
+		}
+		return moves;
 	}
 
 	/**

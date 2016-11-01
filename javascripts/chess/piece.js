@@ -94,7 +94,7 @@ class Piece {
 	}
 
 	// TODO: not sure if this is right, read up on this
-	get moves() {
-		return [];
-	}
+	// get moves() {
+	// 	return [];
+	// }
 }

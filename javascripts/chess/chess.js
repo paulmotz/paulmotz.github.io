@@ -317,7 +317,7 @@ $(document).ready(function() {
 
 						var nextMove =  {'piece' : selectedPiece.slice(0, 2), 'id' : selectedPiece[2], 'move' : square};
 						movePiece(nextMove);
-						
+
 						fromTo = [];
 
 						var piece = selectedPiece.slice(0, 2);
