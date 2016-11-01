@@ -19,6 +19,7 @@ class Rook extends Piece {
 
 	/**
 	 * Get the Rook's moves
+	 * @param {String[]} occupiedSquares - the squares that are currently occupied, array entries are piece names (eg wP3)
 	 * @return {number[][]} moves - the moves of the Rook as an array of co-ordinates (also an array)
 	 */
 
@@ -87,6 +88,18 @@ class Rook extends Piece {
 		}
 
 		return moves;
+	}
+
+	/**
+	 * Get the Rook's moves in a particular direction
+	 * @param {String[]} occupiedSquares - the squares that are currently occupied, array entries are piece names (eg wP3)
+	 * @param {number} file - the file that the Rook is currently occupying
+	 * @param {number} rank - the rank that the Rook is currently occupying
+	 * @return {number[][]} moves - the moves of the Rook as an array of co-ordinates (also an array)
+	 */
+
+	moveOneWay(occupiedSquares, file, rank, f, r, defending) {
+
 	}
 
 	/**

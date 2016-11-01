@@ -3,6 +3,7 @@
  *
  * Logic:
  * - is the piece pinned (moving it in a certain direction leaves the king in check)
+ * - king's cannot take guarded pieces (square won't show up on attackedSquares)
  * - draw rules
  * - captured piece moves after being captured (wR0 captured by bQ1)
  *
@@ -72,22 +73,22 @@ $(document).ready(function() {
 
 
 	// remove pieces for testing purposes
-	// var pieceCount = {'B': 2, 'N': 2, 'K': 1, 'P': 8, 'Q': 1, 'R': 2};
-	// var pieceNames = {'K' : 'King', 'R' : 'Rook'};
+	var pieceCount = {'B': 2, 'N': 2, 'K': 1, 'P': 8, 'Q': 1, 'R': 2};
+	var pieceNames = {'K' : 'King', 'R' : 'Rook'};
 
-	// // kings and queens have arrays of length 1 for convenience in later methods
-	// var pieceStartingPositions = {'wB' : [[3, 1], [6, 1]],
-	// 								  'wK' : [[5, 1]],
-	// 								  'wP' : [[1, 2], [2, 2], [3, 2], [4, 2], [5, 2], [6, 2], [7, 2], [8, 2]],
-	// 								  'wQ' : [[4, 1]],
-	// 								  'wR' : [[1, 1], [7, 1]],
-	// 								  'bB' : [[3, 8], [6, 8]],
-	// 								  'bN' : [[2, 8], [7, 8]],
-	// 								  'bK' : [[5, 8]],
-	// 								  'bP' : [[1, 7], [2, 7], [3, 7], [4, 7], [5, 7], [6, 7], [7, 7], [8, 7]],
-	// 								  'bQ' : [[4, 8]],
-	// 								  'bR' : [[1, 8], [8, 8]]
-	// 								};
+	// kings and queens have arrays of length 1 for convenience in later methods
+	var pieceStartingPositions = {'wB' : [[3, 1], [6, 1]],
+									  'wK' : [[5, 1]],
+									  'wP' : [[1, 2], [2, 2], [3, 2], [4, 2], [5, 2], [6, 2], [7, 2], [8, 2]],
+									  'wQ' : [[4, 1]],
+									  'wR' : [[1, 1], [8, 1]],
+									  'bB' : [[3, 8], [6, 8]],
+									  'bN' : [[2, 8], [7, 8]],
+									  'bK' : [[5, 8]],
+									  'bP' : [[1, 7], [2, 7], [3, 7], [4, 7], [5, 7], [6, 7], [7, 7], [8, 7]],
+									  'bQ' : [[4, 8]],
+									  'bR' : [[1, 8], [8, 8]]
+									};
 
 	
 	// represent all pieces as entries in arrays for dynamic access (kings could have been single entry)
@@ -316,13 +317,7 @@ $(document).ready(function() {
 
 						var nextMove =  {'piece' : selectedPiece.slice(0, 2), 'id' : selectedPiece[2], 'move' : square};
 						movePiece(nextMove);
-
-						var pieceType = selectedPiece[1];
-
-						if (pieceType === 'K' && Math.abs(fromTo[0] - fromTo[1]) === 2) {
-							castle(indexToSquare(fromTo[1]));
-						}
-
+						
 						fromTo = [];
 
 						var piece = selectedPiece.slice(0, 2);
@@ -455,7 +450,7 @@ $(document).ready(function() {
 		var rank = newSquare[1];
 
 		// pawn moves reset the fifty-move rule counter
-		if (move.piece[1] === 'P') {
+		if (piece[1] === 'P') {
 			drawMoveCounter = 0;
 		}
 
@@ -471,6 +466,10 @@ $(document).ready(function() {
 		var oldRank = allPieces[piece][index].rank;
 		var oldSquare = [oldFile, oldRank];
 		var oldIndex = squareToIndex(oldSquare);
+
+		if (piece[1] === 'K' && Math.abs(file - oldFile) === 2) {
+			castle(newSquare);
+		}
 
 		allPieces[piece][index].file = newSquare[0];
 		allPieces[piece][index].rank = newSquare[1];

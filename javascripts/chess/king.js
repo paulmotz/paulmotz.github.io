@@ -1,9 +1,7 @@
 class King extends Piece {
 	
 	// TODO:
-	// castling: king cannot castle while in check, cannot castle through check
 	// check if the piece is in check
-	// check if castling will put the piece in check
 	// restrict move if move would place the king in check
 
 	/*
