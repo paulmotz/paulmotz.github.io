@@ -21,7 +21,7 @@ class Pawn extends Piece {
  		var bishopPinBD = false; // a diagonal pin that is parallel with the large black diagonal (A1-H8)
  		var bishopPinWD = false; // a diagonal pin that is parallel with the large white diagonal (A8-H1)
 
-
+ 		// pawn pin checks work, but I don't think it is very elegant
 		var pD = this.getPinDirection();
  		if (pD) {
  			var f = pD[0];
@@ -32,7 +32,7 @@ class Pawn extends Piece {
  				if (r === -0) {
 
  					// a horizontally pinned pawn cannot move at all
- 					return [];
+ 					return moves;
  				}
  				else {
  					rookPin = true;
