@@ -169,7 +169,7 @@ class Piece {
 
 	/**
 	 * Checks to see if a piece is pinned and if so gets the direction of the pin
-	 * @return {number[]} pinDirection - the direciton of the pin, null if no pin
+	 * @return {number[]} pinDirection - the direciton of the pin (ie the direction which the piece may be able to move), null if no pin
 	 */
 
 	getPinDirection() {
@@ -189,7 +189,7 @@ class Piece {
 					var inlinePiece = occupiedSquares[squareToIndex([file, rank]) - 1];
 					if (inlinePiece) {
 						if (inlinePiece[0] !== this.color && (inlinePiece[1] === 'B' || inlinePiece[1] === 'Q')) {
-							return inlinePiece;
+							return [f, r];
 						} 
 						else {
 							break;
@@ -206,7 +206,7 @@ class Piece {
 					var inlinePiece = occupiedSquares[squareToIndex([file, rank]) - 1];
 					if (inlinePiece) {
 						if (inlinePiece[0] !== this.color && (inlinePiece[1] === 'R' || inlinePiece[1] === 'Q')) {
-							return inlinePiece;
+							return [f, r];
 						} 
 						else {
 							break;

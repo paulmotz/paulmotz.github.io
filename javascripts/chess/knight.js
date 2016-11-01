@@ -6,6 +6,12 @@ class Knight extends Piece {
 	 */
 
  	moves() {
+
+ 		// pinned knights cannot move
+ 		if (this.getPinDirection()) {
+ 			return [];
+ 		}
+ 		
  		var color = this._color
  		var file = this._file;
  		var rank = this._rank;

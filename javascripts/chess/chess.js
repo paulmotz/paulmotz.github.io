@@ -75,22 +75,24 @@ $(document).ready(function() {
 
 
 	// remove pieces for testing purposes
-	// var pieceCount = {'B': 2, 'N': 2, 'K': 1, 'P': 8, 'Q': 1, 'R': 2};
-	// var pieceNames = {'B' : 'Bishop', 'N' : 'Knight', 'K' : 'King', 'P' : 'Pawn', 'Q' : 'Queen', 'R' : 'Rook'};
+	// var pieceCount = {'B': 2, 'N': 2, 'K': 1, 'P': 2, 'Q': 1, 'R': 2};
+	// var pieceNames = {'K' : 'King', 'P' : 'Pawn', 'Q' : 'Queen', 'R' : 'Rook'};
 
 	// // kings and queens have arrays of length 1 for convenience in later methods
 	// var pieceStartingPositions = {'wB' : [[3, 1], [6, 1]],
-	// 								  'wK' : [[5, 1]],
-	// 								  'wP' : [[1, 2], [2, 2], [3, 2], [4, 2], [5, 2], [6, 2], [7, 2], [8, 2]],
+	// 								  'wN' : [[2, 1], [7, 1]],
+	// 								  'wK' : [[8, 1]],
+	// 								  'wP' : [[7, 2], [8, 2]],
 	// 								  'wQ' : [[4, 1]],
-	// 								  'wR' : [[1, 1], [8, 1]],
+	// 								  'wR' : [[1, 1], [6, 1]],
 	// 								  'bB' : [[3, 8], [6, 8]],
 	// 								  'bN' : [[2, 8], [7, 8]],
-	// 								  'bK' : [[5, 8]],
-	// 								  'bP' : [[1, 7], [2, 7], [3, 7], [4, 7], [5, 7], [6, 7], [7, 7], [8, 7]],
-	// 								  'bQ' : [[4, 8]],
-	// 								  'bR' : [[1, 8], [8, 8]]
+	// 								  'bK' : [[8, 8]],
+	// 								  'bP' : [[7, 7], [8, 7]],
+	// 								  'bQ' : [[2, 2]],
+	// 								  'bR' : [[7, 3], [8, 6]]
 	// 								};
+
 
 	
 	// represent all pieces as entries in arrays for dynamic access (kings could have been single entry)

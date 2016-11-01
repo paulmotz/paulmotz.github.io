@@ -12,15 +12,47 @@ class Pawn extends Piece {
 	}
 
 	moves() {
+
 		var color = this.color;
  		var file = this._file;
  		var rank = this._rank;
  		var moves = [];
+ 		var rookPin = false; // a vertical pin
+ 		var bishopPinBD = false; // a diagonal pin that is parallel with the large black diagonal (A1-H8)
+ 		var bishopPinWD = false; // a diagonal pin that is parallel with the large white diagonal (A8-H1)
 
+
+		var pD = this.getPinDirection();
+ 		if (pD) {
+ 			var f = pD[0];
+ 			var r = pD[1];
+
+ 			// horizontal/vertical pin
+ 			if ((f + r) % 2 !== 0) {
+ 				if (r === -0) {
+
+ 					// a horizontally pinned pawn cannot move at all
+ 					return [];
+ 				}
+ 				else {
+ 					rookPin = true;
+ 				}
+ 			}
+ 			else {
+ 				if (f === r) {
+ 					bishopPinBD = true;
+ 				}
+ 				else {
+ 					bishopPinWD = true;
+ 				}
+ 			}
+ 		}
+
+		
  		// white pawns move up the ranks
  		if (color === 'w') {
 
- 			if (!occupiedSquares[squareToIndex([file, rank + 1]) - 1]) {
+ 			if (!occupiedSquares[squareToIndex([file, rank + 1]) - 1] && !bishopPinBD && !bishopPinWD) {
  				moves.push([file, rank + 1]);
 
  				// a white pawn has not moved if it is on the 2nd rank
@@ -33,20 +65,20 @@ class Pawn extends Piece {
  			}	
 
  			// normal capturing
- 			if (file - 1 >= 1 && occupiedSquares[squareToIndex([file - 1, rank + 1]) - 1] && occupiedSquares[squareToIndex([file - 1, rank + 1]) - 1][0] !== color) {
+ 			if (file - 1 >= 1 && occupiedSquares[squareToIndex([file - 1, rank + 1]) - 1] && occupiedSquares[squareToIndex([file - 1, rank + 1]) - 1][0] !== color && !rookPin && !bishopPinBD) {
  				moves.push([file - 1, rank + 1]);
  			}
- 			if (file + 1 <= 8 && occupiedSquares[squareToIndex([file + 1, rank + 1]) - 1] && occupiedSquares[squareToIndex([file + 1, rank + 1]) - 1][0] !== color) {
+ 			if (file + 1 <= 8 && occupiedSquares[squareToIndex([file + 1, rank + 1]) - 1] && occupiedSquares[squareToIndex([file + 1, rank + 1]) - 1][0] !== color && !rookPin && !bishopPinWD) {
  				moves.push([file + 1, rank + 1]);
  			}
 
  			// en passant
  			if (rank === 5) {
 	 			// if (file - 1 >= 1 && occupiedSquares[squareToIndex([file - 1, rank]) - 1] && occupiedSquares[squareToIndex([file - 1, rank]) - 1][0] !== color && occupiedSquares[squareToIndex([file - 1, rank]) - 1] === enPassantPawn) {
-	 				if (file - 1 >= 1 && occupiedSquares[squareToIndex([file - 1, rank]) - 1] && occupiedSquares[squareToIndex([file - 1, rank]) - 1] === enPassantPawn) {
+ 				if (file - 1 >= 1 && occupiedSquares[squareToIndex([file - 1, rank]) - 1] && occupiedSquares[squareToIndex([file - 1, rank]) - 1] === enPassantPawn && !rookPin && !bishopPinBD) {
 	 				moves.push([file - 1, rank + 1]);
 	 			}
-	 			if (file + 1 <= 8 && occupiedSquares[squareToIndex([file + 1, rank]) - 1] && occupiedSquares[squareToIndex([file + 1, rank]) - 1] === enPassantPawn) {
+	 			if (file + 1 <= 8 && occupiedSquares[squareToIndex([file + 1, rank]) - 1] && occupiedSquares[squareToIndex([file + 1, rank]) - 1] === enPassantPawn && !rookPin && !bishopPinWD) {
 	 				moves.push([file + 1, rank + 1]);
 	 			}
 	 		}
@@ -55,7 +87,7 @@ class Pawn extends Piece {
  		// black pawns move down the ranks
  		else {
 
- 			if (!occupiedSquares[squareToIndex([file, rank - 1]) - 1]) {
+ 			if (!occupiedSquares[squareToIndex([file, rank - 1]) - 1] && !bishopPinBD && !bishopPinWD) {
  				moves.push([file, rank - 1]);
 
  				// a black pawn has not moved if it is on the 7th rank
@@ -68,19 +100,19 @@ class Pawn extends Piece {
  			}	
 
  			// normal capturing
- 			if (file - 1 >= 1 && occupiedSquares[squareToIndex([file - 1, rank - 1]) - 1] && occupiedSquares[squareToIndex([file - 1, rank - 1]) - 1][0] !== color) {
+ 			if (file - 1 >= 1 && occupiedSquares[squareToIndex([file - 1, rank - 1]) - 1] && occupiedSquares[squareToIndex([file - 1, rank - 1]) - 1][0] !== color && !rookPin && !bishopPinWD) {
  				moves.push([file - 1, rank - 1]);
  			}
- 			if (file + 1 <= 8 && occupiedSquares[squareToIndex([file + 1, rank - 1]) - 1] && occupiedSquares[squareToIndex([file + 1, rank - 1]) - 1][0] !== color) {
+ 			if (file + 1 <= 8 && occupiedSquares[squareToIndex([file + 1, rank - 1]) - 1] && occupiedSquares[squareToIndex([file + 1, rank - 1]) - 1][0] !== color && !rookPin && !bishopPinBD) {
  				moves.push([file + 1, rank - 1]);
  			}
 
  			// en passant
  			if (rank === 4) {
-	 			if (file - 1 >= 1 && occupiedSquares[squareToIndex([file - 1, rank]) - 1] && occupiedSquares[squareToIndex([file - 1, rank]) - 1] === enPassantPawn) {
+	 			if (file - 1 >= 1 && occupiedSquares[squareToIndex([file - 1, rank]) - 1] && occupiedSquares[squareToIndex([file - 1, rank]) - 1] === enPassantPawn && !rookPin && !bishopPinWD) {
 	 				moves.push([file - 1, rank - 1]);
 	 			}
-	 			if (file + 1 <= 8 && occupiedSquares[squareToIndex([file + 1, rank]) - 1] && occupiedSquares[squareToIndex([file + 1, rank]) - 1] === enPassantPawn) {
+	 			if (file + 1 <= 8 && occupiedSquares[squareToIndex([file + 1, rank]) - 1] && occupiedSquares[squareToIndex([file + 1, rank]) - 1] === enPassantPawn && !rookPin && !bishopPinBD) {
 	 				moves.push([file + 1, rank - 1]);
 	 			}
 	 		}
