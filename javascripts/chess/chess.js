@@ -75,23 +75,23 @@ $(document).ready(function() {
 
 
 	// remove pieces for testing purposes
-	var pieceCount = {'B': 2, 'N': 2, 'K': 1, 'P': 8, 'Q': 1, 'R': 2};
-	var pieceNames = {'B' : 'Bishop', 'K' : 'King', 'N' : 'Knight', 'R' : 'Rook'};
+	// var pieceCount = {'B': 2, 'N': 2, 'K': 1, 'P': 8, 'Q': 1, 'R': 2};
+	// var pieceNames = {'B' : 'Bishop', 'K' : 'King', 'N' : 'Knight', 'R' : 'Rook'};
 
-	// kings and queens have arrays of length 1 for convenience in later methods
-	var pieceStartingPositions = {'wB' : [[4, 5], [8, 4]],
-									  'wN' : [[1, 8], [2, 8]],
-									  'wK' : [[5, 1]],
-									  'wP' : [[7, 2], [8, 2]],
-									  'wQ' : [[4, 1]],
-									  'wR' : [[8, 2], [6, 1]],
-									  'bB' : [[5, 7], [1, 4]],
-									  'bN' : [[1, 1], [2, 1]],
-									  'bK' : [[8, 8]],
-									  'bP' : [[7, 7], [8, 7]],
-									  'bQ' : [[2, 2]],
-									  'bR' : [[5, 8], [1, 6]]
-									};
+	// // kings and queens have arrays of length 1 for convenience in later methods
+	// var pieceStartingPositions = {'wB' : [[4, 5], [8, 4]],
+	// 								  'wN' : [[1, 8], [2, 8]],
+	// 								  'wK' : [[5, 1]],
+	// 								  'wP' : [[7, 2], [8, 2]],
+	// 								  'wQ' : [[4, 1]],
+	// 								  'wR' : [[8, 2], [6, 1]],
+	// 								  'bB' : [[5, 7], [1, 4]],
+	// 								  'bN' : [[1, 1], [2, 1]],
+	// 								  'bK' : [[8, 8]],
+	// 								  'bP' : [[7, 7], [8, 7]],
+	// 								  'bQ' : [[2, 2]],
+	// 								  'bR' : [[5, 8], [1, 6]]
+	// 								};
 
 
 	
@@ -295,24 +295,28 @@ $(document).ready(function() {
 		// console.log(occupiedSquares);
 		// console.log(allPieces);
 
+		humanTurn = true;
+
 		// isCheckMate();
 		if (checkDraw()) {
 			$('#turn').html("It's a draw!");
 			return;
 		}
 
-		inCheck(currentColor, opponentColor);
+		$('#turn').html(colorAbbreviations[currentColor] + " to move");
+
+		var checkingPieces = inCheck(currentColor, opponentColor);
 
 		// used in king.js
 		attackedSquares = getAttackedSquares(opponentColor);
 
-		$('#turn').html(colorAbbreviations[currentColor] + " to move");
-
 		// if human is moving, allow him/her to move
-		// if (whiteDown && currentColor === 'w' || !whiteDown && currentColor === 'b') {
-			humanTurn = true;
+		if (whiteDown && currentColor === 'w' || !whiteDown && currentColor === 'b') {
+		
+			inCheck(currentColor, opponentColor);
+
 			var fromTo = [];
-			var moves = [];
+			var legalMoves = [];
 			var selectedPiece = '';
 			$board.on('click', function(e) {
 
@@ -325,16 +329,16 @@ $(document).ready(function() {
 					fromTo.push(index);
 
 					// if the two clicked squares represent a valid move, move the piece
-					if (moves.indexOf(index) !== -1) {
+					if (legalMoves.indexOf(index) !== -1) {
 
 						var nextMove =  {'piece' : selectedPiece.slice(0, 2), 'id' : selectedPiece[2], 'move' : square};
 						movePiece(nextMove);
 
 						fromTo = [];
 
-						var piece = selectedPiece.slice(0, 2);
-						var id = selectedPiece[2];
-						var index = findPieceIndex(piece, id);
+						// var piece = selectedPiece.slice(0, 2);
+						// var id = selectedPiece[2];
+						// var index = findPieceIndex(piece, id);
 
 						// update move counters (for display and draw checking)
 						updateMoves(currentColor);						
@@ -371,7 +375,18 @@ $(document).ready(function() {
 						var pieceName = selectedPiece.slice(0, 2);
 						var id = selectedPiece[2]; // only need one digit since id can never be greater than 9 (8 pawns promoted to B/N/R)
 						var index = findPieceIndex(pieceName, id);
-						moves = allPieces[pieceName][index].moves().map(squareToIndex);
+						
+						// if the king is not in check
+						if (!checkingPieces.length) {
+							legalMoves = allPieces[pieceName][index].moves().map(squareToIndex);
+						}
+
+						// TODO: I'm not totally satisfied with this being calculated here
+						// the king is in check, restricting the moves of other pieces
+						else {
+							legalMoves = getLegalMoves(checkingPieces, selectedPiece);
+						}
+
 						// var pd = allPieces[pieceName][index].getPinDirection();
 						// console.log(pd);
 						// var p = allPieces[pieceName][index].protectedSquares(occupiedSquares);
@@ -384,66 +399,75 @@ $(document).ready(function() {
 					}
 				}
 			});
-		// }
+		}
 
-		// // if computer is moving, pick a random move
-		// else {
+		// if computer is moving, pick a random move
+		else {
 
-		// 	humanTurn = false;
+			humanTurn = false;
+			var checkingPieces = inCheck(currentColor, opponentColor);
 
-		// 	// construct array of possible moves
-		// 	var moves = [];
-		// 	for (pieceTypes in allPieces) {
-		// 		var pieceType = pieceTypes[1];
+			// construct array of possible moves
+			var moves = [];
+			for (pieceTypes in allPieces) {
+				var pieceType = pieceTypes[1];
 
-		// 		// only get moves from the correct color of pieces
-		// 		if (pieceTypes[0] === currentColor) {
-		// 			var pieceArray = allPieces[pieceTypes];
-		// 			for (var piece in pieceArray) {
-		// 				var pieceMoves = pieceArray[piece].moves();
-		// 				for (var i in pieceMoves) {
-		// 					var m =  {'piece' : pieceTypes, 'id' : pieceArray[piece].id, 'move' : pieceMoves[i]};
-		// 					moves.push(m);
-		// 				}
-		// 			}
-		// 		}
-		// 	}
-		// 	var numMoves = moves.length;
-		// 	var r = Math.floor(Math.random() * numMoves);
+				// only get moves from the correct color of pieces
+				if (pieceTypes[0] === currentColor) {
+					var pieceArray = allPieces[pieceTypes];
+					for (var piece in pieceArray) {
 
-		// 	// console.log(moves);
-		// 	// console.log(compMove);
+						var pieceMoves;
 
-		// 	var compMove = moves[r];
-		// 	var piece = compMove.piece;
-		// 	var pieceType = piece[1];
-		// 	var pieceId = piece + compMove.id;
+						if (!checkingPieces.length) {
+							pieceMoves = pieceArray[piece].moves();
+						}
 
-		// 	// check for castling
-		// 	if (pieceType === 'K') {
-		// 		if (!allPieces[piece][compMove.id].hasMoved) {
+						else {
+							var selectedPiece = currentColor + pieceArray[piece].abbr + pieceArray[piece].id;
+							pieceMoves = getLegalMoves(checkingPieces, selectedPiece).map(indexToSquare);
+						}
 
-		// 			// piece is known to be king that has not yet moved (so its location is [5, 1] or [5, 8])
-		// 			var king = allPieces[piece][0];
-		// 			var newSquare = compMove.move;
+						for (var i in pieceMoves) {
+							var m =  {'piece' : pieceTypes, 'id' : pieceArray[piece].id, 'move' : pieceMoves[i]};
+							moves.push(m);
+						}
+					}
+				}
+			}
+			var numMoves = moves.length;
+			var r = Math.floor(Math.random() * numMoves);
 
-		// 			castle(newSquare);
+			var compMove = moves[r];
+			var piece = compMove.piece;
+			var pieceType = piece[1];
+			var pieceId = piece + compMove.id;
 
-		// 			// this is the king's first move, set its hasMoved property to true
-		// 			allPieces[piece][compMove.id].hasMoved = true;
-		// 		}
-		// 	}
+			// check for castling
+			if (pieceType === 'K') {
+				if (!allPieces[piece][compMove.id].hasMoved) {
 
-		// 	// movePiece checks whether a king or rook has moved. This should be done after checking for castling
-		// 	movePiece(moves[r]);
+					// piece is known to be king that has not yet moved (so its location is [5, 1] or [5, 8])
+					var king = allPieces[piece][0];
+					var newSquare = compMove.move;
 
-		// 	updateMoves(currentColor);
+					castle(newSquare);
 
-		// 	// inCheck(currentColor, opponentColor);
+					// this is the king's first move, set its hasMoved property to true
+					allPieces[piece][compMove.id].hasMoved = true;
+				}
+			}
 
-		// 	// setTimeout(function() { movePiece(moves[r]) }, delay);
-		// 	move(opponentColor, currentColor);
-		// }
+			// movePiece checks whether a king or rook has moved. This should be done after checking for castling
+			movePiece(moves[r]);
+
+			updateMoves(currentColor);
+
+			inCheck(currentColor, opponentColor);
+
+			// setTimeout(function() { movePiece(moves[r]) }, delay);
+			move(opponentColor, currentColor);
+		}
 	}
 
 	/**
@@ -669,6 +693,84 @@ $(document).ready(function() {
 			drawCheckSquare(defendingColor, false);
 		}
 		return attackingPieces;
+	}
+
+	/**
+	 * Gets the legal moves of a piece when its king is in check
+	 * @param {String[]} checkingPieces - the pieces that are checking the piece's king
+	 * @param {String} clickedPiece - the piece that the player is trying to move
+	 * @return {number[]} legalMoves - the legal moves, represented as an array of board square indices, that the clicked piece can make
+	 */
+
+	function getLegalMoves(checkingPieces, clickedPiece) {
+
+		var king = allPieces[clickedPiece[0] + 'K'][0];
+		var kingSquare = [king.file, king.rank];
+		var kingIndex = squareToIndex(kingSquare);
+
+		var legalMoves = [];
+		var clickedPieceColorAndType = clickedPiece.slice(0, 2);
+		var clickedPieceId = clickedPiece[2];
+		var clickedPieceIndex = findPieceIndex(clickedPieceColorAndType, clickedPieceId);
+		var clickedPieceMoves = allPieces[clickedPieceColorAndType][clickedPieceIndex].moves().map(squareToIndex);
+
+		// check if there is only one checkingPiece, it may be possible to capture or block it
+		if (checkingPieces.length === 1) {
+			var checkingPieceColorAndType = checkingPieces[0].slice(0, 2)
+			var checkingPieceIndex = findPieceIndex(checkingPieceColorAndType, checkingPieces[0][2])
+			var checkingPiece = allPieces[checkingPieceColorAndType][checkingPieceIndex];
+			var checkingPieceSquare = [checkingPiece.file, checkingPiece.rank]
+			var checkingPieceIndex = squareToIndex(checkingPieceSquare);
+			
+			// can the piece be captured?
+			// TODO: kings can capture to get out of double-check, is this covered by the king moves section?
+			var captureMove = clickedPieceMoves.indexOf(checkingPieceIndex);
+			if (captureMove !== -1) {
+				legalMoves.push(clickedPieceMoves[captureMove]);
+			}
+
+			// can the piece be blocked?
+			// knights and pawns cannot be blocked
+			if (checkingPieceColorAndType[1] !== 'N' && checkingPieceColorAndType[1] !== 'P') {
+				var checkPath = getCheckPath(checkingPieceSquare, kingSquare).map(squareToIndex);
+				console.log(checkPath);
+				for (var i = 0; i < checkPath.length; i++) {
+					var blockMove = clickedPieceMoves.indexOf(checkPath[i]);
+
+					if (blockMove !== -1) {
+						legalMoves.push(clickedPieceMoves[blockMove]);
+					} 
+				}
+			}
+		}
+
+		// king moves
+
+		return legalMoves;
+	}
+
+	/**
+	 * Calculates the path between two pieces if such a path exists
+	 * @param {number[]} pieceSquare - the square of one of the pieces
+	 * @param {number[]} otherPieceSquare - the square of the other one of the pieces 
+	 * @return {number[][]} checkPath - an array of squares between the pieces, returns [] if no so path
+	 */
+
+	function getCheckPath(pieceSquare, otherPieceSquare) {
+		var checkPath = [];
+		var delF = pieceSquare[0] - otherPieceSquare[0]; // change in file
+		var delR = pieceSquare[1] - otherPieceSquare[1]; // change in rank
+
+		console.log(pieceSquare, otherPieceSquare);
+
+		// there is a valid path 
+		if (delF === 0 || delR === 0 || Math.abs(delF/delR) === 1) {
+			var pathLength = Math.max(Math.abs(delF), Math.abs(delR));
+			for (var i = 1; i < pathLength; i++) {
+				checkPath.push([pieceSquare[0] - i * delF/pathLength, pieceSquare[1] - i * delR/pathLength]);
+			}
+		}
+		return checkPath;
 	}
 
 	/**
