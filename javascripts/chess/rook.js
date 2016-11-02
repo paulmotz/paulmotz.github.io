@@ -3,13 +3,14 @@ class Rook extends Piece {
 	/*
 	 * Creates a rook of the given color at the given location
 	 * @param {string} color - The color of the rook: white || black
+	 * @param {string} abbr - The abbreviation of the piece: R for Rook
 	 * @param {number} file - file rank of the rook: 1 - 8
 	 * @param {number} rank - the rank of the rook: 1 - 8
 	 * @param {boolean} hasMoved - whether or not the rook has moved (used for checking if castling is possible)
 	 */
 
-	constructor(color, file, rank, id, hasMoved) {
-		super(color, file, rank, id)
+	constructor(color, abbr, file, rank, id, hasMoved) {
+		super(color, abbr, file, rank, id)
 		this._hasMoved = hasMoved;
 	}
 

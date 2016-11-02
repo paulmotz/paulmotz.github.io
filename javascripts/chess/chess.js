@@ -76,21 +76,21 @@ $(document).ready(function() {
 
 	// remove pieces for testing purposes
 	var pieceCount = {'B': 2, 'N': 2, 'K': 1, 'P': 8, 'Q': 1, 'R': 2};
-	var pieceNames = {'B' : 'Bishop', 'K' : 'King', 'N' : 'Knight'};
+	var pieceNames = {'B' : 'Bishop', 'K' : 'King', 'N' : 'Knight', 'R' : 'Rook'};
 
 	// kings and queens have arrays of length 1 for convenience in later methods
-	var pieceStartingPositions = {'wB' : [[7, 6], [7, 5]],
+	var pieceStartingPositions = {'wB' : [[4, 5], [8, 4]],
 									  'wN' : [[1, 8], [2, 8]],
-									  'wK' : [[8, 1]],
+									  'wK' : [[5, 1]],
 									  'wP' : [[7, 2], [8, 2]],
 									  'wQ' : [[4, 1]],
 									  'wR' : [[8, 2], [6, 1]],
-									  'bB' : [[7, 3], [7, 4]],
+									  'bB' : [[5, 7], [1, 4]],
 									  'bN' : [[1, 1], [2, 1]],
 									  'bK' : [[8, 8]],
 									  'bP' : [[7, 7], [8, 7]],
 									  'bQ' : [[2, 2]],
-									  'bR' : [[7, 3], [8, 6]]
+									  'bR' : [[5, 8], [1, 6]]
 									};
 
 
@@ -181,22 +181,22 @@ $(document).ready(function() {
 		var piece = colorAndPiece[1];
 		switch (piece) {
 			case 'B':
-				allPieces[colorAndPiece].push(new Bishop(color, file, rank, id));
+				allPieces[colorAndPiece].push(new Bishop(color, piece, file, rank, id));
 				break;
 			case 'N':
-				allPieces[colorAndPiece].push(new Knight(color, file, rank, id));
+				allPieces[colorAndPiece].push(new Knight(color, piece, file, rank, id));
 				break;
 			case 'K':
-				allPieces[colorAndPiece].push(new King(color, file, rank, id, hasMoved));
+				allPieces[colorAndPiece].push(new King(color, piece, file, rank, id, hasMoved));
 				break;
 			case 'P':
-				allPieces[colorAndPiece].push(new Pawn(color, file, rank, id));
+				allPieces[colorAndPiece].push(new Pawn(color, piece, file, rank, id));
 				break;
 			case 'Q':
-				allPieces[colorAndPiece].push(new Queen(color, file, rank, id));
+				allPieces[colorAndPiece].push(new Queen(color, piece, file, rank, id));
 				break;
 			case 'R':
-				allPieces[colorAndPiece].push(new Rook(color, file, rank, id, hasMoved));
+				allPieces[colorAndPiece].push(new Rook(color, piece, file, rank, id, hasMoved));
 				break;
 		}
 	}
@@ -301,6 +301,9 @@ $(document).ready(function() {
 			return;
 		}
 
+		inCheck(currentColor, opponentColor);
+
+		// used in king.js
 		attackedSquares = getAttackedSquares(opponentColor);
 
 		$('#turn').html(colorAbbreviations[currentColor] + " to move");
@@ -334,10 +337,7 @@ $(document).ready(function() {
 						var index = findPieceIndex(piece, id);
 
 						// update move counters (for display and draw checking)
-						updateMoves(currentColor);
-
-						inCheck(opponentColor, currentColor);
-						inCheck(currentColor, opponentColor);
+						updateMoves(currentColor);						
 
 						// TODO: this prevents multiple click events being bound to the board.
 						// However, I REALLY don't like this solution.
@@ -439,7 +439,6 @@ $(document).ready(function() {
 
 		// 	updateMoves(currentColor);
 
-		// 	// inCheck(opponentColor, currentColor);
 		// 	// inCheck(currentColor, opponentColor);
 
 		// 	// setTimeout(function() { movePiece(moves[r]) }, delay);
@@ -627,25 +626,49 @@ $(document).ready(function() {
 	}
 
 	/**
-	 * Checks whether the king of the opposing color is in check
+	 * Finds all pieces of a given color that are attacking a given square
+	 * @param {String} color - the color of the pieces to return
+	 * @param {number} squareIndex - the index of the square for which the attacking pieces are desired
+	 * @return {number[]} attackingPieces - the pices that are attacking the square
+	 */
+
+	function getAttackingPieces(color, squareIndex) {
+		var attackingPieces = [];
+		for (var pieceType in allPieces) {
+			if (pieceType[0] === color) {
+				var pieceArray = allPieces[pieceType];
+				for (var piece in pieceArray) {
+					var pieceMoves = pieceArray[piece].moves();
+					for (var i in pieceMoves) {
+						if (squareToIndex(pieceMoves[i]) === squareIndex) {
+							attackingPieces.push(color + pieceArray[piece].abbr + pieceArray[piece].id);
+						}
+					}
+				}
+			}
+		}
+		return attackingPieces;
+	}
+
+	/**
+	 * Checks whether the king of the defending color is in check and returns the pieces
 	 * @param {String} color - the color of the king to check whether it is in check
-	 * @return {boolean} inCheck - whether or not the king is in check
+	 * @return {String} attackingPieces - the piece(s) that is/are delivering check
 	 */
 
 	function inCheck(defendingColor, attackingColor) {
-		var attackedSquares = getAttackedSquares(attackingColor);
-		var opponentKing = allPieces[defendingColor + 'K'][0];
-		var opponentKingIndex = squareToIndex([opponentKing.file, opponentKing.rank]);
+		var king = allPieces[defendingColor + 'K'][0];
+		var kingIndex = squareToIndex([king.file, king.rank]);
+		var attackingPieces = getAttackingPieces(attackingColor, kingIndex);
 
-		if (attackedSquares.has(opponentKingIndex)) {
+		if (attackingPieces.length) {
 			drawCheckSquare(defendingColor, true);
-			return true;
 		}
 
 		else {
 			drawCheckSquare(defendingColor, false);
-			return false;
 		}
+		return attackingPieces;
 	}
 
 	/**

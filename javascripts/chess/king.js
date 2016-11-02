@@ -7,13 +7,14 @@ class King extends Piece {
 	/*
 	 * Creates a king of the given color at the given location
 	 * @param {string} color - The color of the king: white || black
+	 * @param {string} abbr - The abbreviation of the piece: K for King
 	 * @param {number} file - file rank of the king: 1 - 8
 	 * @param {number} rank - the rank of the king: 1 - 8
 	 * @param {boolean} hasMoved - whether or not the king has moved (used for checking if castling is possible)
 	 */
 
-	constructor(color, file, rank, id, hasMoved) {
-		super(color, file, rank, id)
+	constructor(color, abbr, file, rank, id, hasMoved) {
+		super(color, abbr, file, rank, id)
 		this._hasMoved = hasMoved;
 	}
 

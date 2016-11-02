@@ -1,16 +1,5 @@
 class Pawn extends Piece {
 
-	/*
-	 * Creates a pawn of the given color at the given location
-	 * @param {string} color - The color of the pawn: white || black
-	 * @param {number} file - file rank of the pawn: 1 - 8
-	 * @param {number} rank - the rank of the pawn: 1 - 8
-	 */
-
-	constructor(color, file, rank, id, hasMoved) {
-		super(color, file, rank, id)
-	}
-
 	moves() {
 
 		var color = this.color;

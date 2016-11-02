@@ -3,13 +3,15 @@ class Piece {
 	/**
 	 * Creates a piece of the given color at the given location
 	 * @param {string} color - The color of the piece: white || black
+	 * @param {string} abbr - The abbreviation of the piece: B, N, K, P, Q or R
 	 * @param {number} file - file rank of the piece: 1 - 8
 	 * @param {number} rank - the rank of the piece: 1 - 8
 	 * @param {number} id - the id of the piece: 1 - 10 (where 10 = max possible number of any given piece per color)
 	 */
 
-	constructor(color, file, rank, id) {
+	constructor(color, abbr, file, rank, id) {
 		this._color = color;
+		this._abbr = abbr;
 		this._file = file;
 		this._rank = rank;
 		this._id = id;
@@ -22,6 +24,15 @@ class Piece {
 
 	get color() {
 		return this._color;
+	}
+
+	/**
+	 * Get the piece's abbreviation
+	 * @param {string} abbr - The abbreviation of the piece: B, N, K, P, Q or R
+	 */
+
+	get abbr() {
+		return this._abbr;
 	}
 
 	/**
@@ -60,6 +71,15 @@ class Piece {
 		if (color === 'white' || color === 'black') {
 			this._color = color;
 		}
+	}
+
+	/**
+	 * Set the piece's abbreviation
+	 * @param {string} abbr - The abbreviation of the piece: B, N, K, P, Q or R
+	 */
+
+	set abbr(abbr) {
+		this._abbr = abbr;
 	}
 
 	/**
