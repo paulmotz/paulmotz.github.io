@@ -2,11 +2,9 @@
  * TODOs
  *
  * Logic:
- * - is the piece pinned (moving it in a certain direction leaves the king in check)
  * - king should not be able to move backwards when being attacked by a B, Q or R
  * - draw rules
  * - captured piece moves after being captured (wR0 captured by bQ1)
- * - does occupiedSquares need to be passed everywhere
  *
  * Check:
  * - pawn promotion
@@ -18,6 +16,10 @@ var allPieces;
 var occupiedSquares;
 var enPassantPawn;
 var attackedSquares = new Set();
+
+// the two players' colors
+var colors = ['w', 'b'];
+var colorAbbreviations = {'w' : 'White', 'b' : 'Black'};
 
 $(document).ready(function() {
 
@@ -47,9 +49,7 @@ $(document).ready(function() {
 	// used for checking 50-move draw rule
 	var drawMoveCounter;
 
-	// the two players' colors
-	var colors = ['w', 'b'];
-	var colorAbbreviations = {'w' : 'White', 'b' : 'Black'};
+	
 
 	var pieceNames = {'B' : 'Bishop', 'N' : 'Knight', 'K' : 'King', 'P' : 'Pawn', 'Q' : 'Queen', 'R' : 'Rook'};
 	var pieceAbbreviations = {'Bishop' : 'B', 'Knight' : 'N', 'King' : 'K', 'Pawn' : 'P', 'Queen' : 'Q', 'Rook' : 'R'};
@@ -76,17 +76,17 @@ $(document).ready(function() {
 
 	// remove pieces for testing purposes
 	var pieceCount = {'B': 2, 'N': 2, 'K': 1, 'P': 8, 'Q': 1, 'R': 2};
-	var pieceNames = {'K' : 'King', 'Q' : 'Queen', 'B' : 'Bishop'};
+	var pieceNames = {'B' : 'Bishop', 'K' : 'King', 'N' : 'Knight'};
 
 	// kings and queens have arrays of length 1 for convenience in later methods
-	var pieceStartingPositions = {'wB' : [[3, 1], [6, 1]],
-									  'wN' : [[2, 1], [7, 1]],
+	var pieceStartingPositions = {'wB' : [[7, 6], [7, 5]],
+									  'wN' : [[1, 8], [2, 8]],
 									  'wK' : [[8, 1]],
 									  'wP' : [[7, 2], [8, 2]],
 									  'wQ' : [[4, 1]],
 									  'wR' : [[8, 2], [6, 1]],
-									  'bB' : [[3, 8], [6, 8]],
-									  'bN' : [[2, 8], [7, 8]],
+									  'bB' : [[7, 3], [7, 4]],
+									  'bN' : [[1, 1], [2, 1]],
 									  'bK' : [[8, 8]],
 									  'bP' : [[7, 7], [8, 7]],
 									  'bQ' : [[2, 2]],
@@ -333,8 +333,8 @@ $(document).ready(function() {
 						// update move counters (for display and draw checking)
 						updateMoves(currentColor);
 
-						// inCheck(opponentColor, currentColor);
-						// inCheck(currentColor, opponentColor);
+						inCheck(opponentColor, currentColor);
+						inCheck(currentColor, opponentColor);
 
 						// TODO: this prevents multiple click events being bound to the board.
 						// However, I REALLY don't like this solution.
@@ -669,18 +669,62 @@ $(document).ready(function() {
 	 */
 
 	function checkDraw() {
-		checkDrawIn();
-		checkDrawRep();
-		checkDraw50();
-		isStalemate();
+		if (!checkMatingMaterial() || checkDrawRep() || checkDraw50() || isStalemate()) {
+			console.log("It's a draw!")
+		}
 	}
 
 	/**
-	 * Checks to see if the game is a draw by insufficient mating material
+	 * Checks to see if the game is a draw by insufficient mating material.
+	 * Material is based on whether a checkmate is possible and not whehter a forced checkmate is possible.
+	 * Some examples of winnable games:
+	 * 2 N + K vs K
+	 * 1B + K vs 1B + K (provided that the bishops have opposite colors)
+	 * Some example of drawn games:
+	 * 1-8 B + K vs K + 1-8 B (provided that all bishops have the same colors)
+	 * 1N + K vs 1N + K
+	 * @return {boolean} - whether or not there is enough material to a plater to checkmate
 	 */
 
-	function checkDrawIn() {
+	function checkMatingMaterial() {
 
+		// no more major pieces or pawns
+		if (allPieces['wQ'].length === 0 && allPieces['bQ'].length === 0 &&
+			allPieces['wR'].length === 0 && allPieces['bR'].length === 0 &&
+			allPieces['wP'].length === 0 && allPieces['bP'].length === 0) {
+
+			for (var i = 0; i < colors.length; i++) {
+				var p1 = colors[i];
+				var p2 = colors[(i + 1) % 2];
+
+				// one player has no pieces, can the other mate?
+				if (!allPieces[p1 + 'B'].length && !allPieces[p1 + 'N'].length) {
+
+					// if the other player has no knights does the other player have at least one pair of bishops with opposite colored squares
+					if (!allPieces[p2 + 'N'].length && !differentColorBishops()) {
+						return false;
+					}
+
+					// only one of bishop or knight
+					if (allPieces[p2 + 'B'].length + allPieces[p2 + 'N'].length < 2) {
+						return false;
+					}
+				}
+			}
+
+			// no knights left, are there different colored bishops?
+			if (!allPieces['wN'].length && !allPieces['bN'].length) {
+				if (!differentColorBishops()) {
+					return false;
+				}
+			}
+
+			// no bishops left, does either player have two or more knights?
+			else if (!allPieces['wB'].length && !allPieces['bB'].length) {
+				return allPieces['wN'].length > 1 || allPieces['bN'].length > 1;
+			}
+		}
+		return true;
 	}
 
 	/**
@@ -885,6 +929,28 @@ $(document).ready(function() {
 		}
 	}
 });
+
+/**
+ * Checks to see that there is at least one pair of bishop with opposing square colors
+ * @return {boolean} - true if there is a pair of bishops with opposing square colors
+ */
+
+function differentColorBishops() {
+
+	// no bishops, TODO, funciton shouldn't even be called
+	if (!allPieces['wB'].length && !allPieces['bB'].length) return false;
+	var firstBishop = allPieces['wB'].length ? allPieces['wB'][0] : allPieces['bB'][0];
+	var firstBishopSquareColor = (firstBishop.file + firstBishop.rank) % 2;
+	for (var c in colors) {
+		var bishops = allPieces[colors[c] + 'B'];
+		for (var j in bishops) {
+			if (firstBishopSquareColor !== (bishops[j].file + bishops[j].rank) % 2) {
+				return true;
+			}
+		}
+	}
+	return false;
+}
 
 /**
  * Maps the rank and file of a square to an integer that is unique among other squares
