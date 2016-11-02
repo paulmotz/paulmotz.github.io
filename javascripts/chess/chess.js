@@ -296,7 +296,10 @@ $(document).ready(function() {
 		// console.log(allPieces);
 
 		// isCheckMate();
-		checkDraw();
+		if (checkDraw()) {
+			$('#turn').html("It's a draw!");
+			return;
+		}
 
 		attackedSquares = getAttackedSquares(opponentColor);
 
@@ -671,6 +674,7 @@ $(document).ready(function() {
 	function checkDraw() {
 		if (!checkMatingMaterial() || checkDrawRep() || checkDraw50() || isStalemate()) {
 			console.log("It's a draw!")
+			return true;
 		}
 	}
 
