@@ -72,6 +72,12 @@ svg {
   margin-top: 0px;
 }
 
+.game-options {
+  text-align: left;
+  margin-top: 0px;
+}
+
+
 
 div.tooltip {   
   position: absolute;           

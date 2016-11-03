@@ -73,23 +73,22 @@ $(document).ready(function() {
 
 
 	// remove pieces for testing purposes
-	// var pieceCount = {'B': 2, 'N': 2, 'K': 1, 'P': 8, 'Q': 1, 'R': 2};
-	// var pieceNames = {'B' : 'Bishop', 'K' : 'King', 'N' : 'Knight', 'R' : 'Rook'};
+	var pieceCount = {'B': 2, 'N': 2, 'K': 1, 'P': 8, 'Q': 1, 'R': 2};
+	var pieceNames = {'K' : 'King', 'P' : 'Pawn', 'R' : 'Rook'};
 
-	// // kings and queens have arrays of length 1 for convenience in later methods
-	// var pieceStartingPositions = {'wB' : [[2, 5], [6, 4]],
-	// 								  'wN' : [[1, 8], [2, 8]],
-	// 								  'wK' : [[5, 3]],
-	// 								  'wP' : [[7, 2], [8, 2]],
-	// 								  'wQ' : [[4, 1]],
-	// 								  'wR' : [[8, 2], [6, 1]],
-	// 								  'bB' : [[5, 7], [1, 4]],
-	// 								  'bN' : [[1, 1], [2, 1]],
-	// 								  'bK' : [[6, 6]],
-	// 								  'bP' : [[7, 7], [8, 7]],
-	// 								  'bQ' : [[2, 2]],
-	// 								  'bR' : [[5, 8], [1, 6]]
-	// 								};
+	var pieceStartingPositions = {'wB' : [[3, 1], [6, 1]],
+									  'wN' : [[2, 1], [7, 1]],
+									  'wK' : [[5, 1]],
+									  'wP' : [[1, 2], [2, 2], [3, 2], [4, 2], [5, 2], [6, 2], [7, 2], [8, 2]],
+									  'wQ' : [[4, 1]],
+									  'wR' : [[1, 1], [8, 1]],
+									  'bB' : [[3, 8], [6, 8]],
+									  'bN' : [[2, 8], [7, 8]],
+									  'bK' : [[5, 8]],
+									  'bP' : [[1, 7], [2, 7], [3, 7], [4, 7], [5, 7], [6, 7], [7, 7], [8, 7]],
+									  'bQ' : [[4, 8]],
+									  'bR' : [[1, 8], [8, 8]]
+									};
 
 
 	
@@ -439,20 +438,7 @@ $(document).ready(function() {
 			var piece = compMove.piece;
 			var pieceType = piece[1];
 
-			// check for castling
-			if (pieceType === 'K') {
-				if (!allPieces[piece][compMove.id].hasMoved) {
-
-					// piece is known to be king that has not yet moved (so its location is [5, 1] or [5, 8])
-					var king = allPieces[piece][0];
-					var newSquare = compMove.move;
-
-					castle(newSquare);
-
-					// this is the king's first move, set its hasMoved property to true
-					allPieces[piece][compMove.id].hasMoved = true;
-				}
-			}
+			console.log(compMove);
 
 			// movePiece checks whether a king or rook has moved. This should be done after checking for castling
 			movePiece(moves[r]);
@@ -494,6 +480,11 @@ $(document).ready(function() {
 		drawOnSquare(file, rank, symbol, color);
 
 		var index = findPieceIndex(piece, id);
+
+		console.log(allPieces);
+		console.log(piece);
+		console.log(index);
+
 		var oldFile = allPieces[piece][index].file;
 		var oldRank = allPieces[piece][index].rank;
 		var oldSquare = [oldFile, oldRank];

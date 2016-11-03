@@ -41,7 +41,7 @@ class King extends Piece {
 			!attackedSquares.has(squareToIndex(square));			
 		});
 
-		var colorRook = color+'R';
+		var colorRook = color + 'R';
 		var queensideRook = allPieces[colorRook][findPieceIndex(colorRook, 0)];
 
 		// queenside castling
