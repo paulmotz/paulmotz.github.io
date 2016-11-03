@@ -75,23 +75,23 @@ $(document).ready(function() {
 
 
 	// remove pieces for testing purposes
-	var pieceCount = {'B': 2, 'N': 2, 'K': 1, 'P': 8, 'Q': 1, 'R': 2};
-	var pieceNames = {'B' : 'Bishop', 'K' : 'King', 'N' : 'Knight', 'R' : 'Rook'};
+	// var pieceCount = {'B': 2, 'N': 2, 'K': 1, 'P': 8, 'Q': 1, 'R': 2};
+	// var pieceNames = {'B' : 'Bishop', 'K' : 'King', 'N' : 'Knight', 'R' : 'Rook'};
 
-	// kings and queens have arrays of length 1 for convenience in later methods
-	var pieceStartingPositions = {'wB' : [[2, 5], [6, 4]],
-									  'wN' : [[1, 8], [2, 8]],
-									  'wK' : [[5, 3]],
-									  'wP' : [[7, 2], [8, 2]],
-									  'wQ' : [[4, 1]],
-									  'wR' : [[8, 2], [6, 1]],
-									  'bB' : [[5, 7], [1, 4]],
-									  'bN' : [[1, 1], [2, 1]],
-									  'bK' : [[6, 6]],
-									  'bP' : [[7, 7], [8, 7]],
-									  'bQ' : [[2, 2]],
-									  'bR' : [[5, 8], [1, 6]]
-									};
+	// // kings and queens have arrays of length 1 for convenience in later methods
+	// var pieceStartingPositions = {'wB' : [[2, 5], [6, 4]],
+	// 								  'wN' : [[1, 8], [2, 8]],
+	// 								  'wK' : [[5, 3]],
+	// 								  'wP' : [[7, 2], [8, 2]],
+	// 								  'wQ' : [[4, 1]],
+	// 								  'wR' : [[8, 2], [6, 1]],
+	// 								  'bB' : [[5, 7], [1, 4]],
+	// 								  'bN' : [[1, 1], [2, 1]],
+	// 								  'bK' : [[6, 6]],
+	// 								  'bP' : [[7, 7], [8, 7]],
+	// 								  'bQ' : [[2, 2]],
+	// 								  'bR' : [[5, 8], [1, 6]]
+	// 								};
 
 
 	
@@ -106,6 +106,7 @@ $(document).ready(function() {
 	var whiteToMove = true;
 
 	var markedSquares = new Set();
+	var boardStrings;
 
 	$('.btn').on('click', function() {
 		$('.radio-piece').each(function() {
@@ -278,9 +279,7 @@ $(document).ready(function() {
 		$('#move-counter').html(moveCounter);
 		initializePieces();
 		drawBoard();
-
-		var whiteInCheckmate = false;
-		var blackInCheckmate = false;
+		boardStrings = [];
 		move('w', 'b');
 	}
 
@@ -292,27 +291,31 @@ $(document).ready(function() {
 
 	function move(currentColor, opponentColor) {
 
-		// console.log(occupiedSquares);
-		// console.log(allPieces);
+		var boardString = getBoardString();
+		
+		boardStrings.push(boardString);
 
-		humanTurn = true;
+		// used in king.js for getting legal king moves
+		attackedSquares = getAttackedSquares(opponentColor);
 
-		// isCheckMate();
-		if (checkDraw()) {
-			$('#turn').html("It's a draw!");
+		var checkingPieces = inCheck(currentColor, opponentColor);
+
+		// if the king is in check, it might be checkmate
+		if (checkingPieces.length) {
+			checkCheckmate(currentColor);
+		}
+
+		if (checkDraw(currentColor)) {
 			return;
 		}
 
 		$('#turn').html(colorAbbreviations[currentColor] + " to move");
 
-		var checkingPieces = inCheck(currentColor, opponentColor);
-
-		// used in king.js
-		attackedSquares = getAttackedSquares(opponentColor);
-
 		// if human is moving, allow him/her to move
 		// if (whiteDown && currentColor === 'w' || !whiteDown && currentColor === 'b') {
 		
+			humanTurn = true;
+
 			inCheck(currentColor, opponentColor);
 
 			var fromTo = [];
@@ -403,9 +406,7 @@ $(document).ready(function() {
 
 		// // if computer is moving, pick a random move
 		// else {
-
 		// 	humanTurn = false;
-		// 	var checkingPieces = inCheck(currentColor, opponentColor);
 
 		// 	// construct array of possible moves
 		// 	var moves = [];
@@ -436,6 +437,13 @@ $(document).ready(function() {
 		// 		}
 		// 	}
 		// 	var numMoves = moves.length;
+
+		// 	if (!numMoves && inCheck(currentColor, opponentColor).length) {
+		// 		$('#turn').html("Checkmate! " + colorAbbreviations[opponentColor] + " wins!");
+		// 		drawCheckSquare(currentColor, false); // make the square the normal color
+		// 		return;			
+		// 	}
+
 		// 	var r = Math.floor(Math.random() * numMoves);
 
 		// 	var compMove = moves[r];
@@ -584,6 +592,7 @@ $(document).ready(function() {
 		allPieces[piece].splice(pieceIndex, 1);
 		var pieceId = newPiece + index;
 		occupiedSquares[newIndex] = pieceId;
+		boardStrings = [];
 	}
 
 	/**
@@ -744,8 +753,6 @@ $(document).ready(function() {
 		// king moves
 		// This is similar to the getAttackedSquares function, consider refactoring
 
-		// console.log(checkingPieces);
-
 		// TODO consider chanding attackingSquares to a set (map does not work with a set)
 
 		// only the king can move
@@ -809,8 +816,6 @@ $(document).ready(function() {
 			}
 		}
 
-		console.log(checkPath);
-
 		return checkPath;
 	}
 
@@ -831,17 +836,20 @@ $(document).ready(function() {
 		var index = findPieceIndex(piece, id);
 		pieceType.splice(index, 1);
 		drawOverPiece(square);
+		boardStrings = [];
 	}
 
 	/**
 	 * Checks to see if the game is a draw
+	 * @param {string} color - the color for which to check (used in checkStalemate)
+	 * @return {boolean} - whether the game is a draw
 	 */
 
-	function checkDraw() {
-		if (!checkMatingMaterial() || checkDrawRep() || checkDraw50() || isStalemate()) {
-			console.log("It's a draw!")
+	function checkDraw(color) {
+		if (!checkMatingMaterial() || checkDrawRep() || checkDraw50() || checkStalemate(color)) {
 			return true;
 		}
+		return false;
 	}
 
 	/**
@@ -894,35 +902,90 @@ $(document).ready(function() {
 				return allPieces['wN'].length > 1 || allPieces['bN'].length > 1;
 			}
 		}
+		$('#turn').html("It's a draw by insufficient mating material!");
 		return true;
 	}
 
 	/**
 	 * Checks to see if the game is a draw by repetition
+	 * @return {boolean} - whether the game is a draw
 	 */
 
 	function checkDrawRep() {
-
+		var currBoardString = boardStrings[boardStrings.length - 2];
+		var counter = 1;
+		for (var i = 0; i < boardStrings.length - 1; i ++) {
+			if (boardStrings[i] === currBoardString) {
+				counter++;
+			}
+			if (counter === 3) {
+				$('#turn').html("It's a draw by repetition!");
+				return true;
+			}
+		}
+		return false;
 	}
 
 	/**
 	 * Checks to see if the game is a draw by the fifty-move rule
+	 * @return {boolean} - whether the game is a draw
 	 */
 
 	function checkDraw50() {
 
 		// a turn if one move from each player
 		if (drawMoveCounter === 50) {
-			alert("Draw by fifty-move rule");
+			$('#turn').html("It's a draw by the fifty-move rule!");
+			return true;
 		}
+		return false;
 	}
 
 	/**
 	 * Checks to see if the game is a draw by stalemate
+	 * @param {string} color - the color to check if there are any legal moves
+	 * @return {boolean} - whether the game is a draw
 	 */
 
-	function isStalemate() {
+	function checkStalemate(color) {
+		for (var pieceType in allPieces) {
+			if (pieceType[0] === color) {
+				var pieces = allPieces[pieceType];
+				for (var i in pieces) {
+					if (pieces[i].moves().length) {
+						return false;
+					}
+				}
+			}
+		}
+		$('#turn').html("It's a draw by stalemate!");
+		return true;
+	}
 
+	/**
+	 * Checks to see if a player is in checkmate
+	 * @param {string} currentColor - the player who is in check
+	 * @param {string} opponentColor - the player who is giving check
+	 * @param {String[]} color - the pieces that are giving check
+	 * @return {boolean} - whether the player is in checkmate
+	 */
+
+	function checkCheckmate(currentColor, opponentColor, checkingPieces) {
+		for (var i in checkingPieces) {
+			for (var pieceType in allPieces) {
+				if (pieceType[0] === currentColor) {
+					var pieces = allPieces[pieceType];
+					for (var j in pieces) {
+						if (getLegalMoves(checkingPieces[i], pieces[j]).length) {
+							return false;
+						}
+					}
+				}
+			}
+		}
+		$('#turn').html("Checkmate! " + colorAbbreviations[opponentColor] + " wins!");
+		drawCheckSquare(currentColor, false); // make the square the normal color
+		return true;
 	}
 
 	/**
@@ -1143,4 +1206,23 @@ function squareToIndex(square) {
 function indexToSquare(index) {
 	var file = index % 8 === 0 ? 8 : index % 8;
 	return [file, Math.ceil(index / 8)];
+}
+
+/**
+ * Creates a string representation of the board
+ */
+
+function getBoardString() {
+	var boardString = '';
+
+	// for in loop skips over undefined entries
+	for (var i = 0; i < occupiedSquares.length; i++) {
+		if (occupiedSquares[i]) {
+			boardString += occupiedSquares[i].slice(0, 2);
+		}
+		else {
+			boardString += '_';
+		}
+	}
+	return boardString;
 }
