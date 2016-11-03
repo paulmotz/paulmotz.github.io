@@ -2,8 +2,6 @@
  * TODOs
  *
  * Logic:
- * - king should not be able to move backwards when being attacked by a B, Q or R
- * - draw rules
  * - captured piece moves after being captured (wR0 captured by bQ1)
  *
  * Check:
@@ -302,7 +300,9 @@ $(document).ready(function() {
 
 		// if the king is in check, it might be checkmate
 		if (checkingPieces.length) {
-			checkCheckmate(currentColor);
+			if (checkCheckmate(currentColor, opponentColor, checkingPieces)) {
+				return;
+			}
 		}
 
 		if (checkDraw(currentColor)) {
@@ -339,15 +339,10 @@ $(document).ready(function() {
 
 						fromTo = [];
 
-						// var piece = selectedPiece.slice(0, 2);
-						// var id = selectedPiece[2];
-						// var index = findPieceIndex(piece, id);
-
 						// update move counters (for display and draw checking)
 						updateMoves(currentColor);						
 
-						// TODO: this prevents multiple click events being bound to the board.
-						// However, I REALLY don't like this solution.
+						// prevent multiple click events being bound to the board.
 						$(this).off(e);
 
 						move(opponentColor, currentColor);
@@ -384,16 +379,10 @@ $(document).ready(function() {
 							legalMoves = allPieces[pieceName][index].moves().map(squareToIndex);
 						}
 
-						// TODO: I'm not totally satisfied with this being calculated here
 						// the king is in check, restricting the moves of other pieces
 						else {
 							legalMoves = getLegalMoves(checkingPieces, selectedPiece);
 						}
-
-						// var pd = allPieces[pieceName][index].getPinDirection();
-						// console.log(pd);
-						// var p = allPieces[pieceName][index].protectedSquares(occupiedSquares);
-						// console.log(p);
 					}	
 
 					// reset move to empty array so that the next click will be the "from" part of the move
@@ -449,7 +438,6 @@ $(document).ready(function() {
 		// 	var compMove = moves[r];
 		// 	var piece = compMove.piece;
 		// 	var pieceType = piece[1];
-		// 	var pieceId = piece + compMove.id;
 
 		// 	// check for castling
 		// 	if (pieceType === 'K') {
@@ -526,7 +514,6 @@ $(document).ready(function() {
 		occupiedSquares[oldIndex - 1] = null;
 		occupiedSquares[newIndex - 1] = piece + id;
 
-
 		// capture was en passant
 		if (piece[1] === 'P' && enPassantPawn) {
 
@@ -554,7 +541,7 @@ $(document).ready(function() {
 			promote(piece, index, newIndex, newSquare);
 		}
 
-		// piece and id are incorrect if there was a pawn promotion
+		// piece and id are incorrect if there was not a pawn promotion
 		// TODO: refactor so that this else isn't necessary
 		else {
 			occupiedSquares[newIndex - 1] = piece + id;
@@ -601,16 +588,20 @@ $(document).ready(function() {
 	 */
 	function castle(kingSquare) {
 
+		var kingFile = kingSquare[0];
+		var kingRank = kingSquare[1];
+		if ((kingFile !== 3 && kingFile !== 7) || (kingRank !== 1 && kingRank !== 8)) return;
+
 		// queenside castling
-		if (kingSquare[0] === 3) {
+		if (kingFile === 3) {
 
 			// white
-			if (kingSquare[1] === 1) {
+			if (kingRank === 1) {
 				var rookMove = {'piece' : 'wR', 'id' : 0, 'move' : [4, 1]};
 			}
 
 			// black
-			else {
+			else if (kingRank === 8) {
 				var rookMove = {'piece' : 'bR', 'id' : 0, 'move' : [4, 8]};
 			}
 
@@ -618,15 +609,15 @@ $(document).ready(function() {
 		}
 
 		// kingside castling
-		else if (kingSquare[0] === 7) {
+		else if (kingFile === 7) {
 
 			// white
-			if (kingSquare[1] === 1) {
+			if (kingRank === 1) {
 				var rookMove = {'piece' : 'wR', 'id' : 1, 'move' : [6, 1]};
 			}
 
 			// black
-			else {
+			else if (kingRank === 8) {
 				var rookMove = {'piece' : 'bR', 'id' : 1, 'move' : [6, 8]};
 			}
 
@@ -651,8 +642,7 @@ $(document).ready(function() {
 						attackedSquares.add(squareToIndex(pieceMoves[i]));
 					}
 				}
-			}
-			
+			}	
 		}
 		return attackedSquares;
 	}
@@ -692,7 +682,6 @@ $(document).ready(function() {
 		var king = allPieces[defendingColor + 'K'][0];
 		var kingIndex = squareToIndex([king.file, king.rank]);
 		var attackingPieces = getAttackingPieces(attackingColor, kingIndex);
-
 		if (attackingPieces.length) {
 			drawCheckSquare(defendingColor, true);
 		}
@@ -731,7 +720,6 @@ $(document).ready(function() {
 			var checkingPieceIndex = squareToIndex(checkingPieceSquare);
 			
 			// can the piece be captured?
-			// TODO: kings can capture to get out of double-check, is this covered by the king moves section?
 			var captureMove = clickedPieceMoves.indexOf(checkingPieceIndex);
 			if (captureMove !== -1) {
 				legalMoves.push(clickedPieceMoves[captureMove]);
@@ -750,23 +738,14 @@ $(document).ready(function() {
 			}
 		}
 
-		// king moves
-		// This is similar to the getAttackedSquares function, consider refactoring
-
-		// TODO consider chanding attackingSquares to a set (map does not work with a set)
-
 		// only the king can move
 		if (clickedPiece[1] === 'K') {
 			var attackedSquares = [];
 			for (var piece in checkingPieces) {
-
 				var checkingPieceColorAndType = checkingPieces[piece].slice(0, 2)
 				var checkingPieceIndex = findPieceIndex(checkingPieceColorAndType, checkingPieces[piece][2])
 				var checkingPiece = allPieces[checkingPieceColorAndType][checkingPieceIndex];
 				var checkingPieceSquare = [checkingPiece.file, checkingPiece.rank]
-
-				// TODO: not sure if this is efficient, maybe take out square king is occupying
-
 				var checkPath = getCheckPath(checkingPieceSquare, kingSquare, true).map(squareToIndex);
 
 				for (var c in checkPath) {
@@ -829,7 +808,6 @@ $(document).ready(function() {
 
 		// captures reset the fifty-move rule counter
 		drawMoveCounter = 0;
-
 		var piece = pieceToCapture.slice(0, 2);
 		var id = pieceToCapture[2];
 		var pieceType = allPieces[piece];
@@ -880,11 +858,13 @@ $(document).ready(function() {
 
 					// if the other player has no knights does the other player have at least one pair of bishops with opposite colored squares
 					if (!allPieces[p2 + 'N'].length && !differentColorBishops()) {
+						$('#turn').html("It's a draw by insufficient mating material!");
 						return false;
 					}
 
 					// only one of bishop or knight
 					if (allPieces[p2 + 'B'].length + allPieces[p2 + 'N'].length < 2) {
+						$('#turn').html("It's a draw by insufficient mating material!");
 						return false;
 					}
 				}
@@ -893,6 +873,7 @@ $(document).ready(function() {
 			// no knights left, are there different colored bishops?
 			if (!allPieces['wN'].length && !allPieces['bN'].length) {
 				if (!differentColorBishops()) {
+					$('#turn').html("It's a draw by insufficient mating material!");
 					return false;
 				}
 			}
@@ -902,7 +883,6 @@ $(document).ready(function() {
 				return allPieces['wN'].length > 1 || allPieces['bN'].length > 1;
 			}
 		}
-		$('#turn').html("It's a draw by insufficient mating material!");
 		return true;
 	}
 
@@ -912,9 +892,9 @@ $(document).ready(function() {
 	 */
 
 	function checkDrawRep() {
-		var currBoardString = boardStrings[boardStrings.length - 2];
+		var currBoardString = boardStrings[boardStrings.length - 1];
 		var counter = 1;
-		for (var i = 0; i < boardStrings.length - 1; i ++) {
+		for (var i = 0; i < boardStrings.length - 1; i++) {
 			if (boardStrings[i] === currBoardString) {
 				counter++;
 			}
@@ -971,18 +951,20 @@ $(document).ready(function() {
 	 */
 
 	function checkCheckmate(currentColor, opponentColor, checkingPieces) {
-		for (var i in checkingPieces) {
+		// for (var i in checkingPieces) {
 			for (var pieceType in allPieces) {
 				if (pieceType[0] === currentColor) {
 					var pieces = allPieces[pieceType];
 					for (var j in pieces) {
-						if (getLegalMoves(checkingPieces[i], pieces[j]).length) {
+						var colorAndType = pieces[j].color + pieces[j].abbr;
+						var selectedPiece = colorAndType + pieces[j].id;
+						if (getLegalMoves(checkingPieces, selectedPiece).length) {
 							return false;
 						}
 					}
 				}
 			}
-		}
+		// }
 		$('#turn').html("Checkmate! " + colorAbbreviations[opponentColor] + " wins!");
 		drawCheckSquare(currentColor, false); // make the square the normal color
 		return true;
@@ -999,7 +981,6 @@ $(document).ready(function() {
 
 		var pieceType = allPieces[piece];
 
-		// find and remove piece with matching id (can't use indices since capturing shifts)
 		for (var p = 0; p < pieceType.length; p++) {
 
 			// different type (.id is a string, id is a number), so use == operator
@@ -1042,7 +1023,7 @@ $(document).ready(function() {
 			var square = [file, 9 - rank];
 		}
 		else {
-			var square = [9-file, rank];
+			var square = [9 - file, rank];
 		}
 		return square;
 	}
