@@ -971,26 +971,6 @@ $(document).ready(function() {
 	}
 
 	/**
-	 * Returns the piece's location in its corresponding array. Due to captures, the piece's id may !== its index
-	 * @param {String} piece - the piece type to find an index for (eg. wP for white pawn)
-	 * @param {number} id - the piece's id
-	 * @return {number} index 
-	 */
-
-	function findPieceIndex(piece, id) {
-
-		var pieceType = allPieces[piece];
-
-		for (var p = 0; p < pieceType.length; p++) {
-
-			// different type (.id is a string, id is a number), so use == operator
-			if (pieceType[p].id == id) {
-				return p;
-			}
-		}
-	}
-
-	/**
 	 * Maps the rank and file of a square to x and y co-ordinates corresponding with its offset
 	 * @param {number} file - the square's file: 1 - 8
 	 * @param {number} rank - the square's rank: 1 - 8
@@ -1206,4 +1186,24 @@ function getBoardString() {
 		}
 	}
 	return boardString;
+}
+
+/**
+ * Returns the piece's location in its corresponding array. Due to captures, the piece's id may !== its index
+ * @param {String} piece - the piece type to find an index for (eg. wP for white pawn)
+ * @param {number} id - the piece's id
+ * @return {number} index 
+ */
+
+function findPieceIndex(piece, id) {
+
+	var pieceType = allPieces[piece];
+
+	for (var p = 0; p < pieceType.length; p++) {
+
+		// different type (.id is a string, id is a number), so use == operator
+		if (pieceType[p].id == id) {
+			return p;
+		}
+	}
 }

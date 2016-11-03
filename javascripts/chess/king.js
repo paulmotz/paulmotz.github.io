@@ -41,15 +41,20 @@ class King extends Piece {
 			!attackedSquares.has(squareToIndex(square));			
 		});
 
+		var colorRook = color+'R';
+		var queensideRook = allPieces[colorRook][findPieceIndex(colorRook, 0)];
+
 		// queenside castling
-		if (!hasMoved && allPieces[color+'R'][0] && !allPieces[color+'R'][0].hasMoved && 
+		if (!hasMoved && queensideRook && !queensideRook.hasMoved && 
 			!occupiedSquares[squareToIndex([file - 1, rank]) - 1] && !occupiedSquares[squareToIndex([file - 2, rank]) - 1] && !occupiedSquares[squareToIndex([file - 3, rank]) - 1] && 
 			!attackedSquares.has(squareToIndex([file, rank])) && !attackedSquares.has(squareToIndex([file - 1, rank])) && !attackedSquares.has(squareToIndex([file - 2, rank]))) {
 			moves.push([file - 2, rank]);
 		}
 
+		var kingsideRook = allPieces[colorRook][findPieceIndex(colorRook, 1)];
+
 		// kingside castling
-		if (!hasMoved && allPieces[color+'R'][1] && !allPieces[color+'R'][1].hasMoved && 
+		if (!hasMoved && kingsideRook && !kingsideRook.hasMoved && 
 			!occupiedSquares[squareToIndex([file + 1, rank]) - 1] && !occupiedSquares[squareToIndex([file + 2, rank]) - 1] && 
 			!attackedSquares.has(squareToIndex([file, rank])) && !attackedSquares.has(squareToIndex([file + 1, rank])) && !attackedSquares.has(squareToIndex([file + 2, rank]))) {
 			moves.push([file + 2, rank]);
