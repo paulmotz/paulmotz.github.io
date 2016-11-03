@@ -312,7 +312,7 @@ $(document).ready(function() {
 		$('#turn').html(colorAbbreviations[currentColor] + " to move");
 
 		// if human is moving, allow him/her to move
-		// if (whiteDown && currentColor === 'w' || !whiteDown && currentColor === 'b') {
+		if (whiteDown && currentColor === 'w' || !whiteDown && currentColor === 'b') {
 		
 			humanTurn = true;
 
@@ -391,79 +391,79 @@ $(document).ready(function() {
 					}
 				}
 			});
-		// }
+		}
 
-		// // if computer is moving, pick a random move
-		// else {
-		// 	humanTurn = false;
+		// if computer is moving, pick a random move
+		else {
+			humanTurn = false;
 
-		// 	// construct array of possible moves
-		// 	var moves = [];
-		// 	for (pieceTypes in allPieces) {
-		// 		var pieceType = pieceTypes[1];
+			// construct array of possible moves
+			var moves = [];
+			for (pieceTypes in allPieces) {
+				var pieceType = pieceTypes[1];
 
-		// 		// only get moves from the correct color of pieces
-		// 		if (pieceTypes[0] === currentColor) {
-		// 			var pieceArray = allPieces[pieceTypes];
-		// 			for (var piece in pieceArray) {
+				// only get moves from the correct color of pieces
+				if (pieceTypes[0] === currentColor) {
+					var pieceArray = allPieces[pieceTypes];
+					for (var piece in pieceArray) {
 
-		// 				var pieceMoves;
+						var pieceMoves;
 
-		// 				if (!checkingPieces.length) {
-		// 					pieceMoves = pieceArray[piece].moves();
-		// 				}
+						if (!checkingPieces.length) {
+							pieceMoves = pieceArray[piece].moves();
+						}
 
-		// 				else {
-		// 					var selectedPiece = currentColor + pieceArray[piece].abbr + pieceArray[piece].id;
-		// 					pieceMoves = getLegalMoves(checkingPieces, selectedPiece).map(indexToSquare);
-		// 				}
+						else {
+							var selectedPiece = currentColor + pieceArray[piece].abbr + pieceArray[piece].id;
+							pieceMoves = getLegalMoves(checkingPieces, selectedPiece).map(indexToSquare);
+						}
 
-		// 				for (var i in pieceMoves) {
-		// 					var m =  {'piece' : pieceTypes, 'id' : pieceArray[piece].id, 'move' : pieceMoves[i]};
-		// 					moves.push(m);
-		// 				}
-		// 			}
-		// 		}
-		// 	}
-		// 	var numMoves = moves.length;
+						for (var i in pieceMoves) {
+							var m =  {'piece' : pieceTypes, 'id' : pieceArray[piece].id, 'move' : pieceMoves[i]};
+							moves.push(m);
+						}
+					}
+				}
+			}
+			var numMoves = moves.length;
 
-		// 	if (!numMoves && inCheck(currentColor, opponentColor).length) {
-		// 		$('#turn').html("Checkmate! " + colorAbbreviations[opponentColor] + " wins!");
-		// 		drawCheckSquare(currentColor, false); // make the square the normal color
-		// 		return;			
-		// 	}
+			if (!numMoves && inCheck(currentColor, opponentColor).length) {
+				$('#turn').html("Checkmate! " + colorAbbreviations[opponentColor] + " wins!");
+				drawCheckSquare(currentColor, false); // make the square the normal color
+				return;			
+			}
 
-		// 	var r = Math.floor(Math.random() * numMoves);
+			var r = Math.floor(Math.random() * numMoves);
 
-		// 	var compMove = moves[r];
-		// 	var piece = compMove.piece;
-		// 	var pieceType = piece[1];
+			var compMove = moves[r];
+			var piece = compMove.piece;
+			var pieceType = piece[1];
 
-		// 	// check for castling
-		// 	if (pieceType === 'K') {
-		// 		if (!allPieces[piece][compMove.id].hasMoved) {
+			// check for castling
+			if (pieceType === 'K') {
+				if (!allPieces[piece][compMove.id].hasMoved) {
 
-		// 			// piece is known to be king that has not yet moved (so its location is [5, 1] or [5, 8])
-		// 			var king = allPieces[piece][0];
-		// 			var newSquare = compMove.move;
+					// piece is known to be king that has not yet moved (so its location is [5, 1] or [5, 8])
+					var king = allPieces[piece][0];
+					var newSquare = compMove.move;
 
-		// 			castle(newSquare);
+					castle(newSquare);
 
-		// 			// this is the king's first move, set its hasMoved property to true
-		// 			allPieces[piece][compMove.id].hasMoved = true;
-		// 		}
-		// 	}
+					// this is the king's first move, set its hasMoved property to true
+					allPieces[piece][compMove.id].hasMoved = true;
+				}
+			}
 
-		// 	// movePiece checks whether a king or rook has moved. This should be done after checking for castling
-		// 	movePiece(moves[r]);
+			// movePiece checks whether a king or rook has moved. This should be done after checking for castling
+			movePiece(moves[r]);
 
-		// 	updateMoves(currentColor);
+			updateMoves(currentColor);
 
-		// 	inCheck(currentColor, opponentColor);
+			inCheck(currentColor, opponentColor);
 
-		// 	// setTimeout(function() { movePiece(moves[r]) }, delay);
-		// 	move(opponentColor, currentColor);
-		// }
+			// setTimeout(function() { movePiece(moves[r]) }, delay);
+			move(opponentColor, currentColor);
+		}
 	}
 
 	/**
