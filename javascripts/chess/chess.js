@@ -75,23 +75,23 @@ $(document).ready(function() {
 
 
 	// remove pieces for testing purposes
-	// var pieceCount = {'B': 2, 'N': 2, 'K': 1, 'P': 8, 'Q': 1, 'R': 2};
-	// var pieceNames = {'B' : 'Bishop', 'K' : 'King', 'N' : 'Knight', 'R' : 'Rook'};
+	var pieceCount = {'B': 2, 'N': 2, 'K': 1, 'P': 8, 'Q': 1, 'R': 2};
+	var pieceNames = {'B' : 'Bishop', 'K' : 'King', 'N' : 'Knight', 'R' : 'Rook'};
 
-	// // kings and queens have arrays of length 1 for convenience in later methods
-	// var pieceStartingPositions = {'wB' : [[4, 5], [8, 4]],
-	// 								  'wN' : [[1, 8], [2, 8]],
-	// 								  'wK' : [[5, 1]],
-	// 								  'wP' : [[7, 2], [8, 2]],
-	// 								  'wQ' : [[4, 1]],
-	// 								  'wR' : [[8, 2], [6, 1]],
-	// 								  'bB' : [[5, 7], [1, 4]],
-	// 								  'bN' : [[1, 1], [2, 1]],
-	// 								  'bK' : [[8, 8]],
-	// 								  'bP' : [[7, 7], [8, 7]],
-	// 								  'bQ' : [[2, 2]],
-	// 								  'bR' : [[5, 8], [1, 6]]
-	// 								};
+	// kings and queens have arrays of length 1 for convenience in later methods
+	var pieceStartingPositions = {'wB' : [[2, 5], [6, 4]],
+									  'wN' : [[1, 8], [2, 8]],
+									  'wK' : [[5, 3]],
+									  'wP' : [[7, 2], [8, 2]],
+									  'wQ' : [[4, 1]],
+									  'wR' : [[8, 2], [6, 1]],
+									  'bB' : [[5, 7], [1, 4]],
+									  'bN' : [[1, 1], [2, 1]],
+									  'bK' : [[6, 6]],
+									  'bP' : [[7, 7], [8, 7]],
+									  'bQ' : [[2, 2]],
+									  'bR' : [[5, 8], [1, 6]]
+									};
 
 
 	
@@ -311,7 +311,7 @@ $(document).ready(function() {
 		attackedSquares = getAttackedSquares(opponentColor);
 
 		// if human is moving, allow him/her to move
-		if (whiteDown && currentColor === 'w' || !whiteDown && currentColor === 'b') {
+		// if (whiteDown && currentColor === 'w' || !whiteDown && currentColor === 'b') {
 		
 			inCheck(currentColor, opponentColor);
 
@@ -399,75 +399,75 @@ $(document).ready(function() {
 					}
 				}
 			});
-		}
+		// }
 
-		// if computer is moving, pick a random move
-		else {
+		// // if computer is moving, pick a random move
+		// else {
 
-			humanTurn = false;
-			var checkingPieces = inCheck(currentColor, opponentColor);
+		// 	humanTurn = false;
+		// 	var checkingPieces = inCheck(currentColor, opponentColor);
 
-			// construct array of possible moves
-			var moves = [];
-			for (pieceTypes in allPieces) {
-				var pieceType = pieceTypes[1];
+		// 	// construct array of possible moves
+		// 	var moves = [];
+		// 	for (pieceTypes in allPieces) {
+		// 		var pieceType = pieceTypes[1];
 
-				// only get moves from the correct color of pieces
-				if (pieceTypes[0] === currentColor) {
-					var pieceArray = allPieces[pieceTypes];
-					for (var piece in pieceArray) {
+		// 		// only get moves from the correct color of pieces
+		// 		if (pieceTypes[0] === currentColor) {
+		// 			var pieceArray = allPieces[pieceTypes];
+		// 			for (var piece in pieceArray) {
 
-						var pieceMoves;
+		// 				var pieceMoves;
 
-						if (!checkingPieces.length) {
-							pieceMoves = pieceArray[piece].moves();
-						}
+		// 				if (!checkingPieces.length) {
+		// 					pieceMoves = pieceArray[piece].moves();
+		// 				}
 
-						else {
-							var selectedPiece = currentColor + pieceArray[piece].abbr + pieceArray[piece].id;
-							pieceMoves = getLegalMoves(checkingPieces, selectedPiece).map(indexToSquare);
-						}
+		// 				else {
+		// 					var selectedPiece = currentColor + pieceArray[piece].abbr + pieceArray[piece].id;
+		// 					pieceMoves = getLegalMoves(checkingPieces, selectedPiece).map(indexToSquare);
+		// 				}
 
-						for (var i in pieceMoves) {
-							var m =  {'piece' : pieceTypes, 'id' : pieceArray[piece].id, 'move' : pieceMoves[i]};
-							moves.push(m);
-						}
-					}
-				}
-			}
-			var numMoves = moves.length;
-			var r = Math.floor(Math.random() * numMoves);
+		// 				for (var i in pieceMoves) {
+		// 					var m =  {'piece' : pieceTypes, 'id' : pieceArray[piece].id, 'move' : pieceMoves[i]};
+		// 					moves.push(m);
+		// 				}
+		// 			}
+		// 		}
+		// 	}
+		// 	var numMoves = moves.length;
+		// 	var r = Math.floor(Math.random() * numMoves);
 
-			var compMove = moves[r];
-			var piece = compMove.piece;
-			var pieceType = piece[1];
-			var pieceId = piece + compMove.id;
+		// 	var compMove = moves[r];
+		// 	var piece = compMove.piece;
+		// 	var pieceType = piece[1];
+		// 	var pieceId = piece + compMove.id;
 
-			// check for castling
-			if (pieceType === 'K') {
-				if (!allPieces[piece][compMove.id].hasMoved) {
+		// 	// check for castling
+		// 	if (pieceType === 'K') {
+		// 		if (!allPieces[piece][compMove.id].hasMoved) {
 
-					// piece is known to be king that has not yet moved (so its location is [5, 1] or [5, 8])
-					var king = allPieces[piece][0];
-					var newSquare = compMove.move;
+		// 			// piece is known to be king that has not yet moved (so its location is [5, 1] or [5, 8])
+		// 			var king = allPieces[piece][0];
+		// 			var newSquare = compMove.move;
 
-					castle(newSquare);
+		// 			castle(newSquare);
 
-					// this is the king's first move, set its hasMoved property to true
-					allPieces[piece][compMove.id].hasMoved = true;
-				}
-			}
+		// 			// this is the king's first move, set its hasMoved property to true
+		// 			allPieces[piece][compMove.id].hasMoved = true;
+		// 		}
+		// 	}
 
-			// movePiece checks whether a king or rook has moved. This should be done after checking for castling
-			movePiece(moves[r]);
+		// 	// movePiece checks whether a king or rook has moved. This should be done after checking for castling
+		// 	movePiece(moves[r]);
 
-			updateMoves(currentColor);
+		// 	updateMoves(currentColor);
 
-			inCheck(currentColor, opponentColor);
+		// 	inCheck(currentColor, opponentColor);
 
-			// setTimeout(function() { movePiece(moves[r]) }, delay);
-			move(opponentColor, currentColor);
-		}
+		// 	// setTimeout(function() { movePiece(moves[r]) }, delay);
+		// 	move(opponentColor, currentColor);
+		// }
 	}
 
 	/**
@@ -645,7 +645,6 @@ $(document).ready(function() {
 			}
 			
 		}
-		// console.log(squares);
 		return attackedSquares;
 	}
 
@@ -736,7 +735,6 @@ $(document).ready(function() {
 				console.log(checkPath);
 				for (var i = 0; i < checkPath.length; i++) {
 					var blockMove = clickedPieceMoves.indexOf(checkPath[i]);
-
 					if (blockMove !== -1) {
 						legalMoves.push(clickedPieceMoves[blockMove]);
 					} 
@@ -745,29 +743,65 @@ $(document).ready(function() {
 		}
 
 		// king moves
+		// This is similar to the getAttackedSquares function, consider refactoring
+
+		// console.log(checkingPieces);
+
+		// TODO consider chanding attackingSquares to a set (map does not work with a set)
+		var attackedSquares = [];
+		for (var piece in checkingPieces) {
+
+			var checkingPieceColorAndType = checkingPieces[piece].slice(0, 2)
+			var checkingPieceIndex = findPieceIndex(checkingPieceColorAndType, checkingPieces[piece][2])
+			var checkingPiece = allPieces[checkingPieceColorAndType][checkingPieceIndex];
+			var checkingPieceSquare = [checkingPiece.file, checkingPiece.rank]
+
+			// TODO: not sure if this is efficient, maybe take out square king is occupying
+
+			var checkPath = getCheckPath(checkingPieceSquare, kingSquare).map(squareToIndex);
+
+			for (var c in checkPath) {
+				if (checkPath[c] !== kingIndex) {
+					attackedSquares.push(checkPath[c]);
+				}
+			}
+
+		}
+
+		var kingMoves = king.moves().map(squareToIndex);
+
+		var legalKingMoves = kingMoves.filter(function(val) {
+			return attackedSquares.indexOf(val) === -1;
+		});
+
+		for (var m in legalKingMoves) {
+			legalMoves.push(legalKingMoves[m]);
+		}
 
 		return legalMoves;
 	}
 
 	/**
 	 * Calculates the path between two pieces if such a path exists
-	 * @param {number[]} pieceSquare - the square of one of the pieces
-	 * @param {number[]} otherPieceSquare - the square of the other one of the pieces 
+	 * @param {number[]} checkingPieceSquare - the square of one of the pieces
+	 * @param {number[]} kingSquare - the square of the other one of the pieces 
 	 * @return {number[][]} checkPath - an array of squares between the pieces, returns [] if no so path
 	 */
 
-	function getCheckPath(pieceSquare, otherPieceSquare) {
+	function getCheckPath(checkingPieceSquare, kingSquare) {
 		var checkPath = [];
-		var delF = pieceSquare[0] - otherPieceSquare[0]; // change in file
-		var delR = pieceSquare[1] - otherPieceSquare[1]; // change in rank
-
-		console.log(pieceSquare, otherPieceSquare);
+		var delF = checkingPieceSquare[0] - kingSquare[0]; // change in file
+		var delR = checkingPieceSquare[1] - kingSquare[1]; // change in rank
+		var pieceDist = Math.max(Math.abs(delF), Math.abs(delR));
 
 		// there is a valid path 
 		if (delF === 0 || delR === 0 || Math.abs(delF/delR) === 1) {
-			var pathLength = Math.max(Math.abs(delF), Math.abs(delR));
+
+			// extend the path so that it blocks the king from retreating in the direction of the check
+			// TODO: this also includes the king's current square
+			var pathLength = pieceDist + 2;
 			for (var i = 1; i < pathLength; i++) {
-				checkPath.push([pieceSquare[0] - i * delF/pathLength, pieceSquare[1] - i * delR/pathLength]);
+				checkPath.push([checkingPieceSquare[0] - i * delF/pieceDist, checkingPieceSquare[1] - i * delR/pieceDist]);
 			}
 		}
 		return checkPath;
