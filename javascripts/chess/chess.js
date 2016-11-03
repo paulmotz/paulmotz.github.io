@@ -73,25 +73,23 @@ $(document).ready(function() {
 
 
 	// remove pieces for testing purposes
-	var pieceCount = {'B': 2, 'N': 2, 'K': 1, 'P': 8, 'Q': 1, 'R': 2};
-	var pieceNames = {'K' : 'King', 'P' : 'Pawn', 'R' : 'Rook'};
+	// var pieceCount = {'B': 2, 'N': 2, 'K': 1, 'P': 8, 'Q': 1, 'R': 2};
+	// var pieceNames = {'K' : 'King', 'P' : 'Pawn', 'R' : 'Rook'};
 
-	var pieceStartingPositions = {'wB' : [[3, 1], [6, 1]],
-									  'wN' : [[2, 1], [7, 1]],
-									  'wK' : [[5, 1]],
-									  'wP' : [[1, 2], [2, 2], [3, 2], [4, 2], [5, 2], [6, 2], [7, 2], [8, 2]],
-									  'wQ' : [[4, 1]],
-									  'wR' : [[1, 1], [8, 1]],
-									  'bB' : [[3, 8], [6, 8]],
-									  'bN' : [[2, 8], [7, 8]],
-									  'bK' : [[5, 8]],
-									  'bP' : [[1, 7], [2, 7], [3, 7], [4, 7], [5, 7], [6, 7], [7, 7], [8, 7]],
-									  'bQ' : [[4, 8]],
-									  'bR' : [[1, 8], [8, 8]]
-									};
+	// var pieceStartingPositions = {'wB' : [[3, 1], [6, 1]],
+	// 								  'wN' : [[2, 1], [7, 1]],
+	// 								  'wK' : [[5, 1]],
+	// 								  'wP' : [[1, 2], [2, 2], [3, 2], [4, 2], [5, 2], [6, 2], [7, 2], [8, 2]],
+	// 								  'wQ' : [[4, 1]],
+	// 								  'wR' : [[1, 1], [8, 1]],
+	// 								  'bB' : [[3, 8], [6, 8]],
+	// 								  'bN' : [[2, 8], [7, 8]],
+	// 								  'bK' : [[5, 8]],
+	// 								  'bP' : [[1, 7], [2, 7], [3, 7], [4, 7], [5, 7], [6, 7], [7, 7], [8, 7]],
+	// 								  'bQ' : [[4, 8]],
+	// 								  'bR' : [[1, 8], [8, 8]]
+									// };
 
-
-	
 	// represent all pieces as entries in arrays for dynamic access (kings could have been single entry)
 	allPieces = {'wB' : [], 'wN' : [], 'wK' : [], 'wP' : [], 'wQ' : [], 'wR' : [], 'bB' : [], 'bN' : [], 'bK' : [], 'bP' : [], 'bQ' : [], 'bR' : [] };
 
@@ -109,9 +107,9 @@ $(document).ready(function() {
 		$('.radio-piece').each(function() {
 			var selection = $(this).parent().find('input');
 			var piece = selection.val();
-			if ($('#radio-white').is(':checked')) {
+			if ($('#radio-white').is(':checked') || $('#radio-human').is(':checked')) {
 				whiteDown = true;
-				$(this).parent().find('label').html(pieceSymbols['w' + piece] + " " + pieceNames[piece]);
+				$(this).parent().find('label').html(pieceSymbols['w' + piece] + " " + pieceNames[piece]); // TODO: what color should the pieces be if no comp?
 			}
 			else {
 				whiteDown = false;
@@ -277,16 +275,17 @@ $(document).ready(function() {
 		initializePieces();
 		drawBoard();
 		boardStrings = [];
-		move('w', 'b');
+		move('w', 'b', $('#radio-human').is(':checked'));
 	}
 
 	/**
 	 * Generates or listens for a move
 	 * @param {String} currentColor - the color of the piece being moved: 'w' or 'b'
 	 * @param {String} opponentColor - the color of the opponenet's pieces: 'w' or 'b'
+	 * @param {Boolean} noComp - play human vs human
 	 */
 
-	function move(currentColor, opponentColor) {
+	function move(currentColor, opponentColor, noComp) {
 
 		var boardString = getBoardString();
 		
@@ -311,7 +310,7 @@ $(document).ready(function() {
 		$('#turn').html(colorAbbreviations[currentColor] + " to move");
 
 		// if human is moving, allow him/her to move
-		if (whiteDown && currentColor === 'w' || !whiteDown && currentColor === 'b') {
+		if (whiteDown && currentColor === 'w' || !whiteDown && currentColor === 'b' || noComp) {
 		
 			humanTurn = true;
 
@@ -344,7 +343,7 @@ $(document).ready(function() {
 						// prevent multiple click events being bound to the board.
 						$(this).off(e);
 
-						move(opponentColor, currentColor);
+						move(opponentColor, currentColor, noComp);
 					}
 
 					// reset the move sequence if it is invalid
@@ -394,6 +393,7 @@ $(document).ready(function() {
 
 		// if computer is moving, pick a random move
 		else {
+
 			humanTurn = false;
 
 			// construct array of possible moves
@@ -438,8 +438,6 @@ $(document).ready(function() {
 			var piece = compMove.piece;
 			var pieceType = piece[1];
 
-			console.log(compMove);
-
 			// movePiece checks whether a king or rook has moved. This should be done after checking for castling
 			movePiece(moves[r]);
 
@@ -448,7 +446,7 @@ $(document).ready(function() {
 			inCheck(currentColor, opponentColor);
 
 			// setTimeout(function() { movePiece(moves[r]) }, delay);
-			move(opponentColor, currentColor);
+			move(opponentColor, currentColor, false);
 		}
 	}
 
@@ -480,10 +478,6 @@ $(document).ready(function() {
 		drawOnSquare(file, rank, symbol, color);
 
 		var index = findPieceIndex(piece, id);
-
-		console.log(allPieces);
-		console.log(piece);
-		console.log(index);
 
 		var oldFile = allPieces[piece][index].file;
 		var oldRank = allPieces[piece][index].rank;
