@@ -75,23 +75,23 @@ $(document).ready(function() {
 
 
 	// remove pieces for testing purposes
-	var pieceCount = {'B': 2, 'N': 2, 'K': 1, 'P': 8, 'Q': 1, 'R': 2};
-	var pieceNames = {'B' : 'Bishop', 'K' : 'King', 'N' : 'Knight', 'R' : 'Rook'};
+	// var pieceCount = {'B': 2, 'N': 2, 'K': 1, 'P': 8, 'Q': 1, 'R': 2};
+	// var pieceNames = {'B' : 'Bishop', 'K' : 'King', 'N' : 'Knight', 'R' : 'Rook'};
 
-	// kings and queens have arrays of length 1 for convenience in later methods
-	var pieceStartingPositions = {'wB' : [[2, 5], [6, 4]],
-									  'wN' : [[1, 8], [2, 8]],
-									  'wK' : [[5, 3]],
-									  'wP' : [[7, 2], [8, 2]],
-									  'wQ' : [[4, 1]],
-									  'wR' : [[8, 2], [6, 1]],
-									  'bB' : [[5, 7], [1, 4]],
-									  'bN' : [[1, 1], [2, 1]],
-									  'bK' : [[6, 6]],
-									  'bP' : [[7, 7], [8, 7]],
-									  'bQ' : [[2, 2]],
-									  'bR' : [[5, 8], [1, 6]]
-									};
+	// // kings and queens have arrays of length 1 for convenience in later methods
+	// var pieceStartingPositions = {'wB' : [[2, 5], [6, 4]],
+	// 								  'wN' : [[1, 8], [2, 8]],
+	// 								  'wK' : [[5, 3]],
+	// 								  'wP' : [[7, 2], [8, 2]],
+	// 								  'wQ' : [[4, 1]],
+	// 								  'wR' : [[8, 2], [6, 1]],
+	// 								  'bB' : [[5, 7], [1, 4]],
+	// 								  'bN' : [[1, 1], [2, 1]],
+	// 								  'bK' : [[6, 6]],
+	// 								  'bP' : [[7, 7], [8, 7]],
+	// 								  'bQ' : [[2, 2]],
+	// 								  'bR' : [[5, 8], [1, 6]]
+	// 								};
 
 
 	
@@ -732,7 +732,6 @@ $(document).ready(function() {
 			// knights and pawns cannot be blocked
 			if (checkingPieceColorAndType[1] !== 'N' && checkingPieceColorAndType[1] !== 'P') {
 				var checkPath = getCheckPath(checkingPieceSquare, kingSquare).map(squareToIndex);
-				console.log(checkPath);
 				for (var i = 0; i < checkPath.length; i++) {
 					var blockMove = clickedPieceMoves.indexOf(checkPath[i]);
 					if (blockMove !== -1) {
@@ -748,34 +747,38 @@ $(document).ready(function() {
 		// console.log(checkingPieces);
 
 		// TODO consider chanding attackingSquares to a set (map does not work with a set)
-		var attackedSquares = [];
-		for (var piece in checkingPieces) {
 
-			var checkingPieceColorAndType = checkingPieces[piece].slice(0, 2)
-			var checkingPieceIndex = findPieceIndex(checkingPieceColorAndType, checkingPieces[piece][2])
-			var checkingPiece = allPieces[checkingPieceColorAndType][checkingPieceIndex];
-			var checkingPieceSquare = [checkingPiece.file, checkingPiece.rank]
+		// only the king can move
+		if (clickedPiece[1] === 'K') {
+			var attackedSquares = [];
+			for (var piece in checkingPieces) {
 
-			// TODO: not sure if this is efficient, maybe take out square king is occupying
+				var checkingPieceColorAndType = checkingPieces[piece].slice(0, 2)
+				var checkingPieceIndex = findPieceIndex(checkingPieceColorAndType, checkingPieces[piece][2])
+				var checkingPiece = allPieces[checkingPieceColorAndType][checkingPieceIndex];
+				var checkingPieceSquare = [checkingPiece.file, checkingPiece.rank]
 
-			var checkPath = getCheckPath(checkingPieceSquare, kingSquare).map(squareToIndex);
+				// TODO: not sure if this is efficient, maybe take out square king is occupying
 
-			for (var c in checkPath) {
-				if (checkPath[c] !== kingIndex) {
-					attackedSquares.push(checkPath[c]);
+				var checkPath = getCheckPath(checkingPieceSquare, kingSquare).map(squareToIndex);
+
+				for (var c in checkPath) {
+					if (checkPath[c] !== kingIndex) {
+						attackedSquares.push(checkPath[c]);
+					}
 				}
+
 			}
 
-		}
+			var kingMoves = king.moves().map(squareToIndex);
 
-		var kingMoves = king.moves().map(squareToIndex);
+			var legalKingMoves = kingMoves.filter(function(val) {
+				return attackedSquares.indexOf(val) === -1;
+			});
 
-		var legalKingMoves = kingMoves.filter(function(val) {
-			return attackedSquares.indexOf(val) === -1;
-		});
-
-		for (var m in legalKingMoves) {
-			legalMoves.push(legalKingMoves[m]);
+			for (var m in legalKingMoves) {
+				legalMoves.push(legalKingMoves[m]);
+			}
 		}
 
 		return legalMoves;
