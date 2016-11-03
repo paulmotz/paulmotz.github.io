@@ -75,23 +75,23 @@ $(document).ready(function() {
 
 
 	// remove pieces for testing purposes
-	// var pieceCount = {'B': 2, 'N': 2, 'K': 1, 'P': 8, 'Q': 1, 'R': 2};
-	// var pieceNames = {'B' : 'Bishop', 'K' : 'King', 'N' : 'Knight', 'R' : 'Rook'};
+	var pieceCount = {'B': 2, 'N': 2, 'K': 1, 'P': 8, 'Q': 1, 'R': 2};
+	var pieceNames = {'B' : 'Bishop', 'K' : 'King', 'N' : 'Knight', 'R' : 'Rook'};
 
-	// // kings and queens have arrays of length 1 for convenience in later methods
-	// var pieceStartingPositions = {'wB' : [[2, 5], [6, 4]],
-	// 								  'wN' : [[1, 8], [2, 8]],
-	// 								  'wK' : [[5, 3]],
-	// 								  'wP' : [[7, 2], [8, 2]],
-	// 								  'wQ' : [[4, 1]],
-	// 								  'wR' : [[8, 2], [6, 1]],
-	// 								  'bB' : [[5, 7], [1, 4]],
-	// 								  'bN' : [[1, 1], [2, 1]],
-	// 								  'bK' : [[6, 6]],
-	// 								  'bP' : [[7, 7], [8, 7]],
-	// 								  'bQ' : [[2, 2]],
-	// 								  'bR' : [[5, 8], [1, 6]]
-	// 								};
+	// kings and queens have arrays of length 1 for convenience in later methods
+	var pieceStartingPositions = {'wB' : [[2, 5], [6, 4]],
+									  'wN' : [[1, 8], [2, 8]],
+									  'wK' : [[5, 3]],
+									  'wP' : [[7, 2], [8, 2]],
+									  'wQ' : [[4, 1]],
+									  'wR' : [[8, 2], [6, 1]],
+									  'bB' : [[5, 7], [1, 4]],
+									  'bN' : [[1, 1], [2, 1]],
+									  'bK' : [[6, 6]],
+									  'bP' : [[7, 7], [8, 7]],
+									  'bQ' : [[2, 2]],
+									  'bR' : [[5, 8], [1, 6]]
+									};
 
 
 	
@@ -731,7 +731,7 @@ $(document).ready(function() {
 			// can the piece be blocked?
 			// knights and pawns cannot be blocked
 			if (checkingPieceColorAndType[1] !== 'N' && checkingPieceColorAndType[1] !== 'P') {
-				var checkPath = getCheckPath(checkingPieceSquare, kingSquare).map(squareToIndex);
+				var checkPath = getCheckPath(checkingPieceSquare, kingSquare, false).map(squareToIndex);
 				for (var i = 0; i < checkPath.length; i++) {
 					var blockMove = clickedPieceMoves.indexOf(checkPath[i]);
 					if (blockMove !== -1) {
@@ -760,7 +760,7 @@ $(document).ready(function() {
 
 				// TODO: not sure if this is efficient, maybe take out square king is occupying
 
-				var checkPath = getCheckPath(checkingPieceSquare, kingSquare).map(squareToIndex);
+				var checkPath = getCheckPath(checkingPieceSquare, kingSquare, true).map(squareToIndex);
 
 				for (var c in checkPath) {
 					if (checkPath[c] !== kingIndex) {
@@ -785,13 +785,14 @@ $(document).ready(function() {
 	}
 
 	/**
-	 * Calculates the path between two pieces if such a path exists
-	 * @param {number[]} checkingPieceSquare - the square of one of the pieces
-	 * @param {number[]} kingSquare - the square of the other one of the pieces 
+	 * Calculates the path between a piece and a king if such a path exists
+	 * @param {number[]} checkingPieceSquare - the square of one of the checking piece
+	 * @param {number[]} kingSquare - the square of the other one of the king 
+	 * @param {boolean} extend - whether the path should be extended (used for also including the square beyond the king)
 	 * @return {number[][]} checkPath - an array of squares between the pieces, returns [] if no so path
 	 */
 
-	function getCheckPath(checkingPieceSquare, kingSquare) {
+	function getCheckPath(checkingPieceSquare, kingSquare, extend) {
 		var checkPath = [];
 		var delF = checkingPieceSquare[0] - kingSquare[0]; // change in file
 		var delR = checkingPieceSquare[1] - kingSquare[1]; // change in rank
@@ -802,11 +803,14 @@ $(document).ready(function() {
 
 			// extend the path so that it blocks the king from retreating in the direction of the check
 			// TODO: this also includes the king's current square
-			var pathLength = pieceDist + 2;
+			var pathLength = extend ? pieceDist + 2 : pieceDist;
 			for (var i = 1; i < pathLength; i++) {
 				checkPath.push([checkingPieceSquare[0] - i * delF/pieceDist, checkingPieceSquare[1] - i * delR/pieceDist]);
 			}
 		}
+
+		console.log(checkPath);
+
 		return checkPath;
 	}
 
