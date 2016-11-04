@@ -1,9 +1,15 @@
 #chessboard {
 	display: block;
 	/*margin: auto;*/
-	margin: 0px auto;
+	margin: 0px 0px 0px auto;
 	/*color: blue;*/
 	/*background-color: #F5F5DC;*/
+}
+
+@media (max-width: 991px){
+    #chessboard{
+        margin: 0px auto;
+    }
 }
 
 .rules {
@@ -13,7 +19,7 @@
 #chessboard {
 	max-width: 500px;
 	width: 100%;
-	height: auto;
+	/*height: auto;*/
 	/*width: auto;*/
 	/*height: 100%;*/
 	/*width: 500px;*/
