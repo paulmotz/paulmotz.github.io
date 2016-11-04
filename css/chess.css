@@ -6,11 +6,31 @@
 	/*background-color: #F5F5DC;*/
 }
 
+.game-settings {
+	margin-top: 15%;
+}
+
+.content {
+	height: 500px
+}
+
+.col-md-3 {
+	height: 100%;
+}
+
 @media (max-width: 991px){
     #chessboard{
         margin: 0px auto;
     }
+    .game-settings {
+    	margin: 0px 10%;
+    }
+    .col-md-3 {
+		height: auto;
+	}
 }
+
+
 
 .rules {
 	text-align: left;
@@ -25,3 +45,8 @@
 	/*width: 500px;*/
 	/*height: 500px;*/
 }
+
+.btn {
+	/*margin-bottom: 25px;*/
+}
+
