@@ -126,6 +126,7 @@ $(document).ready(function() {
 		height = parseInt($board.css('height'));
 		squareSize = height / 10;
 		lineWidth = height / 100;
+		drawBoard();
 	});
 
 	initializePieces();
