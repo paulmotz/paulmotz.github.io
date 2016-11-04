@@ -48,32 +48,34 @@
 			<div class='col-lg-2 col-xs-1'></div>
 		</div>
 		<div class='row'>
-			<div class='col-lg-2 col-xs-1'></div>
-			<div class='col-lg-6 col-xs-8'>
+			<!-- <div class='col-lg-2 col-xs-1'></div> -->
+			<div class='col-lg-9'>
 				<canvas id="chessboard" width="500" height="500">
 				</canvas>
 			</div>
-			<div class='col-lg-2 col-xs-2 text-left'>
+			<div class='col-lg-3'>
 				<h4 class="title">Settings</h4>
 				<div class='game-options'>
 					<h4>Play as:</h4>
-					<div class="radio"><input id="radio-white" class="radio-color" type="radio" name="color" value="white" checked><label>White vs Dummy</input></label></div>
-					<div class="radio"><input id="radio-black" class="radio-color" type="radio" name="color" value="black"><label>Black vs Dummy</input></label></div>
-					<div class="radio"><input id="radio-human" class="radio-color" type="radio" name="color" value="white"><label>Free Play (human vs human)</input></label></div>
+					<div class="radio-control"><input id="radio-white" class="radio-color" type="radio" name="color" value="white" checked><label>White vs Dummy</input></label></div>
+					<div class="radio-control"><input id="radio-black" class="radio-color" type="radio" name="color" value="black"><label>Black vs Dummy</input></label></div>
+					<div class="radio-control"><input id="radio-human" class="radio-color" type="radio" name="color" value="white"><label>Free Play (human vs human)</input></label></div>
 				</div>
 				<div class='game-options'>
 					<h4>Player's pawns promote to:</h4>
-					<div class="radio"><input id="radio-bishop" class="radio-piece" type="radio" name="piece" value="B"/><label>♗ Bishop</label></div>
-					<div class="radio"><input id="radio-knight" class="radio-piece" type="radio" name="piece" value="N"/><label>♘ Knight</label></div>
-					<div class="radio"><input id="radio-queen" class="radio-piece" type="radio" name="piece" value="Q" checked/><label>♕ Queen</label></div>
-					<div class="radio"><input id="radio-rook" class="radio-piece" type="radio" name="piece" value="R"/><label>♖ Rook</label></div>
+					<div class="radio-control"><input id="radio-bishop" class="radio-piece" type="radio" name="piece" value="B"/><label>♗ Bishop</label></div>
+					<div class="radio-control"><input id="radio-knight" class="radio-piece" type="radio" name="piece" value="N"/><label>♘ Knight</label></div>
+					<div class="radio-control"><input id="radio-queen" class="radio-piece" type="radio" name="piece" value="Q" checked/><label>♕ Queen</label></div>
+					<div class="radio-control"><input id="radio-rook" class="radio-piece" type="radio" name="piece" value="R"/><label>♖ Rook</label></div>
 				</div>
-				<div>Moves Played: <span id='move-counter'>0</span></div>
-				<div id='turn'>White to Move</div>
-				<!-- <div>Draw In: <span id='draw-move-counter'>0</span></div> -->
-				<button type="button" class="btn">New Game</button>
+				<div class='game-controls'>
+					<div>Moves Played: <span id='move-counter'>0</span></div>
+					<div id='turn'>White to Move</div>
+					<!-- <div>Draw In: <span id='draw-move-counter'>0</span></div> -->
+					<button type="button" class="btn">New Game</button>
+				</div>
 			</div>
-			<div class='col-lg-2 col-xs-1'>
+			<!-- <div class='col-lg-2 col-xs-1'> -->
 			</div>
 		</div>
 		

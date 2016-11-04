@@ -21,6 +21,31 @@ h4 {
   text-align: center;
 }
 
+.game-options h4 {
+  text-align: left;
+}
+
+.col-xs-12 .game-options h4 {
+  text-align: center;
+}
+
+input[type="radio"] {
+  margin: 0px 20px;
+}
+
+label {
+  font-weight: normal;
+}
+
+.radio-control {
+  display: block;
+  font-weight: none;
+}
+
+.game-controls {
+  text-align: center;
+}
+
 .description {
   font-size: 1.2em;
 }

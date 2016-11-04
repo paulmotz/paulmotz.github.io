@@ -7,7 +7,8 @@
  * Check:
  * - pawn promotion
  *
- * Flexbox
+ * Flexbox?
+ * chessboard only really works at 500x500
 */
 
 var allPieces;
