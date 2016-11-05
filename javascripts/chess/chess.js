@@ -7,6 +7,9 @@
  * Check:
  * - pawn promotion
  *
+ * Visaul:
+ * - Can still see orange/red outlines after piece has moved off square when board is smaller
+ *
  * Flexbox?
  * chessboard only really works at 500x500
 */
@@ -21,6 +24,9 @@ var colors = ['w', 'b'];
 var colorAbbreviations = {'w' : 'White', 'b' : 'Black'};
 
 $(document).ready(function() {
+
+	// want element to still take up space on page, so don't use hide
+	$('.moves-display').css('visibility', 'hidden');
 
 	var $board = $('#chessboard');
 	var delay = 0;
@@ -131,7 +137,7 @@ $(document).ready(function() {
 
 	initializePieces();
 	drawBoard();
-	newGame();
+	// newGame();
 	ctx.fillStyle = "#FFF";
 
 	/**
@@ -141,6 +147,7 @@ $(document).ready(function() {
 	function newGame() {
 		moveCounter = 0;
 		drawMoveCounter = 0;
+		$('.moves-display').css('visibility', 'visible');
 		$('#move-counter').html(moveCounter);
 		initializePieces();
 		drawBoard();
@@ -318,8 +325,6 @@ $(document).ready(function() {
 				var x0 = e.offsetX;
 				var y0 = e.offsetY;
 
-				console.log(squareSize);
-
 				if (x0 > squareSize && y0 > squareSize && x0 < 9 * squareSize && y0 < 9 * squareSize) {
 					var square = getSquare(x0, y0);
 					var index = squareToIndex(square);					
@@ -338,6 +343,9 @@ $(document).ready(function() {
 
 						// prevent multiple click events being bound to the board.
 						$(this).off(e);
+
+						// recolor square when king is out of check
+						inCheck(currentColor, opponentColor);
 
 						move(opponentColor, currentColor, noComp);
 					}
@@ -359,7 +367,7 @@ $(document).ready(function() {
 					if (selectedPiece && selectedPiece[0] === currentColor && fromTo.length === 1) {
 						ctx.beginPath();
 						var c = getCoordinates(square[0], square[1]);
-						ctx.rect(c[0] +lineWidth/2, c[1] + lineWidth/2, squareSize - lineWidth, squareSize - lineWidth);			
+						ctx.rect(c[0] + lineWidth/2, c[1] + lineWidth/2, squareSize - lineWidth, squareSize - lineWidth);			
 						ctx.lineWidth = lineWidth;
 						ctx.strokeStyle = "orange";
 						ctx.stroke();
@@ -906,6 +914,51 @@ $(document).ready(function() {
 	}
 
 	/**
+	 * Draws a square and accounts for issues that may arrise by using floating-point values
+	 * @param {number[]} coordinates - the top left corner of the rectangle
+	 * @param {number} squareSize - the height and width of the square
+	 */
+
+	function drawSquare(coordinates, squareSize) {
+
+		var drawLocationF = coordinates[0];
+		var drawLocationR = coordinates[1];
+		var drawSizeF = squareSize;
+		var drawSizeR = squareSize;
+
+		// console.log(drawLocationF);
+		// console.log(drawLocationR);
+		// console.log(drawSizeF);
+		// console.log(drawSizeR);
+
+		// floating point values cause sub pixel rendering which causes red to linger even after square is drawn over
+
+		// round the floating point values to integers and make sure they don't exceed the square size
+		if (Math.round(drawLocationF + drawSizeF) < Math.round(drawLocationF) + Math.round(drawSizeF)) {
+			drawSizeF--;
+		}
+
+		// round the floating point values to integers and make sure they aren't smaller the square size
+		else if (Math.round(drawLocationF + drawSizeF) > Math.round(drawLocationF) + Math.round(drawSizeF)) {
+			drawSizeF++;
+		}
+
+		// round the floating point values to integers and make sure they don't exceed the square size
+		if (Math.round(drawLocationR + drawSizeR) < Math.round(drawLocationR) + Math.round(drawSizeR)) {
+			drawSizeR--;
+		}
+
+		// round the floating point values to integers and make sure they aren't smaller the square size
+		else if (Math.round(drawLocationR + drawSizeR) > Math.round(drawLocationR) + Math.round(drawSizeR)) {
+			drawSizeR++;
+		}
+
+		console.log(Math.round(drawLocationF));
+
+		ctx.fillRect(Math.round(drawLocationF), Math.round(drawLocationR), Math.round(drawSizeF), Math.round(drawSizeR));
+	}
+
+	/**
 	 * Marks the square if the king is in check
 	 * @param {String} color - the color of the king in check: 'w' or 'b'
 	 * @param {boolean} inCheck - whether the king is in check
@@ -919,6 +972,8 @@ $(document).ready(function() {
 		var coordinates = getCoordinates(file, rank);
 		if (inCheck) {
 			ctx.fillStyle = "#FF0000";
+			console.log(coordinates);
+			console.log(Math.round(coordinates[0]));
 		}
 		else {
 			if ((file + rank) % 2 === 0) {
@@ -928,7 +983,9 @@ $(document).ready(function() {
 				ctx.fillStyle = "#999";
 			}
 		}
-		ctx.fillRect(coordinates[0], coordinates[1], squareSize, squareSize);
+
+		drawSquare(coordinates, squareSize);
+
 		drawOnSquare(file, rank, symbol, color);
 	}
 
@@ -968,7 +1025,6 @@ $(document).ready(function() {
 			drawOnSquare(square[0], square[1], pieceSymbols[piece.slice(0, 2)], color);
 		}	
 	}
-
 
 	/**
 	 * Draws on the square at the given co-ordinates

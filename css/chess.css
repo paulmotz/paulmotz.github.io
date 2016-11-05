@@ -28,6 +28,9 @@
     .col-md-3 {
 		height: auto;
 	}
+	.game-controls {
+	  padding-top: 10px;
+	}
 }
 
 
