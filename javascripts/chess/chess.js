@@ -100,15 +100,15 @@ $(document).ready(function() {
 	// represent all pieces as entries in arrays for dynamic access (kings could have been single entry)
 	allPieces = {'wB' : [], 'wN' : [], 'wK' : [], 'wP' : [], 'wQ' : [], 'wR' : [], 'bB' : [], 'bN' : [], 'bK' : [], 'bP' : [], 'bQ' : [], 'bR' : [] };
 
-	// create an array of 64 square objects
-	// var gameBoard = initializeBoard();
-
 	var whiteDown = true;
 	var humanTurn;
 	var whiteToMove = true;
 
 	var markedSquares = new Set();
 	var boardStrings;
+
+	newGame();
+	ctx.fillStyle = "#FFF";
 
 	$('.btn').on('click', function() {
 		$('.radio-piece').each(function() {
@@ -134,11 +134,6 @@ $(document).ready(function() {
 		lineWidth = height / 100;
 		drawBoard();
 	});
-
-	initializePieces();
-	drawBoard();
-	// newGame();
-	ctx.fillStyle = "#FFF";
 
 	/**
 	 * Starts a new game
@@ -836,20 +831,18 @@ $(document).ready(function() {
 	 */
 
 	function checkCheckmate(currentColor, opponentColor, checkingPieces) {
-		// for (var i in checkingPieces) {
-			for (var pieceType in allPieces) {
-				if (pieceType[0] === currentColor) {
-					var pieces = allPieces[pieceType];
-					for (var j in pieces) {
-						var colorAndType = pieces[j].color + pieces[j].abbr;
-						var selectedPiece = colorAndType + pieces[j].id;
-						if (getLegalMoves(checkingPieces, selectedPiece).length) {
-							return false;
-						}
+		for (var pieceType in allPieces) {
+			if (pieceType[0] === currentColor) {
+				var pieces = allPieces[pieceType];
+				for (var j in pieces) {
+					var colorAndType = pieces[j].color + pieces[j].abbr;
+					var selectedPiece = colorAndType + pieces[j].id;
+					if (getLegalMoves(checkingPieces, selectedPiece).length) {
+						return false;
 					}
 				}
 			}
-		// }
+		}
 		$('#turn').html("Checkmate! " + colorAbbreviations[opponentColor] + " wins!");
 		drawCheckSquare(currentColor, false); // make the square the normal color
 		return true;
