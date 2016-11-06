@@ -324,8 +324,9 @@ $(document).ready(function() {
 
 				if (x0 > squareSize && y0 > squareSize && x0 < 9 * squareSize && y0 < 9 * squareSize) {
 					var square = getSquare(x0, y0);
-					var index = squareToIndex(square);					
-					fromTo.push(index);
+					var index = squareToIndex(square);	
+
+					fromTo.push(index); 		
 
 					// if the two clicked squares represent a valid move, move the piece
 					if (legalMoves.indexOf(index) !== -1) {
@@ -361,6 +362,7 @@ $(document).ready(function() {
 							redrawSquare(fromTo[s]);
 						}
 						fromTo = [];
+						legalMoves = [];
 					}
 
 					// the piece in the first square the user clicked
