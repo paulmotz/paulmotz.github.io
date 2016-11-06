@@ -21,6 +21,13 @@ var attackedSquares = new Set();
 var colors = ['w', 'b'];
 var colorAbbreviations = {'w' : 'White', 'b' : 'Black'};
 
+// square colors
+var dark = '#555';
+var light = '#999';
+var clicked = "orange";
+var highlightedDark = "Green";
+var highlightedLight = "lime";
+
 $(document).ready(function() {
 
 	// want element to still take up space on page, so don't use hide
@@ -240,10 +247,10 @@ $(document).ready(function() {
 				// draw square
 				else {
 					if ((f + r) % 2 === 1) {
-						ctx.fillStyle = "#444";
+						ctx.fillStyle = dark;
 					}
 					else {
-						ctx.fillStyle = "#999";
+						ctx.fillStyle = light;
 					}
 					ctx.fillRect(f * squareSize, r * squareSize, squareSize, squareSize);
 				}
@@ -376,7 +383,7 @@ $(document).ready(function() {
 						var c = getCoordinates(square[0], square[1]);
 						ctx.rect(c[0] + lineWidth/2, c[1] + lineWidth/2, squareSize - lineWidth, squareSize - lineWidth);			
 						ctx.lineWidth = lineWidth;
-						ctx.strokeStyle = "orange";
+						ctx.strokeStyle = clicked;
 						ctx.stroke();
 						ctx.closePath();
 						var pieceName = selectedPiece.slice(0, 2);
@@ -921,27 +928,28 @@ $(document).ready(function() {
 		var oldSquareCoordinates = getCoordinates(oldFile, oldRank);
 		var newSquareCoordinates = getCoordinates(newFile, newRank);
 
-		if (drawOver) {
-			if ((oldFile + oldRank) % 2 === 0) {
-				ctx.fillStyle = "#444";
-			}
-			else {
-				ctx.fillStyle = "#999";
-			}
-			ctx.fillRect(oldSquareCoordinates[0], oldSquareCoordinates[1], squareSize, squareSize);
-			if ((newFile + newRank) % 2 === 0) {
-				ctx.fillStyle = "#444";
-			}
-			else {
-				ctx.fillStyle = "#999";
-			}
-			ctx.fillRect(newSquareCoordinates[0], newSquareCoordinates[1], squareSize, squareSize);
+		if ((oldFile + oldRank) % 2 === 0) {
+			ctx.fillStyle = drawOver ? dark : highlightedDark;
 		}
 		else {
-			ctx.fillStyle = "lime";
-			ctx.fillRect(oldSquareCoordinates[0], oldSquareCoordinates[1], squareSize, squareSize);
-			ctx.fillRect(newSquareCoordinates[0], newSquareCoordinates[1], squareSize, squareSize);
+			ctx.fillStyle = drawOver ? light : highlightedLight;
 		}
+		ctx.fillRect(oldSquareCoordinates[0], oldSquareCoordinates[1], squareSize, squareSize);
+		if ((newFile + newRank) % 2 === 0) {
+			ctx.fillStyle = drawOver ? dark : highlightedDark;
+		}
+		else {
+			ctx.fillStyle = drawOver ? light : highlightedLight;
+		}
+		ctx.fillRect(newSquareCoordinates[0], newSquareCoordinates[1], squareSize, squareSize);
+
+
+
+		// else {
+		// 	ctx.fillStyle = highlighted;
+		// 	ctx.fillRect(oldSquareCoordinates[0], oldSquareCoordinates[1], squareSize, squareSize);
+		// 	ctx.fillRect(newSquareCoordinates[0], newSquareCoordinates[1], squareSize, squareSize);
+		// }
 		var piece = lastMove.piece.slice(0, 2);
 		var id = lastMove.piece[2];
 
@@ -1033,10 +1041,10 @@ $(document).ready(function() {
 		}
 		else {
 			if ((file + rank) % 2 === 0) {
-				ctx.fillStyle = "#444";
+				ctx.fillStyle = dark;
 			}
 			else {
-				ctx.fillStyle = "#999";
+				ctx.fillStyle = light;
 			}
 		}
 
@@ -1056,10 +1064,10 @@ $(document).ready(function() {
 		var rank = square[1];
 		var coordinates = getCoordinates(file, rank);
 		if ((file + rank) % 2 === 0) {
-			ctx.fillStyle = "#444";
+			ctx.fillStyle = dark;
 		}
 		else {
-			ctx.fillStyle = "#999";
+			ctx.fillStyle = light;
 		}
 		ctx.fillRect(coordinates[0], coordinates[1], squareSize, squareSize);
 	}
@@ -1091,10 +1099,10 @@ $(document).ready(function() {
 	function unmarkSquare(file, rank) {
 		ctx.beginPath();
 		if ((rank + file) % 2 === 0) {
-			ctx.strokeStyle = "#444";
+			ctx.strokeStyle = dark;
 		}
 		else {
-			ctx.strokeStyle = "#999";
+			ctx.strokeStyle = light;
 		}
 		var c = getCoordinates(file, rank);
 		ctx.rect(c[0] + lineWidth/2, c[1] + lineWidth/2, squareSize - lineWidth, squareSize - lineWidth);			
