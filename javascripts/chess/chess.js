@@ -8,10 +8,8 @@
  * - pawn promotion
  *
  * Visaul:
- * - Can still see orange/red outlines after piece has moved off square when board is smaller
+ * - Can still see orange/red outlines after piece has moved off square when board is smaller, "solved" this by fixing board size
  *
- * Flexbox?
- * chessboard only really works at 500x500
 */
 
 var allPieces;
@@ -54,7 +52,7 @@ $(document).ready(function() {
 	// used for checking 50-move draw rule
 	var drawMoveCounter;
 
-	
+	var lastMove = {};	
 
 	var pieceNames = {'B' : 'Bishop', 'N' : 'Knight', 'K' : 'King', 'P' : 'Pawn', 'Q' : 'Queen', 'R' : 'Rook'};
 	var pieceAbbreviations = {'Bishop' : 'B', 'Knight' : 'N', 'King' : 'K', 'Pawn' : 'P', 'Queen' : 'Q', 'Rook' : 'R'};
@@ -140,6 +138,7 @@ $(document).ready(function() {
 	 */
 
 	function newGame() {
+		lastMove = {};
 		moveCounter = 0;
 		drawMoveCounter = 0;
 		$('.moves-display').css('visibility', 'visible');
@@ -282,6 +281,9 @@ $(document).ready(function() {
 
 	function move(currentColor, opponentColor, noComp) {
 
+		if (lastMove['oldSquare']) {
+			drawLastMove(lastMove, opponentColor, false);
+		}
 
 		var boardString = getBoardString();
 		
@@ -330,6 +332,14 @@ $(document).ready(function() {
 
 						var nextMove =  {'piece' : selectedPiece.slice(0, 2), 'id' : selectedPiece[2], 'move' : square};
 						movePiece(nextMove);
+
+						if (lastMove['oldSquare']) {
+							drawLastMove(lastMove, opponentColor, true);
+						}
+
+						lastMove['oldSquare'] = indexToSquare(fromTo[0]);
+						lastMove['newSquare'] = indexToSquare(fromTo[1]);
+						lastMove['piece'] = selectedPiece;
 
 						fromTo = [];
 
@@ -435,6 +445,11 @@ $(document).ready(function() {
 
 			var compMove = moves[r];
 			var piece = compMove.piece;
+			var pieceObject = allPieces[piece][findPieceIndex(piece, compMove.id)];
+			if (lastMove['oldSquare']) {
+				drawLastMove(lastMove, opponentColor, true);
+			}
+			lastMove = {'oldSquare' : [pieceObject.file, pieceObject.rank] , 'newSquare' : compMove.move, 'piece' : piece + compMove.id};
 			var pieceType = piece[1];
 
 			// movePiece checks whether a king or rook has moved. This should be done after checking for castling
@@ -474,6 +489,7 @@ $(document).ready(function() {
 		}
 
 		var symbol = pieceSymbols[piece];
+
 		drawOnSquare(file, rank, symbol, color);
 
 		var index = findPieceIndex(piece, id);
@@ -887,6 +903,60 @@ $(document).ready(function() {
 	}
 
 	/**
+	 * Highlights the two squares involved in the last move
+	 * @param {object} lastMove - the last move that was played (consists of old square, new square and piece that was moved)
+	 * @param {String} color - the color of the piece that was moved
+	 * @param {boolean} drawOver - whether the move is drawing over a previously highlighted move (true) or is highlighting a move (false)
+	 */
+
+	function drawLastMove(lastMove, color, drawOver) {
+		// console.log(lastMove);
+		// console.log(pieceSymbols);
+		var oldFile = lastMove['oldSquare'][0];
+		var oldRank = lastMove['oldSquare'][1];
+		var newFile = lastMove['newSquare'][0];
+		var newRank = lastMove['newSquare'][1];
+		var oldSquareCoordinates = getCoordinates(oldFile, oldRank);
+		var newSquareCoordinates = getCoordinates(newFile, newRank);
+
+		if (drawOver) {
+			if ((oldFile + oldRank) % 2 === 0) {
+				ctx.fillStyle = "#444";
+			}
+			else {
+				ctx.fillStyle = "#999";
+			}
+			ctx.fillRect(oldSquareCoordinates[0], oldSquareCoordinates[1], squareSize, squareSize);
+			if ((newFile + newRank) % 2 === 0) {
+				ctx.fillStyle = "#444";
+			}
+			else {
+				ctx.fillStyle = "#999";
+			}
+			ctx.fillRect(newSquareCoordinates[0], newSquareCoordinates[1], squareSize, squareSize);
+		}
+		else {
+			ctx.fillStyle = "lime";
+			ctx.fillRect(oldSquareCoordinates[0], oldSquareCoordinates[1], squareSize, squareSize);
+			ctx.fillRect(newSquareCoordinates[0], newSquareCoordinates[1], squareSize, squareSize);
+		}
+		var piece = lastMove.piece.slice(0, 2);
+		var id = lastMove.piece[2];
+
+		// TODO: clean up this ternary and if statement
+
+		// write an empty string instead of the piece symbol if the piece is being captured but is not on the square that the new piece is moving to (en passant)
+		var symbol = allPieces[piece][findPieceIndex(piece, id)] ? pieceSymbols[piece] : '';
+
+		// pawn that has reached the last rank
+		if (piece === 'wP' && newRank === 8 || piece === 'bP' && newRank === 1) {
+			symbol = pieceSymbols[occupiedSquares[squareToIndex([newFile, newRank]) - 1].slice(0, 2)];
+		}
+
+		drawOnSquare(newFile, newRank, symbol, color)
+	}
+
+	/**
 	 * Draws on the square at the given co-ordinates
 	 * @param {number} file - the square's file: 1 - 8
 	 * @param {number} rank - the square's rank: 1 - 8
@@ -919,11 +989,6 @@ $(document).ready(function() {
 		var drawSizeF = squareSize;
 		var drawSizeR = squareSize;
 
-		// console.log(drawLocationF);
-		// console.log(drawLocationR);
-		// console.log(drawSizeF);
-		// console.log(drawSizeR);
-
 		// floating point values cause sub pixel rendering which causes red to linger even after square is drawn over
 
 		// round the floating point values to integers and make sure they don't exceed the square size
@@ -946,8 +1011,6 @@ $(document).ready(function() {
 			drawSizeR++;
 		}
 
-		console.log(Math.round(drawLocationF));
-
 		ctx.fillRect(Math.round(drawLocationF), Math.round(drawLocationR), Math.round(drawSizeF), Math.round(drawSizeR));
 	}
 
@@ -965,8 +1028,6 @@ $(document).ready(function() {
 		var coordinates = getCoordinates(file, rank);
 		if (inCheck) {
 			ctx.fillStyle = "#FF0000";
-			console.log(coordinates);
-			console.log(Math.round(coordinates[0]));
 		}
 		else {
 			if ((file + rank) % 2 === 0) {
