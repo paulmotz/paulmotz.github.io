@@ -1,14 +1,9 @@
 /**
  * TODOs
  *
- * Logic:
- * - captured piece moves after being captured (wR0 captured by bQ1)
- *
- * Check:
- * - pawn promotion
- *
  * Visaul:
  * - Can still see orange/red outlines after piece has moved off square when board is smaller, "solved" this by fixing board size
+ * - display algebraic notation as game progresses
  *
 */
 
@@ -27,6 +22,15 @@ var light = '#999';
 var clicked = "orange";
 var highlightedDark = "Green";
 var highlightedLight = "lime";
+var check = "#FF0000";
+
+// board colors
+var edge = "#000";
+var text = "#FFF";
+
+// piece colors
+var whitePieces = "#FFF";
+var blackPieces = "#000";
 
 $(document).ready(function() {
 
@@ -36,7 +40,6 @@ $(document).ready(function() {
 	var $board = $('#chessboard');
 	var delay = 0;
 
-	// TODO: what if height !== width?
 	// visual/layout variables
 	var height = parseInt($board.css('height'));
 	var width = parseInt($board.css('width'));
@@ -53,7 +56,6 @@ $(document).ready(function() {
 	// game/logic variables
 
 	// display the number of moves
-	// TODO: maybe later, algebraic notation can be displayed
 	var moveCounter = 0;
 
 	// used for checking 50-move draw rule
@@ -113,7 +115,6 @@ $(document).ready(function() {
 	var boardStrings;
 
 	newGame();
-	ctx.fillStyle = "#FFF";
 
 	$('.btn').on('click', function() {
 		$('.radio-piece').each(function() {
@@ -121,13 +122,14 @@ $(document).ready(function() {
 			var piece = selection.val();
 			if ($('#radio-white').is(':checked') || $('#radio-human').is(':checked')) {
 				whiteDown = true;
-				$(this).parent().find('label').html(pieceSymbols['w' + piece] + " " + pieceNames[piece]); // TODO: what color should the pieces be if no comp?
+				$(this).parent().find('label').html(pieceSymbols['w' + piece] + " " + pieceNames[piece]);
 			}
 			else {
 				whiteDown = false;
 				$(this).parent().find('label').html(pieceSymbols['b' + piece] + " " + pieceNames[piece]);
 			}
 		});
+
 		// turn off click events bound to the board before starting a new game
 		$board.off('click');
 		newGame();
@@ -141,7 +143,7 @@ $(document).ready(function() {
 	});
 
 	/**
-	 * Starts a new game
+	 * Starts a new game and initialized global variables to starting values
 	 */
 
 	function newGame() {
@@ -157,7 +159,7 @@ $(document).ready(function() {
 	}
 
 	/**
-	 * Initializes all the pieces 
+	 * Stores the pieces into global allPieces object
 	 */
 
 	function initializePieces() {
@@ -219,7 +221,7 @@ $(document).ready(function() {
 	function drawBoard() {
 
 		// redraw border to overwrite existing text
-		ctx.fillStyle = "#000";
+		ctx.fillStyle = edge;
 		ctx.fillRect(0, 0, squareSize * 10, squareSize * 10);
 
 		ctx.textAlign = "center";
@@ -234,13 +236,13 @@ $(document).ready(function() {
 
 				// rank falls off the board, write the file name
 				if (r === 0 || r === 9) {
-					ctx.fillStyle = "#FFF";
+					ctx.fillStyle = text;
 					ctx.fillText(files[fileIndex], (f + 0.5) * squareSize, (r + 0.5) * squareSize);
 				}
 
 				// file falls off the board, write the rank name
 				else if (f === 0 || f === 9) {
-					ctx.fillStyle = "#FFF";
+					ctx.fillStyle = text;
 					ctx.fillText(ranks[rankIndex], (f + 0.5) * squareSize, (r + 0.5) * squareSize);
 				}
 
@@ -288,10 +290,6 @@ $(document).ready(function() {
 
 	function move(currentColor, opponentColor, noComp) {
 
-		if (lastMove['oldSquare']) {
-			drawLastMove(lastMove, opponentColor, false);
-		}
-
 		var boardString = getBoardString();
 		
 		boardStrings.push(boardString);
@@ -301,14 +299,19 @@ $(document).ready(function() {
 
 		var checkingPieces = inCheck(currentColor, opponentColor);
 
+		// only draw the last move if there was a last move
+		if (lastMove['oldSquare']) {
+			drawLastMove(lastMove, opponentColor, false);
+		}
+
 		// if the king is in check, it might be checkmate
 		if (checkingPieces.length) {
 			if (checkCheckmate(currentColor, opponentColor, checkingPieces)) {
 				return;
 			}
-		}
+		}		
 
-		if (checkDraw(currentColor)) {
+		if (checkDraw(currentColor, boardStrings, drawMoveCounter)) {
 			return;
 		}
 
@@ -464,7 +467,7 @@ $(document).ready(function() {
 			// movePiece checks whether a king or rook has moved. This should be done after checking for castling
 			movePiece(moves[r]);
 
-			updateMoves(currentColor);
+			`(currentColor);
 
 			inCheck(currentColor, opponentColor);
 
@@ -567,7 +570,7 @@ $(document).ready(function() {
 
 	function promote(piece, pieceIndex, newIndex, newSquare) {
 
-		// newIndex is calculated using 1-indexing, it is only used for array accesses in this function
+		// newIndex is calculated using 1-indexing, it is only used for array accesses in this function, so decrement it
 		newIndex--;
 		var color = piece[0];
 		var file = newSquare[0];
@@ -723,157 +726,6 @@ $(document).ready(function() {
 	}
 
 	/**
-	 * Checks to see if the game is a draw
-	 * @param {string} color - the color for which to check (used in checkStalemate)
-	 * @return {boolean} - whether the game is a draw
-	 */
-
-	function checkDraw(color) {
-		if (!checkMatingMaterial() || checkDrawRep() || checkDraw50() || checkStalemate(color)) {
-			return true;
-		}
-		return false;
-	}
-
-	/**
-	 * Checks to see if the game is a draw by insufficient mating material.
-	 * Material is based on whether a checkmate is possible and not whehter a forced checkmate is possible.
-	 * Some examples of winnable games:
-	 * 2 N + K vs K
-	 * 1B + K vs 1B + K (provided that the bishops have opposite colors)
-	 * Some example of drawn games:
-	 * 1-8 B + K vs K + 1-8 B (provided that all bishops have the same colors)
-	 * 1N + K vs 1N + K
-	 * @return {boolean} - whether or not there is enough material to a plater to checkmate
-	 */
-
-	function checkMatingMaterial() {
-
-		// no more major pieces or pawns
-		if (allPieces['wQ'].length === 0 && allPieces['bQ'].length === 0 &&
-			allPieces['wR'].length === 0 && allPieces['bR'].length === 0 &&
-			allPieces['wP'].length === 0 && allPieces['bP'].length === 0) {
-
-			for (var i = 0; i < colors.length; i++) {
-				var p1 = colors[i];
-				var p2 = colors[(i + 1) % 2];
-
-				// one player has no pieces, can the other mate?
-				if (!allPieces[p1 + 'B'].length && !allPieces[p1 + 'N'].length) {
-
-					// if the other player has no knights does the other player have at least one pair of bishops with opposite colored squares
-					if (!allPieces[p2 + 'N'].length && !differentColorBishops()) {
-						$('#turn').html("It's a draw by insufficient mating material!");
-						return false;
-					}
-
-					// only one of bishop or knight
-					if (allPieces[p2 + 'B'].length + allPieces[p2 + 'N'].length < 2) {
-						$('#turn').html("It's a draw by insufficient mating material!");
-						return false;
-					}
-				}
-			}
-
-			// no knights left, are there different colored bishops?
-			if (!allPieces['wN'].length && !allPieces['bN'].length) {
-				if (!differentColorBishops()) {
-					$('#turn').html("It's a draw by insufficient mating material!");
-					return false;
-				}
-			}
-
-			// no bishops left, does either player have two or more knights?
-			else if (!allPieces['wB'].length && !allPieces['bB'].length) {
-				return allPieces['wN'].length > 1 || allPieces['bN'].length > 1;
-			}
-		}
-		return true;
-	}
-
-	/**
-	 * Checks to see if the game is a draw by repetition
-	 * @return {boolean} - whether the game is a draw
-	 */
-
-	function checkDrawRep() {
-		var currBoardString = boardStrings[boardStrings.length - 1];
-		var counter = 1;
-		for (var i = 0; i < boardStrings.length - 1; i++) {
-			if (boardStrings[i] === currBoardString) {
-				counter++;
-			}
-			if (counter === 3) {
-				$('#turn').html("It's a draw by repetition!");
-				return true;
-			}
-		}
-		return false;
-	}
-
-	/**
-	 * Checks to see if the game is a draw by the fifty-move rule
-	 * @return {boolean} - whether the game is a draw
-	 */
-
-	function checkDraw50() {
-
-		// a turn if one move from each player
-		if (drawMoveCounter === 50) {
-			$('#turn').html("It's a draw by the fifty-move rule!");
-			return true;
-		}
-		return false;
-	}
-
-	/**
-	 * Checks to see if the game is a draw by stalemate
-	 * @param {string} color - the color to check if there are any legal moves
-	 * @return {boolean} - whether the game is a draw
-	 */
-
-	function checkStalemate(color) {
-		for (var pieceType in allPieces) {
-			if (pieceType[0] === color) {
-				var pieces = allPieces[pieceType];
-				for (var i in pieces) {
-					if (pieces[i].moves().length) {
-						return false;
-					}
-				}
-			}
-		}
-		$('#turn').html("It's a draw by stalemate!");
-		return true;
-	}
-
-	/**
-	 * Checks to see if a player is in checkmate
-	 * @param {string} currentColor - the player who is in check
-	 * @param {string} opponentColor - the player who is giving check
-	 * @param {String[]} color - the pieces that are giving check
-	 * @return {boolean} - whether the player is in checkmate
-	 */
-
-	function checkCheckmate(currentColor, opponentColor, checkingPieces) {
-		for (var pieceType in allPieces) {
-			if (pieceType[0] === currentColor) {
-				var pieces = allPieces[pieceType];
-				for (var j in pieces) {
-					var colorAndType = pieces[j].color + pieces[j].abbr;
-					var selectedPiece = colorAndType + pieces[j].id;
-					if (getLegalMoves(checkingPieces, selectedPiece).length) {
-						return false;
-					}
-				}
-			}
-		}
-		$('#turn').html("Checkmate! " + colorAbbreviations[opponentColor] + " wins!");
-		drawCheckSquare(currentColor, false); // make the square the normal color
-		return true;
-	}
-
-	/**
 	 * Maps the rank and file of a square to x and y co-ordinates corresponding with its offset
 	 * @param {number} file - the square's file: 1 - 8
 	 * @param {number} rank - the square's rank: 1 - 8
@@ -943,13 +795,6 @@ $(document).ready(function() {
 		}
 		ctx.fillRect(newSquareCoordinates[0], newSquareCoordinates[1], squareSize, squareSize);
 
-
-
-		// else {
-		// 	ctx.fillStyle = highlighted;
-		// 	ctx.fillRect(oldSquareCoordinates[0], oldSquareCoordinates[1], squareSize, squareSize);
-		// 	ctx.fillRect(newSquareCoordinates[0], newSquareCoordinates[1], squareSize, squareSize);
-		// }
 		var piece = lastMove.piece.slice(0, 2);
 		var id = lastMove.piece[2];
 
@@ -976,10 +821,10 @@ $(document).ready(function() {
 
 	function drawOnSquare(file, rank, symbol, color) {
 		if (color === 'w') {
-			ctx.fillStyle = "#FFF";
+			ctx.fillStyle = whitePieces;
 		}
 		else {
-			ctx.fillStyle = "#000";
+			ctx.fillStyle = blackPieces;
 		}
 		var coordinates = getCoordinates(file, rank);
 		ctx.font = squareSize + "px serif";
@@ -1037,7 +882,7 @@ $(document).ready(function() {
 		var symbol = pieceSymbols[king];
 		var coordinates = getCoordinates(file, rank);
 		if (inCheck) {
-			ctx.fillStyle = "#FF0000";
+			ctx.fillStyle = check;
 		}
 		else {
 			if ((file + rank) % 2 === 0) {
@@ -1109,18 +954,5 @@ $(document).ready(function() {
 		ctx.lineWidth = lineWidth;
 		ctx.stroke();
 		ctx.closePath();
-	}
-
-	/**
-	 * Keeps track of how many moves have been played. Displays the move count
-	 * @param {String} color - the color of the pieces of the player whose turn it is
-	 */
-
-	function updateMoves(color) {
-		if (color === 'w') {
-			moveCounter++;
-			$('#move-counter').html(moveCounter);
-			drawMoveCounter++;
-		}
 	}
 });

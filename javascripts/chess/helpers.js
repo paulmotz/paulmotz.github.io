@@ -187,3 +187,170 @@ function getCheckPath(checkingPieceSquare, kingSquare, extend) {
 
 	return checkPath;
 }
+
+
+/**
+ * Checks to see if the game is a draw
+ * @param {String} color - the color for which to check (used in checkStalemate)
+ * @param {String[]} boardStrings - an array of strings representing board states
+ * @return {boolean} - whether the game is a draw
+ */
+
+function checkDraw(color, boardStrings, drawMoveCounter) {
+	if (!checkMatingMaterial() || checkDrawRep(boardStrings) || checkDraw50(drawMoveCounter) || checkStalemate(color)) {
+		return true;
+	}
+	return false;
+}
+
+/**
+ * Checks to see if the game is a draw by insufficient mating material.
+ * Material is based on whether a checkmate is possible and not whehter a forced checkmate is possible.
+ * Some examples of winnable games:
+ * 2 N + K vs K
+ * 1B + K vs 1B + K (provided that the bishops have opposite colors)
+ * Some example of drawn games:
+ * 1-8 B + K vs K + 1-8 B (provided that all bishops have the same colors)
+ * 1N + K vs 1N + K
+ * @return {boolean} - whether or not there is enough material to a plater to checkmate
+ */
+
+function checkMatingMaterial() {
+
+	// no more major pieces or pawns
+	if (allPieces['wQ'].length === 0 && allPieces['bQ'].length === 0 &&
+		allPieces['wR'].length === 0 && allPieces['bR'].length === 0 &&
+		allPieces['wP'].length === 0 && allPieces['bP'].length === 0) {
+
+		for (var i = 0; i < colors.length; i++) {
+			var p1 = colors[i];
+			var p2 = colors[(i + 1) % 2];
+
+			// one player has no pieces, can the other mate?
+			if (!allPieces[p1 + 'B'].length && !allPieces[p1 + 'N'].length) {
+
+				// if the other player has no knights does the other player have at least one pair of bishops with opposite colored squares
+				if (!allPieces[p2 + 'N'].length && !differentColorBishops()) {
+					$('#turn').html("It's a draw by insufficient mating material!");
+					return false;
+				}
+
+				// only one of bishop or knight
+				if (allPieces[p2 + 'B'].length + allPieces[p2 + 'N'].length < 2) {
+					$('#turn').html("It's a draw by insufficient mating material!");
+					return false;
+				}
+			}
+		}
+
+		// no knights left, are there different colored bishops?
+		if (!allPieces['wN'].length && !allPieces['bN'].length) {
+			if (!differentColorBishops()) {
+				$('#turn').html("It's a draw by insufficient mating material!");
+				return false;
+			}
+		}
+
+		// no bishops left, does either player have two or more knights?
+		else if (!allPieces['wB'].length && !allPieces['bB'].length) {
+			return allPieces['wN'].length > 1 || allPieces['bN'].length > 1;
+		}
+	}
+	return true;
+}
+
+/**
+ * Checks to see if the game is a draw by repetition
+ * @return {boolean} - whether the game is a draw
+ */
+
+function checkDrawRep(boardStrings) {
+	var currBoardString = boardStrings[boardStrings.length - 1];
+	var counter = 1;
+	for (var i = 0; i < boardStrings.length - 1; i++) {
+		if (boardStrings[i] === currBoardString) {
+			counter++;
+		}
+		if (counter === 3) {
+			$('#turn').html("It's a draw by repetition!");
+			return true;
+		}
+	}
+	return false;
+}
+
+/**
+ * Checks to see if the game is a draw by the fifty-move rule
+ * @return {boolean} - whether the game is a draw
+ */
+
+function checkDraw50(drawMoveCounter) {
+
+	// a turn if one move from each player
+	if (drawMoveCounter === 50) {
+		$('#turn').html("It's a draw by the fifty-move rule!");
+		return true;
+	}
+	return false;
+}
+
+/**
+ * Checks to see if the game is a draw by stalemate
+ * @param {string} color - the color to check if there are any legal moves
+ * @return {boolean} - whether the game is a draw
+ */
+
+function checkStalemate(color) {
+	for (var pieceType in allPieces) {
+		if (pieceType[0] === color) {
+			var pieces = allPieces[pieceType];
+			for (var i in pieces) {
+				if (pieces[i].moves().length) {
+					return false;
+				}
+			}
+		}
+	}
+	$('#turn').html("It's a draw by stalemate!");
+	return true;
+}
+
+/**
+ * Checks to see if a player is in checkmate
+ * @param {string} currentColor - the player who is in check
+ * @param {string} opponentColor - the player who is giving check
+ * @param {String[]} color - the pieces that are giving check
+ * @return {boolean} - whether the player is in checkmate
+ */
+
+function checkCheckmate(currentColor, opponentColor, checkingPieces) {
+	for (var pieceType in allPieces) {
+		if (pieceType[0] === currentColor) {
+			var pieces = allPieces[pieceType];
+			for (var j in pieces) {
+				var colorAndType = pieces[j].color + pieces[j].abbr;
+				var selectedPiece = colorAndType + pieces[j].id;
+				if (getLegalMoves(checkingPieces, selectedPiece).length) {
+					return false;
+				}
+			}
+		}
+	}
+	$('#turn').html("Checkmate! " + colorAbbreviations[opponentColor] + " wins!");
+	drawCheckSquare(currentColor, false); // make the square the normal color
+	return true;
+}
+
+/**
+ * Keeps track of how many moves have been played. Displays the move count
+ * @param {String} color - the color of the pieces of the player whose turn it is
+ */
+
+function updateMoves(color) {
+	if (color === 'w') {
+		moveCounter++;
+		$('#move-counter').html(moveCounter);
+		drawMoveCounter++;
+	}
+}
+	
