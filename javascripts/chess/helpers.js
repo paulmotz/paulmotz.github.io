@@ -340,17 +340,3 @@ function checkCheckmate(currentColor, opponentColor, checkingPieces) {
 	drawCheckSquare(currentColor, false); // make the square the normal color
 	return true;
 }
-
-/**
- * Keeps track of how many moves have been played. Displays the move count
- * @param {String} color - the color of the pieces of the player whose turn it is
- */
-
-function updateMoves(color) {
-	if (color === 'w') {
-		moveCounter++;
-		$('#move-counter').html(moveCounter);
-		drawMoveCounter++;
-	}
-}
-	

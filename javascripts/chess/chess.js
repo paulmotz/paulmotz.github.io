@@ -467,7 +467,7 @@ $(document).ready(function() {
 			// movePiece checks whether a king or rook has moved. This should be done after checking for castling
 			movePiece(moves[r]);
 
-			`(currentColor);
+			updateMoves(currentColor);
 
 			inCheck(currentColor, opponentColor);
 
@@ -726,6 +726,32 @@ $(document).ready(function() {
 	}
 
 	/**
+	 * Checks to see if a player is in checkmate
+	 * @param {string} currentColor - the player who is in check
+	 * @param {string} opponentColor - the player who is giving check
+	 * @param {String[]} color - the pieces that are giving check
+	 * @return {boolean} - whether the player is in checkmate
+	 */
+
+	function checkCheckmate(currentColor, opponentColor, checkingPieces) {
+		for (var pieceType in allPieces) {
+			if (pieceType[0] === currentColor) {
+				var pieces = allPieces[pieceType];
+				for (var j in pieces) {
+					var colorAndType = pieces[j].color + pieces[j].abbr;
+					var selectedPiece = colorAndType + pieces[j].id;
+					if (getLegalMoves(checkingPieces, selectedPiece).length) {
+						return false;
+					}
+				}
+			}
+		}
+		$('#turn').html("Checkmate! " + colorAbbreviations[opponentColor] + " wins!");
+		drawCheckSquare(currentColor, false); // make the square the normal color
+		return true;
+	}
+
+	/**
 	 * Maps the rank and file of a square to x and y co-ordinates corresponding with its offset
 	 * @param {number} file - the square's file: 1 - 8
 	 * @param {number} rank - the square's rank: 1 - 8
@@ -954,5 +980,18 @@ $(document).ready(function() {
 		ctx.lineWidth = lineWidth;
 		ctx.stroke();
 		ctx.closePath();
+	}
+
+	/**
+	 * Keeps track of how many moves have been played. Displays the move count
+	 * @param {String} color - the color of the pieces of the player whose turn it is
+	 */
+
+	function updateMoves(color) {
+		if (color === 'w') {
+			moveCounter++;
+			$('#move-counter').html(moveCounter);
+			drawMoveCounter++;
+		}
 	}
 });
