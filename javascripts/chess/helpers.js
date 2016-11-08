@@ -33,14 +33,40 @@ function squareToIndex(square) {
 }
 
 /**
- * Maps the rank and file of a square to an integer that is unique among other squares
- * @param {number} index - the indicex of the square: 1 - 64
+ * Maps the unique index of a square to its rank and file
+ * @param {number} index - the index of the square: 1 - 64
  * @return {number[]} square - the indices of the square in the form [file, rank]
  */
 
 function indexToSquare(index) {
 	var file = index % 8 === 0 ? 8 : index % 8;
 	return [file, Math.ceil(index / 8)];
+}
+
+/**
+ * Maps the unique index of a square to its algebraic notation represantaion
+ * @param {String} pieceType - the type of piece: B, K, N, P, Q or R
+ * @param {boolean} capture - whether the move captures a piece
+ * @param {number} index - the index of the square: 1 - 64
+ * @param {number} numCheckingPieces - the number of pieces giving check
+ * @return {String} algSquare - the algebraic notation representatino of the square e.g. e4
+ */
+
+function getAlgNotMove(pieceType, capture, index, oldFile) {
+	var pieceString = pieceType !== "P" ? pieceType : "";
+	var capString = '';
+	var oldFileLetter = String.fromCharCode(oldFile + 96)
+	if (capture) {
+		if (pieceType === "P") {
+			capString = oldFileLetter + "x";
+		}
+		else {
+			capString = "x";
+		}
+	}
+	var square = indexToSquare(index);
+	var squareString =  String.fromCharCode(square[0] + 96) + square[1];
+	return pieceString + capString + squareString;
 }
 
 /**

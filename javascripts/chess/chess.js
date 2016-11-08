@@ -297,7 +297,7 @@ $(document).ready(function() {
 		// used in king.js for getting legal king moves
 		attackedSquares = getAttackedSquares(opponentColor);
 
-		var checkingPieces = inCheck(currentColor, opponentColor);
+		var checkingPieces = inCheck(currentColor);
 
 		// only draw the last move if there was a last move
 		if (lastMove['oldSquare']) {
@@ -322,7 +322,7 @@ $(document).ready(function() {
 		
 			humanTurn = true;
 
-			inCheck(currentColor, opponentColor);
+			inCheck(currentColor);
 
 			var fromTo = [];
 			var legalMoves = [];
@@ -342,7 +342,9 @@ $(document).ready(function() {
 					if (legalMoves.indexOf(index) !== -1) {
 
 						var nextMove =  {'piece' : selectedPiece.slice(0, 2), 'id' : selectedPiece[2], 'move' : square};
-						movePiece(nextMove);
+						var algNot = movePiece(nextMove);
+
+						console.log(algNot);
 
 						if (lastMove['oldSquare']) {
 							drawLastMove(lastMove, opponentColor, true);
@@ -361,7 +363,7 @@ $(document).ready(function() {
 						$(this).off(e);
 
 						// recolor square when king is out of check
-						inCheck(currentColor, opponentColor);
+						inCheck(currentColor);
 
 						move(opponentColor, currentColor, noComp);
 					}
@@ -447,7 +449,7 @@ $(document).ready(function() {
 			}
 			var numMoves = moves.length;
 
-			if (!numMoves && inCheck(currentColor, opponentColor).length) {
+			if (!numMoves && inCheck(currentColor).length) {
 				$('#turn').html("Checkmate! " + colorAbbreviations[opponentColor] + " wins!");
 				drawCheckSquare(currentColor, false); // make the square the normal color
 				return;			
@@ -465,11 +467,12 @@ $(document).ready(function() {
 			var pieceType = piece[1];
 
 			// movePiece checks whether a king or rook has moved. This should be done after checking for castling
-			movePiece(moves[r]);
+			var algNot = movePiece(moves[r]);
+			console.log(algNot);
 
 			updateMoves(currentColor);
 
-			inCheck(currentColor, opponentColor);
+			inCheck(currentColor);
 
 			// setTimeout(function() { movePiece(moves[r]) }, delay);
 			move(opponentColor, currentColor, false);
@@ -479,55 +482,71 @@ $(document).ready(function() {
 	/**
 	 * Moves a piece on the board
 	 * @param {object} move - an object consisting of the piece, its id (an int) and the square to move to
+	 * @return {String} algNot - the algebraic notation representation of the move (e.g. "e4")
 	 */
 
 	function movePiece(move) {
 
+		var algNot = '';
+
 		var color = move.piece[0];
 		var piece = move.piece;
+		var pieceType = piece[1];
 		var id = move.id;
-		var newSquare = move.move
+		var newSquare = move.move;
 		var newIndex = squareToIndex(newSquare);
 		var file = newSquare[0];
 		var rank = newSquare[1];
 
 		// pawn moves reset the fifty-move rule counter
-		if (piece[1] === 'P') {
+		if (pieceType === 'P') {
 			drawMoveCounter = 0;
-		}
-
-		if (occupiedSquares[newIndex - 1]) {
-			capturePiece(occupiedSquares[newIndex  - 1], newSquare);
 		}
 
 		var symbol = pieceSymbols[piece];
 
 		drawOnSquare(file, rank, symbol, color);
 
-		var index = findPieceIndex(piece, id);
+		var pieceIndex = findPieceIndex(piece, id);
 
-		var oldFile = allPieces[piece][index].file;
-		var oldRank = allPieces[piece][index].rank;
+		var oldFile = allPieces[piece][pieceIndex].file;
+		var oldRank = allPieces[piece][pieceIndex].rank;
 		var oldSquare = [oldFile, oldRank];
 		var oldIndex = squareToIndex(oldSquare);
 
-		if (piece[1] === 'K' && Math.abs(file - oldFile) === 2) {
-			castle(newSquare);
+		if (occupiedSquares[newIndex - 1]) {
+			capturePiece(occupiedSquares[newIndex  - 1], newSquare);
+			algNot = getAlgNotMove(pieceType, true, newIndex, oldFile)
 		}
 
-		allPieces[piece][index].file = newSquare[0];
-		allPieces[piece][index].rank = newSquare[1];
+		else {
+			algNot = getAlgNotMove(pieceType, false, newIndex, oldFile);
+		}
+
+		if (pieceType === 'K') {
+			if ((file - oldFile) === 2) {
+				algNot = "0-0";
+				castle(newSquare);
+			}
+			if ((file - oldFile) === -2) {
+				algNot = "0-0-0";
+				castle(newSquare);
+			}
+		}
+
+		allPieces[piece][pieceIndex].file = newSquare[0];
+		allPieces[piece][pieceIndex].rank = newSquare[1];
 
 		// the piece is a king or rook, record the fact that it has moved
 		if (piece[1] === 'K' || piece[1] === 'R') {
-			allPieces[piece][index].hasMoved = true;
+			allPieces[piece][pieceIndex].hasMoved = true;
 		}
 
 		occupiedSquares[oldIndex - 1] = null;
 		occupiedSquares[newIndex - 1] = piece + id;
 
 		// capture was en passant
-		if (piece[1] === 'P' && enPassantPawn) {
+		if (pieceType === 'P' && enPassantPawn) {
 
 			// need to specify color otherwise consecutive two-square pawn moves trigger a capture (eg: e4 followed by e5 captures the e4 pawn)
 			if (color === 'w' && occupiedSquares[newIndex - 9] === enPassantPawn) {
@@ -541,7 +560,7 @@ $(document).ready(function() {
 		}
 
 		// if a pawn moves two squares, make it able to be captured en passant
-		if (piece[1] === 'P' && Math.abs(rank - oldRank) === 2) {
+		if (pieceType === 'P' && Math.abs(rank - oldRank) === 2) {
 			enPassantPawn = piece  + id;
 		}
 		else {
@@ -549,8 +568,8 @@ $(document).ready(function() {
 		}
 
 		// the piece is a pawn that has reached the last rank
-		if (piece[1] === 'P' && (newSquare[1] === 8 || newSquare[1] === 1)) {
-			promote(piece, index, newIndex, newSquare);
+		if (pieceType === 'P' && (newSquare[1] === 8 || newSquare[1] === 1)) {
+			promote(piece, pieceIndex, newIndex, newSquare);
 		}
 
 		// piece and id are incorrect if there was not a pawn promotion
@@ -559,6 +578,25 @@ $(document).ready(function() {
 			occupiedSquares[newIndex - 1] = piece + id;
 		}
 		drawOverPiece(oldSquare);
+
+		var defendingColor = color === 'w' ? 'b' : 'w'; 
+
+		var checkingPieces = inCheck(defendingColor);
+
+		// TODO: ++ for double-check
+		var checkSymbol = "";
+
+		if (checkingPieces.length) {
+			// console.log(checkCheckmate(color, defendingColor, checkingPieces));
+			if (checkCheckmate(defendingColor, color, checkingPieces)) {
+				checkSymbol = "#";
+			}
+			else {
+				checkSymbol = "+".repeat(checkingPieces.length)
+			}
+		}
+	
+		return algNot + checkSymbol;
 	}
 
 	/** Promotes a pawn to a non-king piece (B, N, Q, R)
@@ -690,7 +728,12 @@ $(document).ready(function() {
 	 * @return {String} attackingPieces - the piece(s) that is/are delivering check
 	 */
 
-	function inCheck(defendingColor, attackingColor) {
+	function inCheck(defendingColor) {
+
+		// TODO: this can be done better
+
+		var attackingColor = defendingColor === 'w' ? 'b' : 'w';
+
 		var king = allPieces[defendingColor + 'K'][0];
 		var kingIndex = squareToIndex([king.file, king.rank]);
 		var attackingPieces = getAttackingPieces(attackingColor, kingIndex);
@@ -701,6 +744,7 @@ $(document).ready(function() {
 		else {
 			drawCheckSquare(defendingColor, false);
 		}
+
 		return attackingPieces;
 	}
 
@@ -729,7 +773,7 @@ $(document).ready(function() {
 	 * Checks to see if a player is in checkmate
 	 * @param {string} currentColor - the player who is in check
 	 * @param {string} opponentColor - the player who is giving check
-	 * @param {String[]} color - the pieces that are giving check
+	 * @param {String[]} checkingPieces - the pieces that are giving check
 	 * @return {boolean} - whether the player is in checkmate
 	 */
 
