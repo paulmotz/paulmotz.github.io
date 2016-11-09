@@ -37,7 +37,7 @@ $(document).ready(function() {
 	$('.moves-display').css('visibility', 'hidden');
 
 	var $board = $('#chessboard');
-	var delay = 0;
+	var delay = 500;
 
 	// visual/layout variables
 	var height = parseInt($board.css('height'));
@@ -86,22 +86,22 @@ $(document).ready(function() {
 
 
 	// remove pieces for testing purposes
-	// var pieceCount = {'B': 2, 'N': 2, 'K': 1, 'P': 8, 'Q': 1, 'R': 2};
-	// var pieceNames = {'K' : 'King', 'P' : 'Pawn', 'R' : 'Rook'};
+	var pieceCount = {'B': 2, 'N': 2, 'K': 1, 'P': 8, 'Q': 1, 'R': 2};
+	var pieceNames = {'K' : 'King', 'Q' : 'Queen'};
 
-	// var pieceStartingPositions = {'wB' : [[3, 1], [6, 1]],
-	// 								  'wN' : [[2, 1], [7, 1]],
-	// 								  'wK' : [[5, 1]],
-	// 								  'wP' : [[1, 2], [2, 2], [3, 2], [4, 2], [5, 2], [6, 2], [7, 2], [8, 2]],
-	// 								  'wQ' : [[4, 1]],
-	// 								  'wR' : [[1, 1], [8, 1]],
-	// 								  'bB' : [[3, 8], [6, 8]],
-	// 								  'bN' : [[2, 8], [7, 8]],
-	// 								  'bK' : [[5, 8]],
-	// 								  'bP' : [[1, 7], [2, 7], [3, 7], [4, 7], [5, 7], [6, 7], [7, 7], [8, 7]],
-	// 								  'bQ' : [[4, 8]],
-	// 								  'bR' : [[1, 8], [8, 8]]
-									// };
+	var pieceStartingPositions = {'wB' : [[3, 1], [6, 1]],
+									  'wN' : [[2, 1], [7, 1]],
+									  'wK' : [[5, 1]],
+									  'wP' : [[1, 2], [2, 2], [3, 2], [4, 2], [5, 2], [6, 2], [7, 2], [8, 2]],
+									  'wQ' : [[3, 6]],
+									  'wR' : [[1, 1], [8, 1]],
+									  'bB' : [[3, 8], [6, 8]],
+									  'bN' : [[2, 8], [7, 8]],
+									  'bK' : [[6, 8]],
+									  'bP' : [[1, 7], [2, 7], [3, 7], [4, 7], [5, 7], [6, 7], [7, 7], [8, 7]],
+									  'bQ' : [[7, 7]],
+									  'bR' : [[1, 8], [8, 8]]
+									};
 
 	// represent all pieces as entries in arrays for dynamic access (kings could have been single entry)
 	allPieces = {'wB' : [], 'wN' : [], 'wK' : [], 'wP' : [], 'wQ' : [], 'wR' : [], 'bB' : [], 'bN' : [], 'bK' : [], 'bP' : [], 'bQ' : [], 'bR' : [] };
@@ -297,6 +297,8 @@ $(document).ready(function() {
 		// used in king.js for getting legal king moves
 		attackedSquares = getAttackedSquares();
 
+		// console.log(attackedSquares);
+
 		var checkingPieces = inCheck(currentColor);
 
 		// only draw the last move if there was a last move
@@ -471,7 +473,7 @@ $(document).ready(function() {
 
 			updateMoves(currentColor, algNot);
 
-			// setTimeout(function() { movePiece(moves[r]) }, delay);
+			// setTimeout(function() { move(opponentColor, currentColor, false) }, delay);
 			move(opponentColor, currentColor, false);
 		}
 	}
@@ -512,11 +514,8 @@ $(document).ready(function() {
 		var oldIndex = squareToIndex(oldSquare);
 
 		if (occupiedSquares[newIndex - 1]) {
-			capturePiece(occupiedSquares[newIndex  - 1], newSquare);
-		}
-
-		if (occupiedSquares[newIndex - 1] || enPassantPawn) {
 			algNot = getAlgNotMove(pieceType, true, newIndex, oldFile)
+			capturePiece(occupiedSquares[newIndex  - 1], newSquare);
 		}
 
 		else {
@@ -697,7 +696,9 @@ $(document).ready(function() {
 			if (pieceType[0] === color) {
 				var pieceArray = allPieces[pieceType];
 				for (var piece in pieceArray) {
-					var pieceMoves = pieceArray[piece].moves();
+
+					// use protectedSquares instead of move since pinned pieces can still check
+					var pieceMoves = pieceArray[piece].protectedSquares();
 					for (var i in pieceMoves) {
 						if (squareToIndex(pieceMoves[i]) === squareIndex) {
 							attackingPieces.push(color + pieceArray[piece].abbr + pieceArray[piece].id);
@@ -717,9 +718,7 @@ $(document).ready(function() {
 
 	function inCheck(defendingColor) {
 
-		// TODO: this can be done better
-
-		var attackingColor = defendingColor === 'w' ? 'b' : 'w';
+		var attackingColor = otherColor(defendingColor);
 
 		var king = allPieces[defendingColor + 'K'][0];
 		var kingIndex = squareToIndex([king.file, king.rank]);
