@@ -10,7 +10,7 @@
 var allPieces;
 var occupiedSquares;
 var enPassantPawn;
-var attackedSquares = new Set();
+var attackedSquares = { 'w' : new Set(), 'b' : new Set() };
 
 // the two players' colors
 var colors = ['w', 'b'];
@@ -156,6 +156,7 @@ $(document).ready(function() {
 		drawBoard();
 		boardStrings = [];
 		move('w', 'b', $('#radio-human').is(':checked'));
+		$('.move-history').html('');
 	}
 
 	/**
@@ -295,7 +296,7 @@ $(document).ready(function() {
 		boardStrings.push(boardString);
 
 		// used in king.js for getting legal king moves
-		attackedSquares = getAttackedSquares(opponentColor);
+		attackedSquares = getAttackedSquares();
 
 		var checkingPieces = inCheck(currentColor);
 
@@ -344,8 +345,6 @@ $(document).ready(function() {
 						var nextMove =  {'piece' : selectedPiece.slice(0, 2), 'id' : selectedPiece[2], 'move' : square};
 						var algNot = movePiece(nextMove);
 
-						console.log(algNot);
-
 						if (lastMove['oldSquare']) {
 							drawLastMove(lastMove, opponentColor, true);
 						}
@@ -355,15 +354,15 @@ $(document).ready(function() {
 						lastMove['piece'] = selectedPiece;
 
 						fromTo = [];
-
-						// update move counters (for display and draw checking)
-						updateMoves(currentColor);						
-
+											
 						// prevent multiple click events being bound to the board.
 						$(this).off(e);
 
 						// recolor square when king is out of check
 						inCheck(currentColor);
+
+						// update move counters (for display and draw checking)
+						updateMoves(currentColor, algNot, checkingPieces);	
 
 						move(opponentColor, currentColor, noComp);
 					}
@@ -468,11 +467,10 @@ $(document).ready(function() {
 
 			// movePiece checks whether a king or rook has moved. This should be done after checking for castling
 			var algNot = movePiece(moves[r]);
-			console.log(algNot);
-
-			updateMoves(currentColor);
 
 			inCheck(currentColor);
+
+			updateMoves(currentColor, algNot);
 
 			// setTimeout(function() { movePiece(moves[r]) }, delay);
 			move(opponentColor, currentColor, false);
@@ -582,20 +580,8 @@ $(document).ready(function() {
 		var defendingColor = color === 'w' ? 'b' : 'w'; 
 
 		var checkingPieces = inCheck(defendingColor);
-
-		// TODO: ++ for double-check
-		var checkSymbol = "";
-
-		if (checkingPieces.length) {
-			if (checkCheckmate(color, defendingColor, checkingPieces)) {
-				checkSymbol = "#";
-			}
-			else {
-				checkSymbol = "+".repeat(checkingPieces.length)
-			}
-		}
 	
-		return algNot + checkSymbol;
+		return algNot;
 	}
 
 	/** Promotes a pawn to a non-king piece (B, N, Q, R)
@@ -680,18 +666,18 @@ $(document).ready(function() {
 	 * @return {number[]} attackedSquares - the squares that are being attacked
 	 */
 
-	function getAttackedSquares(color) {
-		var attackedSquares = new Set();
+	function getAttackedSquares() {
+		var attackedSquares = { 'w' : new Set(), 'b' : new Set() };
 		for (var pieceType in allPieces) {
-			if (pieceType[0] === color) {
+			// if (pieceType[0] === color) {
 				var pieceArray = allPieces[pieceType];
 				for (var piece in pieceArray) {
 					var pieceMoves = pieceArray[piece].protectedSquares();
 					for (var i in pieceMoves) {
-						attackedSquares.add(squareToIndex(pieceMoves[i]));
+						attackedSquares[pieceType[0]].add(squareToIndex(pieceMoves[i]));
 					}
 				}
-			}	
+			// }	
 		}
 		return attackedSquares;
 	}
@@ -776,13 +762,12 @@ $(document).ready(function() {
 	 * @return {boolean} - whether the player is in checkmate
 	 */
 
-	function checkCheckmate(currentColor, opponentColor, checkingPieces) {
+	function checkCheckmate(currentColor, opponentColor, checkingPieces, flag) {
 		for (var pieceType in allPieces) {
 			if (pieceType[0] === currentColor) {
 				var pieces = allPieces[pieceType];
 				for (var j in pieces) {
-					var colorAndType = pieces[j].color + pieces[j].abbr;
-					var selectedPiece = colorAndType + pieces[j].id;
+					var selectedPiece = pieces[j].color + pieces[j].abbr + pieces[j].id;
 					if (getLegalMoves(checkingPieces, selectedPiece).length) {
 						return false;
 					}
@@ -1026,13 +1011,38 @@ $(document).ready(function() {
 	/**
 	 * Keeps track of how many moves have been played. Displays the move count
 	 * @param {String} color - the color of the pieces of the player whose turn it is
+	 * @param {String} algNot - the last move represented as algebraic notation
 	 */
 
-	function updateMoves(color) {
+	function updateMoves(color, algNot) {
+
+		var defendingColor = otherColor(color)
+		var checkingPieces = inCheck(defendingColor);
+		var checkSymbol = '';
+
+		if (checkingPieces.length) {
+
+			// have to update attackedSquares so that king's legal moves are updated...not a fan of this approach
+			// maybe just check for mate and add the checkSymbol before the next turn with the rest of the mate checks
+			attackedSquares = getAttackedSquares();
+			if (checkCheckmate(defendingColor, color, checkingPieces)) {
+				checkSymbol = "#";
+			}
+			else {
+				checkSymbol = "+".repeat(checkingPieces.length)
+			}
+		}
+
+		algNot += checkSymbol;
+
 		if (color === 'w') {
 			moveCounter++;
 			$('#move-counter').html(moveCounter);
 			drawMoveCounter++;
+			$('.move-history').append("<div class='turn'>" + moveCounter + " " + algNot + " </div>");
+		}
+		else {
+			$('.turn').last().append(algNot);
 		}
 	}
 });

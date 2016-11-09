@@ -156,7 +156,8 @@ function getLegalMoves(checkingPieces, clickedPiece) {
 
 	// only the king can move
 	if (clickedPiece[1] === 'K') {
-		var attackedSquares = [];
+
+		var attackedSquaresA = [];
 		for (var piece in checkingPieces) {
 			var checkingPieceColorAndType = checkingPieces[piece].slice(0, 2)
 			var checkingPieceIndex = findPieceIndex(checkingPieceColorAndType, checkingPieces[piece][2])
@@ -166,22 +167,29 @@ function getLegalMoves(checkingPieces, clickedPiece) {
 
 			for (var c in checkPath) {
 				if (checkPath[c] !== kingIndex) {
-					attackedSquares.push(checkPath[c]);
+					attackedSquaresA.push(checkPath[c]);
 				}
 			}
-
 		}
+
+		// console.log(attackedSquaresA);
 
 		var kingMoves = king.moves().map(squareToIndex);
 
+		// console.log(attackedSquares['w'].has(44));
+
+		// console.log(kingMoves);
+
 		var legalKingMoves = kingMoves.filter(function(val) {
-			return attackedSquares.indexOf(val) === -1;
+			return attackedSquaresA.indexOf(val) === -1;
 		});
 
 		for (var m in legalKingMoves) {
 			legalMoves.push(legalKingMoves[m]);
 		}
 	}
+
+	// console.log(legalMoves);
 
 	return legalMoves;
 }
@@ -365,4 +373,8 @@ function checkCheckmate(currentColor, opponentColor, checkingPieces) {
 	$('#turn').html("Checkmate! " + colorAbbreviations[opponentColor] + " wins!");
 	drawCheckSquare(currentColor, false); // make the square the normal color
 	return true;
+}
+
+function otherColor(color) {
+	return color === 'w' ? 'b' : 'w';
 }
