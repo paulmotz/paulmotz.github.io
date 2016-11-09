@@ -494,8 +494,8 @@ $(document).ready(function() {
 
 		var algNot = '';
 
-		var color = move.piece[0];
 		var piece = move.piece;
+		var color = piece[0];
 		var pieceType = piece[1];
 		var id = move.id;
 		var newSquare = move.move;
@@ -520,12 +520,12 @@ $(document).ready(function() {
 		var oldIndex = squareToIndex(oldSquare);
 
 		if (occupiedSquares[newIndex - 1]) {
-			algNot = getAlgNotMove(pieceType, true, newIndex, oldFile)
+			algNot = getAlgNotMove(piece, pieceIndex, true, newIndex, oldSquare)
 			capturePiece(occupiedSquares[newIndex  - 1], newSquare);
 		}
 
 		else {
-			algNot = getAlgNotMove(pieceType, false, newIndex, oldFile);
+			algNot = getAlgNotMove(piece, pieceIndex, false, newIndex, oldSquare);
 		}
 
 		if (pieceType === 'K') {

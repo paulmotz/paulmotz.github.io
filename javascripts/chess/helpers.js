@@ -45,25 +45,46 @@ function indexToSquare(index) {
 
 /**
  * Maps the unique index of a square to its algebraic notation represantaion
- * @param {String} pieceType - the type of piece: B, K, N, P, Q or R
+ * @param {String} piece - the color of the piece followed by its type
+ * @param {String} pieceIndex - the index of the piece in its array in the allPieces object
  * @param {boolean} capture - whether the move captures a piece
- * @param {number} index - the index of the square: 1 - 64
+ * @param {number} squareIndex - the index of the square: 1 - 64
+ * @param {number[]} oldSquare - former location of the piece in the form [file, rank]
  * @return {String} algSquare - the algebraic notation representatino of the square e.g. e4
  */
 
-function getAlgNotMove(pieceType, capture, index, oldFile) {
+function getAlgNotMove(piece, pieceIndex, capture, squareIndex, oldSquare) {
+	var pieceType = piece[1];
 	var pieceString = pieceType !== "P" ? pieceType : "";
 	var capString = '';
 	var promotionString = '';
 
-	var oldFileLetter = String.fromCharCode(oldFile + 96)
-	var square = indexToSquare(index);
+	var oldFileLetter = String.fromCharCode(oldSquare[0] + 96)
+	var square = indexToSquare(squareIndex);
 	var newFileLetter = String.fromCharCode(square[0] + 96)
+
+	// check if multiple pieces of that type can move to the same square
+	if (pieceType !== "P" && pieceType !== "K") {
+		var piecesArray = allPieces[piece];
+		for (var p in piecesArray) {
+			if (piecesArray[p].id !==  pieceIndex) {
+				var pieceMoves = piecesArray[p].moves().map(squareToIndex);
+				if (pieceMoves.indexOf(squareIndex) !== -1) {
+					if (square[0] === piecesArray[p].file) {
+						pieceString += oldSquare[1];
+					}
+					else {
+						pieceString	+= oldFileLetter;
+					}
+				}
+			}
+		}
+	}
 
 	if (pieceType === "P") {
 
 		// if the pawn is moving off of its file, it is capturing
-		if (oldFile !== square[0]) {
+		if (oldSquare[0] !== square[0]) {
 			capString = oldFileLetter + "x";
 		}
 
