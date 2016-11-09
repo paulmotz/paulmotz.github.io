@@ -3,7 +3,6 @@
  *
  * Visaul:
  * - Can still see orange/red outlines after piece has moved off square when board is smaller, "solved" this by fixing board size
- * - display algebraic notation as game progresses
  *
 */
 
@@ -514,6 +513,9 @@ $(document).ready(function() {
 
 		if (occupiedSquares[newIndex - 1]) {
 			capturePiece(occupiedSquares[newIndex  - 1], newSquare);
+		}
+
+		if (occupiedSquares[newIndex - 1] || enPassantPawn) {
 			algNot = getAlgNotMove(pieceType, true, newIndex, oldFile)
 		}
 

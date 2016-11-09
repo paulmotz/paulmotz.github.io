@@ -48,25 +48,36 @@ function indexToSquare(index) {
  * @param {String} pieceType - the type of piece: B, K, N, P, Q or R
  * @param {boolean} capture - whether the move captures a piece
  * @param {number} index - the index of the square: 1 - 64
- * @param {number} numCheckingPieces - the number of pieces giving check
  * @return {String} algSquare - the algebraic notation representatino of the square e.g. e4
  */
 
 function getAlgNotMove(pieceType, capture, index, oldFile) {
 	var pieceString = pieceType !== "P" ? pieceType : "";
 	var capString = '';
+	var promotionString = '';
+
 	var oldFileLetter = String.fromCharCode(oldFile + 96)
-	if (capture) {
-		if (pieceType === "P") {
+	var square = indexToSquare(index);
+	var newFileLetter = String.fromCharCode(square[0] + 96)
+
+	if (pieceType === "P") {
+
+		// if the pawn is moving off of its file, it is capturing
+		if (oldFile !== square[0]) {
 			capString = oldFileLetter + "x";
 		}
-		else {
-			capString = "x";
+
+		// check for promotion
+		if (square[1] === 1 || square[1] === 8) {
+			promotionString = "=" + $('input[name=piece]:checked').val();
 		}
 	}
-	var square = indexToSquare(index);
-	var squareString =  String.fromCharCode(square[0] + 96) + square[1];
-	return pieceString + capString + squareString;
+	else if (capture) {
+		capString = "x";
+	}
+
+	var squareString =  newFileLetter + square[1];
+	return pieceString + capString + squareString + promotionString;
 }
 
 /**
