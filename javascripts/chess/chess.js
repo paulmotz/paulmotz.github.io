@@ -587,8 +587,7 @@ $(document).ready(function() {
 		var checkSymbol = "";
 
 		if (checkingPieces.length) {
-			// console.log(checkCheckmate(color, defendingColor, checkingPieces));
-			if (checkCheckmate(defendingColor, color, checkingPieces)) {
+			if (checkCheckmate(color, defendingColor, checkingPieces)) {
 				checkSymbol = "#";
 			}
 			else {
@@ -841,8 +840,6 @@ $(document).ready(function() {
 	 */
 
 	function drawLastMove(lastMove, color, drawOver) {
-		// console.log(lastMove);
-		// console.log(pieceSymbols);
 		var oldFile = lastMove['oldSquare'][0];
 		var oldRank = lastMove['oldSquare'][1];
 		var newFile = lastMove['newSquare'][0];
