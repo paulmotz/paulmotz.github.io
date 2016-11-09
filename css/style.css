@@ -46,6 +46,8 @@ label {
 .title {
   font-weight: bold;
   text-decoration: underline;
+  height: 20px;
+  margin: 0px auto;
 }
 
 .nav {

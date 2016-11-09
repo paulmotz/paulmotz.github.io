@@ -7,7 +7,7 @@
 }
 
 .game-settings, .move-container {
-	margin-top: 15%;
+	/*margin: 0px auto;*/
 }
 
 .content {
@@ -33,7 +33,29 @@
 	}
 }
 
+.turn {
+	display: inline-block;
+	width: 33%;
+	float: left;
+}
 
+.move {
+	height: 20px;
+}
+
+.result, .result-description {
+	padding-top: 5px;
+	text-align: center;
+	font-weight: bold;
+}
+
+/*.result-description {
+	text-align: center;
+}*/
+
+.description {
+	margin-top: 15px;
+}
 
 .rules {
 	text-align: left;
@@ -55,5 +77,8 @@
 
 .move-history {
 	text-align :center;
+	height: 300px;
+	max-height: 300px;
+	overflow-y: auto;
 }
 

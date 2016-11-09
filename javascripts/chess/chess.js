@@ -86,22 +86,22 @@ $(document).ready(function() {
 
 
 	// remove pieces for testing purposes
-	var pieceCount = {'B': 2, 'N': 2, 'K': 1, 'P': 8, 'Q': 1, 'R': 2};
-	var pieceNames = {'K' : 'King', 'Q' : 'Queen'};
+	// var pieceCount = {'B': 2, 'N': 2, 'K': 1, 'P': 8, 'Q': 1, 'R': 2};
+	// var pieceNames = {'K' : 'King', 'Q' : 'Queen'};
 
-	var pieceStartingPositions = {'wB' : [[3, 1], [6, 1]],
-									  'wN' : [[2, 1], [7, 1]],
-									  'wK' : [[5, 1]],
-									  'wP' : [[1, 2], [2, 2], [3, 2], [4, 2], [5, 2], [6, 2], [7, 2], [8, 2]],
-									  'wQ' : [[3, 6]],
-									  'wR' : [[1, 1], [8, 1]],
-									  'bB' : [[3, 8], [6, 8]],
-									  'bN' : [[2, 8], [7, 8]],
-									  'bK' : [[6, 8]],
-									  'bP' : [[1, 7], [2, 7], [3, 7], [4, 7], [5, 7], [6, 7], [7, 7], [8, 7]],
-									  'bQ' : [[7, 7]],
-									  'bR' : [[1, 8], [8, 8]]
-									};
+	// var pieceStartingPositions = {'wB' : [[3, 1], [6, 1]],
+	// 								  'wN' : [[2, 1], [7, 1]],
+	// 								  'wK' : [[5, 1]],
+	// 								  'wP' : [[1, 2], [2, 2], [3, 2], [4, 2], [5, 2], [6, 2], [7, 2], [8, 2]],
+	// 								  'wQ' : [[3, 6]],
+	// 								  'wR' : [[1, 1], [8, 1]],
+	// 								  'bB' : [[3, 8], [6, 8]],
+	// 								  'bN' : [[2, 8], [7, 8]],
+	// 								  'bK' : [[6, 8]],
+	// 								  'bP' : [[1, 7], [2, 7], [3, 7], [4, 7], [5, 7], [6, 7], [7, 7], [8, 7]],
+	// 								  'bQ' : [[7, 7]],
+	// 								  'bR' : [[1, 8], [8, 8]]
+	// 								};
 
 	// represent all pieces as entries in arrays for dynamic access (kings could have been single entry)
 	allPieces = {'wB' : [], 'wN' : [], 'wK' : [], 'wP' : [], 'wQ' : [], 'wR' : [], 'bB' : [], 'bN' : [], 'bK' : [], 'bP' : [], 'bQ' : [], 'bR' : [] };
@@ -150,12 +150,13 @@ $(document).ready(function() {
 		moveCounter = 0;
 		drawMoveCounter = 0;
 		$('.moves-display').css('visibility', 'visible');
-		$('#move-counter').html(moveCounter);
 		initializePieces();
 		drawBoard();
 		boardStrings = [];
-		move('w', 'b', $('#radio-human').is(':checked'));
 		$('.move-history').html('');
+		$('.result').html('');
+		$('.result-container').html('');
+		move('w', 'b', $('#radio-human').is(':checked'));	
 	}
 
 	/**
@@ -314,10 +315,11 @@ $(document).ready(function() {
 		}		
 
 		if (checkDraw(currentColor, boardStrings, drawMoveCounter)) {
+			$('.result').html('0-0');
 			return;
 		}
 
-		$('#turn').html(colorAbbreviations[currentColor] + " to move");
+		$('.result-description').html(colorAbbreviations[currentColor] + " to move");
 
 		// if human is moving, allow him/her to move
 		if (whiteDown && currentColor === 'w' || !whiteDown && currentColor === 'b' || noComp) {
@@ -450,7 +452,11 @@ $(document).ready(function() {
 			var numMoves = moves.length;
 
 			if (!numMoves && inCheck(currentColor).length) {
-				$('#turn').html("Checkmate! " + colorAbbreviations[opponentColor] + " wins!");
+				var winningColor = colorAbbreviations[opponentColor]
+				$('.result-description').html("Checkmate! " + winningColor + " wins!");
+				var resultString = winningColor === 'White' ? '1-0' : '0-1';
+				$('.move-container').append(resultString);
+				$('.move-container').append("<span class='result'>" + resultString + "</span>");
 				drawCheckSquare(currentColor, false); // make the square the normal color
 				return;			
 			}
@@ -775,7 +781,10 @@ $(document).ready(function() {
 				}
 			}
 		}
-		$('#turn').html("Checkmate! " + colorAbbreviations[opponentColor] + " wins!");
+		var winningColor = colorAbbreviations[opponentColor]
+		$('.result-description').html("Checkmate! " + winningColor + " wins!");
+		var resultString = winningColor === 'White' ? '1-0' : '0-1';
+		$('.result').html(resultString);
 		drawCheckSquare(currentColor, false); // make the square the normal color
 		return true;
 	}
@@ -1038,12 +1047,12 @@ $(document).ready(function() {
 
 		if (color === 'w') {
 			moveCounter++;
-			$('#move-counter').html(moveCounter);
 			drawMoveCounter++;
-			$('.move-history').append("<div class='turn'>" + moveCounter + " " + algNot + " </div>");
+			$('.move-history').append("<div class='move'></div>");
+			$('.move').last().append("<span class='turn move-count'>" + moveCounter + "</span> <span class='turn white-move'>" + algNot + " </span>");
 		}
 		else {
-			$('.turn').last().append(algNot);
+			$('.move').last().append("<span class='turn black-move'>" + algNot + "</span>");
 		}
 	}
 });

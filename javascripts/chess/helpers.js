@@ -276,13 +276,13 @@ function checkMatingMaterial() {
 
 				// if the other player has no knights does the other player have at least one pair of bishops with opposite colored squares
 				if (!allPieces[p2 + 'N'].length && !differentColorBishops()) {
-					$('#turn').html("It's a draw by insufficient mating material!");
+					$('.result-description').html("It's a draw by insufficient mating material!");
 					return false;
 				}
 
 				// only one of bishop or knight
 				if (allPieces[p2 + 'B'].length + allPieces[p2 + 'N'].length < 2) {
-					$('#turn').html("It's a draw by insufficient mating material!");
+					$('.result-description').html("It's a draw by insufficient mating material!");
 					return false;
 				}
 			}
@@ -291,7 +291,7 @@ function checkMatingMaterial() {
 		// no knights left, are there different colored bishops?
 		if (!allPieces['wN'].length && !allPieces['bN'].length) {
 			if (!differentColorBishops()) {
-				$('#turn').html("It's a draw by insufficient mating material!");
+				$('.result-description').html("It's a draw by insufficient mating material!");
 				return false;
 			}
 		}
@@ -317,7 +317,7 @@ function checkDrawRep(boardStrings) {
 			counter++;
 		}
 		if (counter === 3) {
-			$('#turn').html("It's a draw by repetition!");
+			$('.result-description').html("It's a draw by repetition!");
 			return true;
 		}
 	}
@@ -333,7 +333,7 @@ function checkDraw50(drawMoveCounter) {
 
 	// a turn if one move from each player
 	if (drawMoveCounter === 50) {
-		$('#turn').html("It's a draw by the fifty-move rule!");
+		$('.result-description').html("It's a draw by the fifty-move rule!");
 		return true;
 	}
 	return false;
@@ -356,7 +356,7 @@ function checkStalemate(color) {
 			}
 		}
 	}
-	$('#turn').html("It's a draw by stalemate!");
+	$('.result-description').html("It's a draw by stalemate!");
 	return true;
 }
 
@@ -381,7 +381,7 @@ function checkCheckmate(currentColor, opponentColor, checkingPieces) {
 			}
 		}
 	}
-	$('#turn').html("Checkmate! " + colorAbbreviations[opponentColor] + " wins!");
+	$('.result-description').html("Checkmate! " + colorAbbreviations[opponentColor] + " wins!");
 	drawCheckSquare(currentColor, false); // make the square the normal color
 	return true;
 }
