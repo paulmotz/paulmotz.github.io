@@ -1054,5 +1054,7 @@ $(document).ready(function() {
 		else {
 			$('.move').last().append("<span class='turn black-move'>" + algNot + "</span>");
 		}
+
+		$('.move-history').scrollTop($('.move-history')[0].scrollHeight);
 	}
 });
