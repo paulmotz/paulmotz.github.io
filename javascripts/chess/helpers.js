@@ -204,13 +204,7 @@ function getLegalMoves(checkingPieces, clickedPiece) {
 			}
 		}
 
-		// console.log(attackedSquaresA);
-
 		var kingMoves = king.moves().map(squareToIndex);
-
-		// console.log(attackedSquares['w'].has(44));
-
-		// console.log(kingMoves);
 
 		var legalKingMoves = kingMoves.filter(function(val) {
 			return attackedSquaresA.indexOf(val) === -1;
@@ -220,8 +214,6 @@ function getLegalMoves(checkingPieces, clickedPiece) {
 			legalMoves.push(legalKingMoves[m]);
 		}
 	}
-
-	// console.log(legalMoves);
 
 	return legalMoves;
 }

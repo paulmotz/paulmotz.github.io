@@ -31,6 +31,9 @@
 	.game-controls {
 	  padding-top: 10px;
 	}
+	.title {
+		margin: 10px 10px;
+	}
 }
 
 .turn {
