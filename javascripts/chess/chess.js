@@ -520,12 +520,12 @@ $(document).ready(function() {
 		var oldIndex = squareToIndex(oldSquare);
 
 		if (occupiedSquares[newIndex - 1]) {
-			algNot = getAlgNotMove(piece, pieceIndex, true, newIndex, oldSquare)
+			algNot = getAlgNotMove(piece, id, true, newIndex, oldSquare)
 			capturePiece(occupiedSquares[newIndex  - 1], newSquare);
 		}
 
 		else {
-			algNot = getAlgNotMove(piece, pieceIndex, false, newIndex, oldSquare);
+			algNot = getAlgNotMove(piece, id, false, newIndex, oldSquare);
 		}
 
 		if (pieceType === 'K') {
