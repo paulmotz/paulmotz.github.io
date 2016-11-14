@@ -1,7 +1,7 @@
 /**
- * TODOs
- *
- * Make promotion piece options change color during free play to represent the player moving
+ * Ideas for improvement:
+ * -Refactor to make code more OO
+ * -Make promotion piece options change color during free play to represent the player moving ()
  *
 */
 
