@@ -8,7 +8,7 @@ This is a chess game that I wrote in JavaScript where a user can play against an
 
 ## Running Visualization
 
-This is a running visualization that I made using D3.js of my runs from the past three years. This type of visualization was inspired by [Hans Rosling](https://www.youtube.com/watch?v=jbkSRLYSojo)
+This is a running visualization that I made using [D3.js](https://d3js.org) of my runs from the past three years. This type of visualization was inspired by [Hans Rosling](https://www.youtube.com/watch?v=jbkSRLYSojo)
 
 ## FreeCodeCamp Projects
 
