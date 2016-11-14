@@ -1,8 +1,7 @@
 /**
  * TODOs
  *
- * Visaul:
- * - Can still see orange/red outlines after piece has moved off square when board is smaller, "solved" this by fixing board size
+ * Make promotion piece options change color during free play to represent the player moving
  *
 */
 
@@ -121,11 +120,11 @@ $(document).ready(function() {
 			var piece = selection.val();
 			if ($('#radio-white').is(':checked') || $('#radio-human').is(':checked')) {
 				whiteDown = true;
-				$(this).parent().find('label').html(pieceSymbols['w' + piece] + " " + pieceNames[piece]);
+				$(this).parent().find('span').html(pieceSymbols['w' + piece] + " " + pieceNames[piece])
 			}
 			else {
 				whiteDown = false;
-				$(this).parent().find('label').html(pieceSymbols['b' + piece] + " " + pieceNames[piece]);
+				$(this).parent().find('span').html(pieceSymbols['b' + piece] + " " + pieceNames[piece]);
 			}
 		});
 

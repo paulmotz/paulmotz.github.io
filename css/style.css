@@ -41,6 +41,7 @@ label {
 
 .description {
   font-size: 1.2em;
+  text-align: center;
 }
 
 .title {
@@ -68,8 +69,8 @@ body {
   text-align: center;
 }
 
-p {
-	text-align: center;
+.about {
+	margin: 10px 100px;
 }
 
 .delim-select {
