@@ -315,9 +315,12 @@ function checkMatingMaterial() {
 			}
 		}
 
-		// no bishops left, does either player have two or more knights?
+		// no bishops left, do both players have one or fewer knights?
 		else if (!allPieces['wB'].length && !allPieces['bB'].length) {
-			return allPieces['wN'].length > 1 || allPieces['bN'].length > 1;
+			if (allPieces['wN'].length <= 1 && allPieces['bN'].length <= 1) {
+				$('.result-description').html("It's a draw by insufficient mating material!");
+				return false;
+			}
 		}
 	}
 	return true;
