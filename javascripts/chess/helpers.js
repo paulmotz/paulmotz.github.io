@@ -64,22 +64,27 @@ function getAlgNotMove(piece, pieceId, capture, squareIndex, oldSquare) {
 	var square = indexToSquare(squareIndex);
 	var newFileLetter = String.fromCharCode(square[0] + 96);
 
-	// check if multiple pieces of that type can move to the same square
+	// check if multiple pieces of that type can move to the same square and disambiguate if so
 	if (pieceType !== "P" && pieceType !== "K") {
 		var piecesArray = allPieces[piece];
+		
+		// find all pieces that can move to the square and keep track of their file/rank
+		var algOldSquare = Array(2);
 		for (var p in piecesArray) {
 			if (piecesArray[p].id !==  pieceId) {
 				var pieceMoves = piecesArray[p].moves().map(squareToIndex);
 				if (pieceMoves.indexOf(squareIndex) !== -1) {
-					if (oldSquare[0] === piecesArray[p].file) {
-						pieceString += oldSquare[1];
+					if (oldSquare[1] === piecesArray[p].rank || (oldSquare[1] !== piecesArray[p].rank && oldSquare[0] !== piecesArray[p].file)) {
+						algOldSquare[0] = oldFileLetter;
 					}
-					else {
-						pieceString	+= oldFileLetter;
+					if (oldSquare[0] === piecesArray[p].file) {
+						algOldSquare[1] = oldSquare[1];
 					}
 				}
+				
 			}
 		}
+		pieceString += algOldSquare.join('');
 	}
 
 	if (pieceType === "P") {
