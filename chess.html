@@ -22,76 +22,72 @@
 		<script src="javascripts/chess/rook.js"></script>
 		<script src="javascripts/chess/helpers.js"></script>
 		<script src="javascripts/chess/chess.js"></script>
-
-		<!-- http://stackoverflow.com/questions/18712338/make-header-and-footer-files-to-be-included-in-multiple-html-pages -->
-		<script>
-		$(document).ready(function() {
-			$("#header").load("header.html");
-			$("#footer").load("footer.html");
-		});
-		</script>
+		<script src="javascripts/script.js"></script>
 	</head>
 	<body>
 		<div id="header">
 		</div>
-		<div class='row'>
-			<div class='col-lg-2 col-xs-1'></div>
-			<div class='col-lg-8 col-xs-10'>
-				<h2 class="title">Dummy Chess</h2>
-				<p class="description">
-					Play as the colour of your choice.
-					Your foolish opponent  will make a random move.<br>
-					If you want to win a game of chess, you have come to the right place.<br>
-					For a challenge, try to <em>lose</em> the game.<br>
-					Move pieces by clicking on the piece and then where you want to move the piece
-				</p>
+		<div class='main'>
+			<div class='row'>
+				<div class='col-lg-2 col-xs-1'></div>
+				<div class='col-lg-8 col-xs-10'>
+					<h2 class="title">Dummy Chess</h2>
+					<p class="description">
+						Play as the colour of your choice.
+						Your foolish opponent  will make a random move.<br>
+						If you want to win a game of chess, you have come to the right place.<br>
+						For a challenge, try to <em>lose</em> the game.<br>
+						Move pieces by clicking on the piece and then where you want to move the piece
+					</p>
+				</div>
+				<div class='col-lg-2 col-xs-1'></div>
 			</div>
-			<div class='col-lg-2 col-xs-1'></div>
+			<div class='row content'>
+				<!-- <div class='col-lg-2 col-xs-1'></div> -->
+				<div class='col-md-6 col-sm-12'>
+					
+					<div class="chessboard-container">
+						<canvas id="chessboard" width="500" height="500">
+						</canvas>
+					</div>
+				</div>
+				<div class='col-md-2 col-sm-6'>
+					<div class='game-settings'>
+						<h4 class="title">Settings</h4>
+						<div>
+							<h4>Play as:</h4>
+							<div class="radio-control"><label><input id="radio-white" type="radio" name="color" value="white" checked>White vs Dummy</input></label></div>
+							<div class="radio-control"><label><input id="radio-black" type="radio" name="color" value="black">Black vs Dummy</input></label></div>
+							<div class="radio-control"><label><input id="radio-human" type="radio" name="color" value="white">Free Play (human vs human)</input></label></div>
+						</div>
+						<div>
+							<h4>Player's pawns promote to:</h4>
+							<div class="radio-control"><label><input id="radio-bishop" class="radio-piece" type="radio" name="piece" value="B"/><span>♗ Bishop</span></label></div>
+							<div class="radio-control"><label><input id="radio-knight" class="radio-piece" type="radio" name="piece" value="N"/><span>♘ Knight</span></label></div>
+							<div class="radio-control"><label><input id="radio-queen" class="radio-piece" type="radio" name="piece" value="Q" checked/><span>♕ Queen</span></label></div>
+							<div class="radio-control"><label><input id="radio-rook" class="radio-piece" type="radio" name="piece" value="R"/><span>♖ Rook</span></label></div>
+						</div>
+						<div class='game-controls'>
+							<!-- <div>Draw In: <span id='draw-move-counter'>0</span></div> -->
+							<button type="button" class="btn btn-primary">New Game</button>
+						</div>
+					</div>
+				</div>
+				<div class='col-md-2 col-sm-6'>
+					<div class="move-container">
+						<h4 class="title">Move History:</h4>
+						<div class='move-history'>
+						</div>
+						<div class='result-description'>
+						</div>
+						<div class='result'>
+						</div>
+					</div>
+				</div>
+				<div class='col-md-2'>
+				</div>
+			</div>
 		</div>
-		<div class='row content'>
-			<!-- <div class='col-lg-2 col-xs-1'></div> -->
-			<div class='col-md-6 col-sm-12'>
-				
-				<div class="chessboard-container">
-					<canvas id="chessboard" width="500" height="500">
-					</canvas>
-				</div>
-			</div>
-			<div class='col-md-2 col-sm-6'>
-				<div class='game-settings'>
-					<h4 class="title">Settings</h4>
-					<div>
-						<h4>Play as:</h4>
-						<div class="radio-control"><label><input id="radio-white" type="radio" name="color" value="white" checked>White vs Dummy</input></label></div>
-						<div class="radio-control"><label><input id="radio-black" type="radio" name="color" value="black">Black vs Dummy</input></label></div>
-						<div class="radio-control"><label><input id="radio-human" type="radio" name="color" value="white">Free Play (human vs human)</input></label></div>
-					</div>
-					<div>
-						<h4>Player's pawns promote to:</h4>
-						<div class="radio-control"><label><input id="radio-bishop" class="radio-piece" type="radio" name="piece" value="B"/><span>♗ Bishop</span></label></div>
-						<div class="radio-control"><label><input id="radio-knight" class="radio-piece" type="radio" name="piece" value="N"/><span>♘ Knight</span></label></div>
-						<div class="radio-control"><label><input id="radio-queen" class="radio-piece" type="radio" name="piece" value="Q" checked/><span>♕ Queen</span></label></div>
-						<div class="radio-control"><label><input id="radio-rook" class="radio-piece" type="radio" name="piece" value="R"/><span>♖ Rook</span></label></div>
-					</div>
-					<div class='game-controls'>
-						<!-- <div>Draw In: <span id='draw-move-counter'>0</span></div> -->
-						<button type="button" class="btn btn-primary">New Game</button>
-					</div>
-				</div>
-			</div>
-			<div class='col-md-2 col-sm-6'>
-				<div class="move-container">
-					<h4 class="title">Move History:</h4>
-					<div class='move-history'>
-					</div>
-					<div class='result-description'>
-					</div>
-					<div class='result'>
-					</div>
-				</div>
-			</div>
-			<div class='col-md-2'>
-			</div>
-		</div>
+		<div id="footer"></div>
 	</body>
 </html>

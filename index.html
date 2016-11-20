@@ -7,47 +7,42 @@
 		<link rel="stylesheet" href="css/bootstrap.min.css">
 		<link href="css/style.css" rel="stylesheet" type="text/css">
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
 		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 		<script src="https://d3js.org/d3.v4.min.js"></script>
-		<!-- http://stackoverflow.com/questions/18712338/make-header-and-footer-files-to-be-included-in-multiple-html-pages -->
-		<script>
-		$(document).ready(function() {
-			$("#header").load("header.html");
-		});
-		</script>
-		<!-- <script src="javascripts/script.js"></script> -->
+		<script src="javascripts/script.js"></script>
 	</head>
 	<body>
 		<div id="header"></div>
-		<h2>About Me:</h2>
-		<div class="about">
-			<p>
-				I'm a self-taught full stack  developer based in Waterloo, Ontario, Canada.
-			</p>
-			<p>
-				Rather than learning the frameowrk du jour, I have focused on attaining a good grasp of how to reason like a computer scientist. That said, I am familiar with the following languages, frameworks and technologies:
-	     	</p>
-		    <ul>
-		    	<li><strong>Most comfortable:</strong>
-		        	Javascript, jQuery, Python, Java, R
-		        </li>
-		        <li><strong>Somewhat comfortable:</strong>
-		        	Ruby, Ruby on Rails, C#, VBA, Matlab/GNU Octave, SQL, HTML, CSS, Bootstrap, D3.js, AJAX, Node.js, Express.js, MongoDB
-		        </li>
-		        <li><strong>Working Knowledge:</strong>
-		        	Swift, C/C++, PHP, Scala, XML, XSLT
-		    	</li>
-	    	</ul>
-	        <p>
-	        	I am also familiar with: Git, Agile Methodologies, TDD and BDD and Unix operating systems.
-	        </p>
-	        <p>
-	         	In my spare time, I enjoy running, biking, playing guitar, reading and craft beer.
-	        </p>
-	        <p>
-				If you'd like to get in touch, I can be reached <a href="mailto:pauljmotz@gmail.com">by email</a>.
-			</p>
-		</div>
+		<div class="container">
+			 <div class="row project-row">     
+		        <div class="col-lg-4 col-sm-6 col-xs-12 project-col">
+		          <div class="project">
+		            <a href="https://paulmotz.github.io/chess.html" target="_blank">
+		              <div class="project-overlay"><div class="overlay-text">Personal Project:<br> Dummy Chess</div></div>
+		              <img src="https://68.media.tumblr.com/81d66a3fc8cacd1494c3610733d3bd76/tumblr_ogxbbmizdM1sxd6n3o1_540.png" class="img-responsive img-center" id="quote-image" alt="540x360" />
+		            </a>
+		          </div>
+		        </div>
+		        <div class="col-lg-4 col-sm-6 col-xs-12 project-col">
+		          <div class="project">
+		            <a href="https://paulmotz.github.io/running.html" target="_blank">
+		              <div class="project-overlay"><div class="overlay-text">Personal Project:<br> Runing: Visualized</div></div>
+		              <img src="https://68.media.tumblr.com/e3fe10d7e466605e09542dbe0f0f7788/tumblr_ogxbew4bul1sxd6n3o1_540.png" class="img-responsive img-center" alt="540x360" />
+		            </a>
+		          </div>
+		        </div>
+		        <div class="col-lg-4 col-sm-6 col-xs-12 project-col">
+		          <div class="project">
+		            <a href="http://s.codepen.io/paulmotz/debug/wKwPrX" target="_blank">
+		              <div class="project-overlay"><div class="overlay-text">FreeCodeCamp<br>Portfolio</div></div>
+		              <img id="fcc-img" src="" class="img-responsive img-center" alt="540x360" />
+		            </a>
+		          </div>
+		        </div>
+      		</div>
+		</div>   
+		<div id="footer"></div>  
 	</body>
 </html>
 

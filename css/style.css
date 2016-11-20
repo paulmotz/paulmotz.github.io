@@ -2,16 +2,33 @@
   font-family: 'HelveticaNeue-Light', sans-serif;
 }
 
-html, body {
+html, body, .container {
   height: 100%;
 }
 
-h1, h2, h3 {
+h1, h2, h3, h4 {
   text-align: center;
 }
 
-h4 {
+.main {
+  padding-bottom: 40px;
+}
+
+.footer {
+  width: 100%;
+  height: 20px;
+  line-height: 20px;
   text-align: center;
+}
+
+.footer a {
+  color: #999;
+  text-decoration: none;
+}
+
+.footer a:hover {
+  color: #FFF;
+  text-decoration: none;
 }
 
 .game-settings h4, .moves-display {
@@ -69,10 +86,6 @@ body {
   text-align: center;
 }
 
-.about {
-	margin: 10px 100px;
-}
-
 .delim-select {
 	visibility: hidden;
 	display: none;
@@ -96,4 +109,48 @@ div.tooltip {
   background: rgba(182, 182, 182, 0.4);   
   border: 1px solid rgba(5, 5, 5, 0.3);   
   border-radius: 2px;           
+}
+
+.project {
+  max-height: 360px;
+  max-width: 540px;
+  margin: 50px 0;
+  position: relative;
+}
+
+.project-row {
+  width: 100%;
+}
+
+.project-col {
+  /*border: 1px solid red;*/
+  height: 100%;
+}
+
+.img-center {
+  margin: auto;
+}
+
+/* https://codepen.io/felicia/pen/qKhJt?editors=1100 */
+.project-overlay {
+  background: rgba(0, 0, 0, .5);
+  position: absolute;
+  opacity: 0;
+  height: 100%;
+  width: 100%;
+  max-height: 360px;
+  max-width: 540px;
+  -webkit-transition: opacity .35s ease;
+}
+
+.project-overlay:hover {
+  opacity: 1;
+}
+
+.overlay-text {
+  color: #DDD;
+  font-size: 20px;
+  text-align: center;
+  height: 100%;
+  padding-top: 28%;
 }
