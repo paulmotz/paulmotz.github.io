@@ -28,11 +28,7 @@ $(document).ready(function() {
 function alignOverlay () {
   var $pWidth = parseInt($('.project').css('width'));
   var $oWidth = parseInt($('.project-overlay').css('width'));
-  console.log($pWidth);
-  console.log($oWidth);
   var $l = $('.project').offset().left;
-  console.log(($l));
   var m = ($pWidth - $oWidth) / 2;
-  console.log(m);
   $('.project-overlay').css('margin', '0 ' + m + 'px');
 }

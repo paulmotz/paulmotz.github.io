@@ -112,20 +112,26 @@ div.tooltip {
 }
 
 .project {
+  text-align: center;
   max-height: 360px;
   max-width: 540px;
   margin: 50px 0;
   position: relative;
 }
 
-.project-row {
-  width: 100%;
+@media (max-width: 767px) {
+  .project {
+    margin: 50px auto;
+  }
 }
 
-.project-col {
-  /*border: 1px solid red;*/
+/*.project-row {
+  width: 100%;
+}*/
+
+/*.project-col {
   height: 100%;
-}
+}*/
 
 .img-center {
   margin: auto;
