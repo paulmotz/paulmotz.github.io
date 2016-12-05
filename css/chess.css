@@ -33,6 +33,12 @@
 	}
 }
 
+@media (min-width: 911px) {
+	.chessboard-container {
+	  margin-bottom: 40px;
+	}
+}
+
 .turn {
 	display: inline-block;
 	width: 33%;
