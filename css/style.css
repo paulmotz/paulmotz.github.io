@@ -1,5 +1,7 @@
 * {
   font-family: 'HelveticaNeue-Light', sans-serif;
+  margin: 0;
+  padding: 0;
 }
 
 html, body, .container {
@@ -10,8 +12,12 @@ h1, h2, h3, h4 {
   text-align: center;
 }
 
-.main {
+/*.main {
   padding-bottom: 40px;
+}*/
+
+.navbar {
+  margin-bottom: 0;
 }
 
 .footer {
@@ -29,6 +35,16 @@ h1, h2, h3, h4 {
 .footer a:hover {
   color: #FFF;
   text-decoration: none;
+}
+
+.index-container {
+  position: relative;
+}
+
+.project-row {
+  position: absolute;
+  top: 50%;
+  transform: translate(0, -50%);
 }
 
 .game-settings h4, .moves-display {
@@ -70,10 +86,12 @@ label {
 
 .nav {
   border: 0px solid transparent;
+  height: 50px;
 }
 
 body {
-  padding-top: 60px;
+  padding-top: 50px;
+  padding-bottom: 20px
 }
 
 .navbar .navbar-nav {
