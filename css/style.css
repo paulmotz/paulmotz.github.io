@@ -125,14 +125,6 @@ div.tooltip {
   }
 }
 
-/*.project-row {
-  width: 100%;
-}*/
-
-/*.project-col {
-  height: 100%;
-}*/
-
 .img-center {
   margin: auto;
 }
@@ -154,9 +146,11 @@ div.tooltip {
 }
 
 .overlay-text {
-  color: #DDD;
+  color: #EEE;
   font-size: 20px;
+  font-weight: 600;
   text-align: center;
   height: 100%;
   padding-top: 28%;
 }
+
