@@ -15,7 +15,7 @@
 	height: 100%;
 }
 
-@media (max-width: 991px){
+@media (max-width: 1200px){
     #chessboard{
         margin: 0px auto;
     }
@@ -30,6 +30,9 @@
 	}
 	.title {
 		margin: 10px 10px;
+	}
+	.move-container {
+	  margin-bottom: 40px;
 	}
 }
 
