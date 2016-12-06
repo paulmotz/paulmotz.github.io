@@ -1,3 +1,10 @@
+/**
+ * TODOs:
+ * - fix bug where if a user quickly moves out of tooltip, tooltips for bubbles under the tooltip don't show their tooltips, also makes links not links
+ *
+ *
+ */
+
 // http://stackoverflow.com/questions/7124778/how-to-match-anything-up-until-this-sequence-of-characters-in-a-regular-expres
 // data.pace = +/.+?(?=:)/.exec(row.Pace)[0];
 // data.pace = row.Pace.match(/.+:/);
@@ -49,7 +56,7 @@ function draw(data) {
 	runs = getRuns(data);
 
 	var tooltip = d3.select("body").append("div")   
-	    .attr("class", "tooltip")               
+	    .attr("class", "tooltip")
 	    .style("opacity", 0);
 
 	var svg = d3.select('.svg').attr('width',width).attr('height',height);
@@ -99,7 +106,7 @@ function draw(data) {
 	}
 
 	// TODO: if the user mouseouts in the direction of the tooltip quickly enough the tooltip will not appear at the next mouseover
-	// this is made slightly more difficuly by positioning the tooltip 12px to the left and 12px down from the circle
+	// this is made slightly more difficult by positioning the tooltip 12px to the left and 12px down from the circle
 	// custon tooltips inspired by: 
 	// http://stackoverflow.com/questions/16256454/d3-js-position-tooltips-using-element-position-not-mouse-position
 	$("svg circle, svg polygon").on('mouseover', function(e) {
@@ -108,13 +115,13 @@ function draw(data) {
 		// var xPos = Number(this.getAttribute('cx'));
 		// var yPos = Number(this.getAttribute('cx'));
 		tooltip.style("opacity", 1); 
+		$(tooltip._groups[0][0]).css("z-index", 999);
 		var color = this.getAttribute('fill');
 		tooltip.html(this.getAttribute('title'));
 		var tooltipHeight = tooltip._groups[0][0].offsetHeight;
 		var tooltipWidth = tooltip._groups[0][0].offsetWidth;	
 
 		var co = getRunCentre();
-		// console.log(co);
 
 		var x = co[0];
 		var y = co[1];
@@ -152,10 +159,9 @@ function draw(data) {
 
 		
     });
-    $("svg circle, svg polygon").on("mouseout", function(e) {       
-		tooltip.style("opacity", 0);   
-		// "ghost" the tooltip by moving it off the page
-		// tooltip.style("left", -99999 + "px")     
+    $("svg circle, svg polygon").on("mouseout", function(e) {    
+    	tooltip.style("opacity", 0);
+    	// $(tooltip._groups[0][0]).css("z-index", -1);  
 	});
 }
 
