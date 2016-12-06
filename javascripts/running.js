@@ -9,6 +9,18 @@
 // data.pace = +/.+?(?=:)/.exec(row.Pace)[0];
 // data.pace = row.Pace.match(/.+:/);
 
+// $(document).ready(function() {
+// 	$('.main').on('mouseover', function() {
+// 		// console.log($('.portfolio-dropdown').attr());
+// 		console.log(document.getElementById('portfolio-dropdown').getAttribute('aria-expanded'));
+// 		// console.log($('.portfolio-open'));
+// 	});
+// 	$('.nav').on('click', function() {
+// 		console.log($('.portfolio-dropdown')[0].aria-expanded);
+// 	});
+// })
+
+
 var runs = [];
 
 var margins = {'top' : 20, 'right' : 20, 'bottom' : 50, 'left' : 70};
@@ -100,57 +112,55 @@ function draw(data) {
 		});
 	}
 
-	// TODO: if the user mouseouts in the direction of the tooltip quickly enough the tooltip will not appear at the next mouseover
-	// this is made slightly more difficult by positioning the tooltip 12px to the left and 12px down from the circle
 	// custon tooltips inspired by: 
 	// http://stackoverflow.com/questions/16256454/d3-js-position-tooltips-using-element-position-not-mouse-position
 	$("svg circle, svg polygon").on('mouseover', function(e) {
-		var xPos = e.pageX;
-		var yPos = e.pageY;
-		tooltip.style("opacity", 1); 
-		$(tooltip._groups[0][0]).css("z-index", 999);
-		var color = this.getAttribute('fill');
-		tooltip.html(this.getAttribute('title'));
-		var tooltipHeight = tooltip._groups[0][0].offsetHeight;
-		var tooltipWidth = tooltip._groups[0][0].offsetWidth;	
+		if (!dropdownExpanded()) {
+			var xPos = e.pageX;
+			var yPos = e.pageY;
+			tooltip.style("opacity", 1); 
+			$(tooltip._groups[0][0]).css("z-index", 999);
+			var color = this.getAttribute('fill');
+			tooltip.html(this.getAttribute('title'));
+			var tooltipHeight = tooltip._groups[0][0].offsetHeight;
+			var tooltipWidth = tooltip._groups[0][0].offsetWidth;	
 
-		var co = getRunCentre();
+			var co = getRunCentre();
 
-		var x = co[0];
-		var y = co[1];
+			var x = co[0];
+			var y = co[1];
 
-		// run is below the average on the graph
-		if (yPos > y) {
-			tooltip.style("border", '1px solid ' + color) // for colored borders
-				.style("left", (xPos - tooltipWidth/2) + "px")     
-      			.style("top", (yPos + 28) + "px");
-		}
-
-		// run is above the average on the graph
-		else {
-			var left = xPos - tooltipWidth/2
-			var top = yPos - 28 - tooltipHeight;
-			var sTop = $('.svg').offset().top; // TODO: this should not be calculated every time
-			
-			// tooltip would hit the title, put it on the side instead
-			// TODO: it could still hit the title if the run is slow enough
-			if (top < sTop) {
-				top = yPos - tooltipHeight/2;
-				
-				// if run is left of center, put tooltip to the right
-				if (xPos < x) {
-					left = xPos - 30 - tooltipWidth;
-				} 
-				else {
-					left = xPos + 30;
-				}
+			// run is below the average on the graph
+			if (yPos > y) {
+				tooltip.style("border", '1px solid ' + color) // for colored borders
+					.style("left", (xPos - tooltipWidth/2) + "px")     
+	      			.style("top", (yPos + 28) + "px");
 			}
-			tooltip.style("border", '1px solid ' + color) // for colored borders
-				.style("left", left + "px")     
-      			.style("top", top + "px");
-		}
 
-		
+			// run is above the average on the graph
+			else {
+				var left = xPos - tooltipWidth/2
+				var top = yPos - 28 - tooltipHeight;
+				var sTop = $('.svg').offset().top; // TODO: this should not be calculated every time
+				
+				// tooltip would hit the title, put it on the side instead
+				// TODO: it could still hit the title if the run is slow enough
+				if (top < sTop) {
+					top = yPos - tooltipHeight/2;
+					
+					// if run is left of center, put tooltip to the right
+					if (xPos < x) {
+						left = xPos - 30 - tooltipWidth;
+					} 
+					else {
+						left = xPos + 30;
+					}
+				}
+				tooltip.style("border", '1px solid ' + color) // for colored borders
+					.style("left", left + "px")     
+	      			.style("top", top + "px");
+			}
+		}
     });
     $("svg circle, svg polygon").on("mouseout", function(e) {    
     	// tooltip.transition()
@@ -161,7 +171,6 @@ function draw(data) {
 }
 
 d3.csv("./data/all.csv", draw);
-
 
 // TODO: 
 // -make this work for ploygons as well
@@ -476,4 +485,14 @@ function getColorRelative(yearIndex, avgTemp, temp) {
 	// }
 	var colorString = 'rgba(' + colorValues[yearIndex].join() + ',0.3)';
 	return colorString;
+}
+
+/**
+ * Checks whether the portfolio dropdown is expanded, method returns a string rather than a boolean, so need to check whether string is 'true' or 'false'
+ * @return {boolean} whether the dropdown is expanded or not
+ */
+
+function dropdownExpanded() {
+	if (document.getElementById('portfolio-dropdown').getAttribute('aria-expanded') === 'true') return true;
+	return false;
 }
