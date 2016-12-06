@@ -1,7 +1,7 @@
 /**
  * TODOs:
- * - fix bug where if a user quickly moves out of tooltip, tooltips for bubbles under the tooltip don't show their tooltips, also makes links not links
- *
+ * - use svg layers rather than css z-indices
+ * - turn off tooltips when the portfolio is clicked displaying the dropdown
  *
  */
 
@@ -38,11 +38,6 @@ var months = [];
 for (var i = 0; i < monthDays.length; i++) {
 	months.push({"val" : monthDays[i].toString(), "key" : monthNames[i]})
 }
-
-
-// var m = d3.scaleOrdinal()
-// 	.domain(months.map(function(d) { return d.value}))
-// 	.range(months.map(function(d) { return d.key}))
 
 months.map(function(d) { return d})
 
@@ -112,8 +107,6 @@ function draw(data) {
 	$("svg circle, svg polygon").on('mouseover', function(e) {
 		var xPos = e.pageX;
 		var yPos = e.pageY;
-		// var xPos = Number(this.getAttribute('cx'));
-		// var yPos = Number(this.getAttribute('cx'));
 		tooltip.style("opacity", 1); 
 		$(tooltip._groups[0][0]).css("z-index", 999);
 		var color = this.getAttribute('fill');
@@ -160,8 +153,10 @@ function draw(data) {
 		
     });
     $("svg circle, svg polygon").on("mouseout", function(e) {    
+    	// tooltip.transition()
+    	// .duration(100)
     	tooltip.style("opacity", 0);
-    	// $(tooltip._groups[0][0]).css("z-index", -1);  
+    	$(tooltip._groups[0][0]).css("z-index", -1);  
 	});
 }
 
@@ -180,15 +175,10 @@ function getRunCentre() {
 	var x = 0;
 	var y = 0;
 	var count = 0;
-	// var l = $('circle').length;
 	$('circle').each(function(item) {
-		// console.log(this.getBoundingClientRect());
 		if($('input[name=' + this.getAttribute('class') + ']')[0].checked) {
-			// x += Number(this.getAttribute('cx'));
-			// y += Number(this.getAttribute('cy'));
 			x += (this.getBoundingClientRect().left + this.getBoundingClientRect().width/2);
 			y += (this.getBoundingClientRect().top + this.getBoundingClientRect().height/2);
-			// console.log(this.getBoundingClientRect.left);
 			count++;
 		}
 	});
@@ -487,9 +477,3 @@ function getColorRelative(yearIndex, avgTemp, temp) {
 	var colorString = 'rgba(' + colorValues[yearIndex].join() + ',0.3)';
 	return colorString;
 }
-
-// $('html').on('mousemove', function(e) {
-// 	var xPos = e.pageX;
-// 	var yPos = e.pageY;
-// 	console.log(e.pageX);
-// });
