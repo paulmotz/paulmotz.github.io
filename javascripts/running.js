@@ -9,18 +9,6 @@
 // data.pace = +/.+?(?=:)/.exec(row.Pace)[0];
 // data.pace = row.Pace.match(/.+:/);
 
-// $(document).ready(function() {
-// 	$('.main').on('mouseover', function() {
-// 		// console.log($('.portfolio-dropdown').attr());
-// 		console.log(document.getElementById('portfolio-dropdown').getAttribute('aria-expanded'));
-// 		// console.log($('.portfolio-open'));
-// 	});
-// 	$('.nav').on('click', function() {
-// 		console.log($('.portfolio-dropdown')[0].aria-expanded);
-// 	});
-// })
-
-
 var runs = [];
 
 var margins = {'top' : 20, 'right' : 20, 'bottom' : 50, 'left' : 70};
@@ -496,3 +484,6 @@ function dropdownExpanded() {
 	if (document.getElementById('portfolio-dropdown').getAttribute('aria-expanded') === 'true') return true;
 	return false;
 }
+
+// console.log(document.getElementsByClassName('svg'));
+

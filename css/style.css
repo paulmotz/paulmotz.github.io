@@ -12,6 +12,14 @@ h1, h2, h3, h4 {
   text-align: center;
 }
 
+.row {
+  width: 100%;
+}
+
+.main {
+  padding-top: 40px;
+}
+
 .chess-container {
   height: 100%;
   margin-bottom: 40px;
@@ -111,9 +119,10 @@ body {
 	color: red;
 }
 
-svg {
+.svg {
   display: block;
-  margin: auto;
+  /*text-align: middle;*/
+  margin: 0 auto;
 }
 
 .options {
