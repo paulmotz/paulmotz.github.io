@@ -122,6 +122,8 @@ function draw(data) {
 			var tooltipHeight = tooltip._groups[0][0].offsetHeight;
 			var tooltipWidth = tooltip._groups[0][0].offsetWidth;	
 
+			var t = $(".tooltip-triangle");
+
 			var tooltipX;
 			var tooltipY;
 
@@ -140,11 +142,12 @@ function draw(data) {
 					.style("left", tooltipX + "px")     
 	      			.style("top", tooltipY + "px");
 
-      			// styling for the arrow
-      			tooltipTriangle.classed("bottom-tip", true);
-      			var t = $(".bottom-tip");
+      			// styling for the arrow      			
       			t.offset({left: tooltipX + tooltipWidth / 2 - triangleSize, top: tooltipY - triangleSize});
-      			// t.css({"border-bottom": "8px solid " + color});
+      			t.css({"border-left": "8px solid transparent"});
+ 				t.css({"border-right": "8px solid transparent"});
+      			t.css({"border-bottom": "8px solid " + color});
+      			t.css({"border-top": "0px solid transparent"});
 			}
 
 			// run is above the average on the graph
@@ -164,29 +167,32 @@ function draw(data) {
 						tooltipX = xPos - tooltipOffset - tooltipWidth;
 						
 						// styling for the arrow
-		      			tooltipTriangle.classed("left-tip", true);
-		      			var t = $(".left-tip");
 		      			t.offset({left: tooltipX + tooltipWidth, top: tooltipY + tooltipHeight / 2 - triangleSize});
-		      			// t.css({"border-left": "8px solid " + color});
+		      			t.css({"border-left": "8px solid " + color});
+		 				t.css({"border-right": "0px solid transparent"});
+		      			t.css({"border-bottom": "8px solid transparent"});
+		      			t.css({"border-top": "8px solid transparent"});
 					} 
 					else {
 						tooltipX = xPos + tooltipOffset;
 
 						// styling for the arrow
-		      			tooltipTriangle.classed("right-tip", true);
-		      			var t = $(".right-tip");
 		      			t.offset({left: tooltipX - triangleSize, top: tooltipY + tooltipHeight / 2 - triangleSize});
-		      			// t.css({"border-left": "8px solid " + color});
+		      			t.css({"border-left": "0px solid transparent"});
+		 				t.css({"border-right": "8px solid " + color});
+		      			t.css({"border-bottom": "8px solid transparent"});
+		      			t.css({"border-top": "8px solid transparent"});
 					}
 				}
 
 				else {
 
 					// styling for the arrow
-	      			tooltipTriangle.classed("top-tip", true);
-	      			var t = $(".top-tip");
 	      			t.offset({left: tooltipX + tooltipWidth / 2 - triangleSize, top: tooltipY + tooltipHeight});
-	      			// t.css({"border-left": "8px solid " + color});
+	      			t.css({"border-left": "8px solid transparent"});
+	 				t.css({"border-right": "8px solid transparent"});
+	      			t.css({"border-bottom": "0px solid transparent"});
+	      			t.css({"border-top": "8px solid " + color});
 				}
 
 				tooltip.style("border", '1px solid ' + color) // for colored borders

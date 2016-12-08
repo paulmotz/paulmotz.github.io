@@ -139,13 +139,19 @@ div.tooltip {
   border-radius: 2px;           
 }
 
-.bottom-tip {
+.tooltip-triangle {
+  width: 0; 
+  height: 0; 
+}
+
+/*.bottom-tip {
   width: 0; 
   height: 0; 
   border-left: 8px solid transparent;
   border-right: 8px solid transparent;
 
   border-bottom: 8px solid rgba(182, 182, 182, 0.4);
+  border-top: 0px solid transparent;
 }
 
 .top-tip {
@@ -155,6 +161,7 @@ div.tooltip {
   border-right: 8px solid transparent;
 
   border-top: 8px solid rgba(182, 182, 182, 0.4);
+  border-bottom: 0px solid transparent;
 }
 
 .left-tip {
@@ -164,6 +171,7 @@ div.tooltip {
   border-bottom: 8px solid transparent;  
 
   border-left: 8px solid rgba(182, 182, 182, 0.4);
+  border-right: 0px solid transparent;
 }
 
 .right-tip {
@@ -173,7 +181,8 @@ div.tooltip {
   border-bottom: 8px solid transparent;  
 
   border-right: 8px solid rgba(182, 182, 182, 0.4);
-}
+  border-left: 0px solid transparent;
+}*/
 
 .project {
   text-align: center;
