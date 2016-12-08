@@ -54,6 +54,14 @@ function draw(data) {
 	    .attr("class", "tooltip")
 	    .style("opacity", 0);
 
+	var tooltipOffset = 28;
+
+    var tooltipTriangle = d3.select("body").append("div")
+    	.attr("class", "tooltip-triangle")
+    	.style("opacity", 0);
+
+	var triangleSize = 8;
+
 	var svg = d3.select('.svg').attr('width',width).attr('height',height);
 
 	// x-axis
@@ -107,11 +115,15 @@ function draw(data) {
 			var xPos = e.pageX;
 			var yPos = e.pageY;
 			tooltip.style("opacity", 1); 
+			tooltipTriangle.style("opacity", 1); 
 			$(tooltip._groups[0][0]).css("z-index", 999);
 			var color = this.getAttribute('fill');
 			tooltip.html(this.getAttribute('title'));
 			var tooltipHeight = tooltip._groups[0][0].offsetHeight;
 			var tooltipWidth = tooltip._groups[0][0].offsetWidth;	
+
+			var tooltipX;
+			var tooltipY;
 
 			var co = getRunCentre();
 
@@ -120,33 +132,66 @@ function draw(data) {
 
 			// run is below the average on the graph
 			if (yPos > y) {
+
+				tooltipX = xPos - tooltipWidth / 2
+				tooltipY = yPos + tooltipOffset
+
 				tooltip.style("border", '1px solid ' + color) // for colored borders
-					.style("left", (xPos - tooltipWidth/2) + "px")     
-	      			.style("top", (yPos + 28) + "px");
+					.style("left", tooltipX + "px")     
+	      			.style("top", tooltipY + "px");
+
+      			// styling for the arrow
+      			tooltipTriangle.classed("bottom-tip", true);
+      			var t = $(".bottom-tip");
+      			t.offset({left: tooltipX + tooltipWidth / 2 - triangleSize, top: tooltipY - triangleSize});
+      			// t.css({"border-bottom": "8px solid " + color});
 			}
 
 			// run is above the average on the graph
 			else {
-				var left = xPos - tooltipWidth/2
-				var top = yPos - 28 - tooltipHeight;
+				var tooltipX = xPos - tooltipWidth/2
+				var tooltipY = yPos - tooltipOffset - tooltipHeight;
 				var sTop = $('.svg').offset().top; // TODO: this should not be calculated every time
 				
+
 				// tooltip would hit the title, put it on the side instead
 				// TODO: it could still hit the title if the run is slow enough
-				if (top < sTop) {
-					top = yPos - tooltipHeight/2;
+				if (tooltipY < sTop) {
+					tooltipY = yPos - tooltipHeight/2;
 					
 					// if run is left of center, put tooltip to the right
 					if (xPos < x) {
-						left = xPos - 30 - tooltipWidth;
+						tooltipX = xPos - tooltipOffset - tooltipWidth;
+						
+						// styling for the arrow
+		      			tooltipTriangle.classed("left-tip", true);
+		      			var t = $(".left-tip");
+		      			t.offset({left: tooltipX + tooltipWidth, top: tooltipY + tooltipHeight / 2 - triangleSize});
+		      			// t.css({"border-left": "8px solid " + color});
 					} 
 					else {
-						left = xPos + 30;
+						tooltipX = xPos + tooltipOffset;
+
+						// styling for the arrow
+		      			tooltipTriangle.classed("right-tip", true);
+		      			var t = $(".right-tip");
+		      			t.offset({left: tooltipX - triangleSize, top: tooltipY + tooltipHeight / 2 - triangleSize});
+		      			// t.css({"border-left": "8px solid " + color});
 					}
 				}
+
+				else {
+
+					// styling for the arrow
+	      			tooltipTriangle.classed("top-tip", true);
+	      			var t = $(".top-tip");
+	      			t.offset({left: tooltipX + tooltipWidth / 2 - triangleSize, top: tooltipY + tooltipHeight});
+	      			// t.css({"border-left": "8px solid " + color});
+				}
+
 				tooltip.style("border", '1px solid ' + color) // for colored borders
-					.style("left", left + "px")     
-	      			.style("top", top + "px");
+					.style("left", tooltipX + "px")     
+	      			.style("top", tooltipY + "px");
 			}
 		}
     });
@@ -155,6 +200,12 @@ function draw(data) {
     	// .duration(100)
     	tooltip.style("opacity", 0);
     	$(tooltip._groups[0][0]).css("z-index", -1);  
+
+		tooltipTriangle.style("opacity", 0);
+    	tooltipTriangle.classed("bottom-tip", false);
+    	tooltipTriangle.classed("top-tip", false);
+    	tooltipTriangle.classed("left-tip", false);
+    	tooltipTriangle.classed("right-tip", false);
 	});
 }
 

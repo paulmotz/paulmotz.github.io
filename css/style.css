@@ -139,6 +139,42 @@ div.tooltip {
   border-radius: 2px;           
 }
 
+.bottom-tip {
+  width: 0; 
+  height: 0; 
+  border-left: 8px solid transparent;
+  border-right: 8px solid transparent;
+
+  border-bottom: 8px solid rgba(182, 182, 182, 0.4);
+}
+
+.top-tip {
+  width: 0; 
+  height: 0; 
+  border-left: 8px solid transparent;
+  border-right: 8px solid transparent;
+
+  border-top: 8px solid rgba(182, 182, 182, 0.4);
+}
+
+.left-tip {
+  width: 0; 
+  height: 0; 
+  border-top: 8px solid transparent;
+  border-bottom: 8px solid transparent;  
+
+  border-left: 8px solid rgba(182, 182, 182, 0.4);
+}
+
+.right-tip {
+  width: 0; 
+  height: 0; 
+  border-top: 8px solid transparent;
+  border-bottom: 8px solid transparent;  
+
+  border-right: 8px solid rgba(182, 182, 182, 0.4);
+}
+
 .project {
   text-align: center;
   max-height: 360px;
