@@ -118,6 +118,7 @@ function draw(data) {
 			tooltipTriangle.style("opacity", 1); 
 			$(tooltip._groups[0][0]).css("z-index", 999);
 			var color = this.getAttribute('fill');
+			color = (color.replace("0.3", "0.7"));
 			tooltip.html(this.getAttribute('title'));
 			var tooltipHeight = tooltip._groups[0][0].offsetHeight;
 			var tooltipWidth = tooltip._groups[0][0].offsetWidth;	
