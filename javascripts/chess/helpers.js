@@ -195,17 +195,21 @@ function getLegalMoves(checkingPieces, clickedPiece) {
 	// only the king can move
 	if (clickedPiece[1] === 'K') {
 
-		var attackedSquaresA = [];
+		var attackedSquares = [];
 		for (var piece in checkingPieces) {
 			var checkingPieceColorAndType = checkingPieces[piece].slice(0, 2)
 			var checkingPieceIndex = findPieceIndex(checkingPieceColorAndType, checkingPieces[piece][2])
 			var checkingPiece = allPieces[checkingPieceColorAndType][checkingPieceIndex];
 			var checkingPieceSquare = [checkingPiece.file, checkingPiece.rank]
-			var checkPath = getCheckPath(checkingPieceSquare, kingSquare, true).map(squareToIndex);
 
-			for (var c in checkPath) {
-				if (checkPath[c] !== kingIndex) {
-					attackedSquaresA.push(checkPath[c]);
+			// no need to get check path for knights and pawns
+			if (checkingPieceColorAndType[1] !== 'N' && checkingPieceColorAndType[1] !== 'P') {
+				var checkPath = getCheckPath(checkingPieceSquare, kingSquare, true).map(squareToIndex);
+
+				for (var c in checkPath) {
+					if (checkPath[c] !== kingIndex) {
+						attackedSquares.push(checkPath[c]);
+					}
 				}
 			}
 		}
@@ -213,7 +217,7 @@ function getLegalMoves(checkingPieces, clickedPiece) {
 		var kingMoves = king.moves().map(squareToIndex);
 
 		var legalKingMoves = kingMoves.filter(function(val) {
-			return attackedSquaresA.indexOf(val) === -1;
+			return attackedSquares.indexOf(val) === -1;
 		});
 
 		for (var m in legalKingMoves) {

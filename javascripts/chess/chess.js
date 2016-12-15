@@ -297,8 +297,6 @@ $(document).ready(function() {
 		// used in king.js for getting legal king moves
 		attackedSquares = getAttackedSquares();
 
-		// console.log(attackedSquares);
-
 		var checkingPieces = inCheck(currentColor);
 
 		// only draw the last move if there was a last move
@@ -768,7 +766,7 @@ $(document).ready(function() {
 	 * @return {boolean} - whether the player is in checkmate
 	 */
 
-	function checkCheckmate(currentColor, opponentColor, checkingPieces, flag) {
+	function checkCheckmate(currentColor, opponentColor, checkingPieces) {
 		for (var pieceType in allPieces) {
 			if (pieceType[0] === currentColor) {
 				var pieces = allPieces[pieceType];
