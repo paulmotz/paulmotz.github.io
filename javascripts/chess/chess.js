@@ -63,7 +63,6 @@ $(document).ready(function() {
 
 	var pieceNames = {'B' : 'Bishop', 'N' : 'Knight', 'K' : 'King', 'P' : 'Pawn', 'Q' : 'Queen', 'R' : 'Rook'};
 	var pieceAbbreviations = {'Bishop' : 'B', 'Knight' : 'N', 'King' : 'K', 'Pawn' : 'P', 'Queen' : 'Q', 'Rook' : 'R'};
-	var pieceCount = {'B': 2, 'N': 2, 'K': 1, 'P': 8, 'Q': 1, 'R': 2};
 
 	// https://en.wikipedia.org/wiki/Chess_symbols_in_Unicode
 	var pieceSymbols = {'bB': '♝', 'bN': '♞', 'bK': '♚', 'bP': '♟', 'bQ': '♛', 'bR': '♜', 'wB': '♗', 'wN': '♘', 'wK': '♔', 'wP': '♙', 'wQ': '♕', 'wR': '♖'};
@@ -85,7 +84,6 @@ $(document).ready(function() {
 
 
 	// remove pieces for testing purposes
-	// var pieceCount = {'B': 2, 'N': 2, 'K': 1, 'P': 8, 'Q': 1, 'R': 2};
 	// var pieceNames = {'N' : 'Knight', 'K' : 'King'};
 
 	// var pieceStartingPositions = {'wB' : [[6, 3], [6, 1]],
@@ -133,13 +131,6 @@ $(document).ready(function() {
 		newGame();
 	});
 
-	$(window).on('resize', function() {
-		height = parseInt($board.css('height'));
-		squareSize = height / 10;
-		lineWidth = height / 100;
-		drawBoard();
-	});
-
 	/**
 	 * Starts a new game and initialized global variables to starting values
 	 */
@@ -150,7 +141,7 @@ $(document).ready(function() {
 		drawMoveCounter = 0;
 		$('.moves-display').css('visibility', 'visible');
 		initializePieces();
-		drawBoard();
+		drawBoard(true);
 		boardStrings = [];
 		$('.move-history').html('');
 		$('.result').html('');
@@ -171,7 +162,7 @@ $(document).ready(function() {
  		for (var color in colors) {
 			for (var pn in pieceNames) {
 				var colorAndPiece = colors[color] + pn;
-				for (var pc = 0; pc < pieceCount[pn]; pc++) {
+				for (var pc = 0; pc < pieceStartingPositions[colorAndPiece].length; pc++) {					
 					var file = pieceStartingPositions[colorAndPiece][pc][0];
 					var rank = pieceStartingPositions[colorAndPiece][pc][1];
 					addPiece(colorAndPiece, file, rank, pc, false);
@@ -216,9 +207,10 @@ $(document).ready(function() {
 
 	/**
 	 * Draw the board
+	 * @param {boolean} newGame - whether it is a new game or not
 	 */
 
-	function drawBoard() {
+	function drawBoard(newGame) {
 
 		// redraw border to overwrite existing text
 		ctx.fillStyle = edge;
@@ -258,27 +250,43 @@ $(document).ready(function() {
 				}
 			}
 		}
-		drawPieces();
+		drawPieces(newGame);
 	}
 
 	/**
 	 * Draws the pieces on the board
+	 * @param {boolean} newGame - whether it is a new game or not
 	 */
 
-	function drawPieces() {
-		occupiedSquares = Array(64); // reset the occupied squares if it is a new game
-		for (var pieceType in allPieces) {
-			var pieces = allPieces[pieceType];
-			for (var i in pieces) {
-				var piece = pieces[i];
-				var file = piece._file;
-				var rank = piece.rank;
-				var index = squareToIndex([file, rank]);
-				occupiedSquares[index - 1] = pieceType + i;
-				var symbol = pieceSymbols[pieceType];
-				drawOnSquare(file, rank, symbol, pieceType[0]);
+	function drawPieces(newGame) {
+		if (newGame) occupiedSquares = Array(64); // reset the occupied squares if it is a new game
+
+		// if (bs) {
+		// 	for (var i = 0; i < bs.length; i+=2) {
+		// 		if (bs[i] != '_') {
+		// 			var piece = bs.slice(i, i + 2);
+		// 			var index = (i + 2) / 2;
+		// 			var file = indexToSquare(index)[0];
+		// 			var rank = indexToSquare(index)[1];
+		// 			drawOnSquare(file, rank, pieceSymbols[piece], piece[0]);
+		// 		}
+		// 	}
+		// }
+
+		// else {
+			for (var pieceType in allPieces) {
+				var pieces = allPieces[pieceType];
+				for (var i in pieces) {
+					var piece = pieces[i];
+					var file = piece._file;
+					var rank = piece.rank;
+					var index = squareToIndex([file, rank]);
+					occupiedSquares[index - 1] = pieceType + i;
+					var symbol = pieceSymbols[pieceType];
+					drawOnSquare(file, rank, symbol, pieceType[0]);
+				}
 			}
-		}
+		// }
 	}
 
 	/**
@@ -755,7 +763,9 @@ $(document).ready(function() {
 		var index = findPieceIndex(piece, id);
 		pieceType.splice(index, 1);
 		drawOverPiece(square);
-		boardStrings = [];
+
+		// remove this since want to go to previous position
+		// boardStrings = [];
 	}
 
 	/**
@@ -879,12 +889,7 @@ $(document).ready(function() {
 	 */
 
 	function drawOnSquare(file, rank, symbol, color) {
-		if (color === 'w') {
-			ctx.fillStyle = whitePieces;
-		}
-		else {
-			ctx.fillStyle = blackPieces;
-		}
+		ctx.fillStyle = colorAbbreviations[color];
 		var coordinates = getCoordinates(file, rank);
 		ctx.font = squareSize + "px serif";
 		ctx.fillText(symbol, coordinates[0] + (0.5 * squareSize), coordinates[1] + (0.5 * squareSize));
@@ -1046,11 +1051,24 @@ $(document).ready(function() {
 			moveCounter++;
 			drawMoveCounter++;
 			$('.move-history').append("<div class='move'></div>");
-			$('.move').last().append("<span class='turn move-count'>" + moveCounter + "</span> <span class='turn white-move'>" + algNot + " </span>");
+			$('.move').last().append("<span class='turn move-count'>" + moveCounter + "</span> <span class='turn player-move white-move'>" + algNot + " </span>");
 		}
 		else {
-			$('.move').last().append("<span class='turn black-move'>" + algNot + "</span>");
+			$('.move').last().append("<span class='turn player-move black-move'>" + algNot + "</span>");
 		}
+
+		// // 2 click events will be bound to each white move if click events are not turned off
+		// $('.player-move').off('click');
+
+		// $('.player-move').on('click', function(e) {
+
+		// 	// should really be decremented by one, but the first boardString is the starting position, 
+		// 	// which means that the index will need to be incremented by one
+		// 	var colorIndex = $(this).index();
+		// 	var moveIndex = $(this).parent().index();
+		// 	console.log(boardStrings[2 * moveIndex + colorIndex]);
+		// 	drawBoard(false, boardStrings[2 * moveIndex + colorIndex]);
+		// });
 
 		$('.move-history').scrollTop($('.move-history')[0].scrollHeight);
 	}

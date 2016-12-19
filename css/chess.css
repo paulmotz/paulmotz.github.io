@@ -52,15 +52,17 @@
 	height: 20px;
 }
 
+/*.player-move:hover {
+	text-decoration: underline;
+	cursor: hand;
+	cursor: pointer;
+}*/
+
 .result, .result-description {
 	padding-top: 5px;
 	text-align: center;
 	font-weight: bold;
 }
-
-/*.result-description {
-	text-align: center;
-}*/
 
 .description {
 	margin-top: 15px;

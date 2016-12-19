@@ -120,7 +120,9 @@ function getBoardString() {
 			boardString += occupiedSquares[i].slice(0, 2);
 		}
 		else {
-			boardString += '_';
+
+			// two underscores since piece names are color + piece type
+			boardString += '__';
 		}
 	}
 	return boardString;
