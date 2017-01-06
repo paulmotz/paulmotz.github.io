@@ -120,7 +120,7 @@ body {
 	color: red;
 }
 
-.svg {
+.svg, .svg-fat, .svg-election {
   display: block;
   /*text-align: middle;*/
   margin: 0 auto;

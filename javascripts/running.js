@@ -64,6 +64,8 @@ function draw(data) {
 
 	var svg = d3.select('.svg').attr('width',width).attr('height',height);
 
+	console.log(svg);
+
 	// x-axis
 	svg.append('g').attr('transform', 'translate(0,' + plotHeight + ')').call(d3.axisBottom(x).tickValues(monthDays).tickFormat(function(d,i){ return monthAbr[i]}));
 
