@@ -112,7 +112,7 @@ class Pawn extends Piece {
 
  	/**
 	 * Get the squares that the Pawn protects
-	 * @return {number[][]} protectedSquares - the squares that the Pawn protects as an array of co-ordinates (also an array)
+	 * @return {Number[][]} protectedSquares - the squares that the Pawn protects as an array of co-ordinates (also an array)
 	 */
 
  	protectedSquares(occupiedSquares) {

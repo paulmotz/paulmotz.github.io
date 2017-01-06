@@ -3,7 +3,7 @@ class Queen extends Piece {
 	/**
 	 * Get the Queen's moves
 	 * @param {String[]} occupiedSquares - the squares that are currently occupied, array entries are piece names (eg wP3)
-	 * @return {number[][]} moves - the moves of the Queen as an array of co-ordinates (also an array)
+	 * @return {Number[][]} moves - the moves of the Queen as an array of co-ordinates (also an array)
 	 */
 
 	moves() {
@@ -37,7 +37,7 @@ class Queen extends Piece {
 	/**
 	 * Get the squares that the Queen protects
 	 * @param {String[]} occupiedSquares - the squares that are currently occupied, array entries are piece names (eg wP3)
-	 * @return {number[][]} protectedSquares - the squares that the Queen protects as an array of co-ordinates (also an array)
+	 * @return {Number[][]} protectedSquares - the squares that the Queen protects as an array of co-ordinates (also an array)
 	 */
 
 	protectedSquares() {

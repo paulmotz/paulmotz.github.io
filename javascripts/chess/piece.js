@@ -2,11 +2,11 @@ class Piece {
 
 	/**
 	 * Creates a piece of the given color at the given location
-	 * @param {string} color - The color of the piece: white || black
-	 * @param {string} abbr - The abbreviation of the piece: B, N, K, P, Q or R
-	 * @param {number} file - file rank of the piece: 1 - 8
-	 * @param {number} rank - the rank of the piece: 1 - 8
-	 * @param {number} id - the id of the piece: 1 - 10 (where 10 = max possible number of any given piece per color)
+	 * @param {String} color - The color of the piece: white || black
+	 * @param {String} abbr - The abbreviation of the piece: B, N, K, P, Q or R
+	 * @param {Number} file - file rank of the piece: 1 - 8
+	 * @param {Number} rank - the rank of the piece: 1 - 8
+	 * @param {Number} id - the id of the piece: 1 - 10 (where 10 = max possible number of any given piece per color)
 	 */
 
 	constructor(color, abbr, file, rank, id) {
@@ -19,7 +19,7 @@ class Piece {
 
 	/**
 	 * Get the piece's color
-	 * @return {string} color - The color of the piece: white || black
+	 * @return {String} color - The color of the piece: white || black
 	 */
 
 	get color() {
@@ -28,7 +28,7 @@ class Piece {
 
 	/**
 	 * Get the piece's abbreviation
-	 * @param {string} abbr - The abbreviation of the piece: B, N, K, P, Q or R
+	 * @param {String} abbr - The abbreviation of the piece: B, N, K, P, Q or R
 	 */
 
 	get abbr() {
@@ -37,7 +37,7 @@ class Piece {
 
 	/**
 	 * Get the piece's file
-	 * @return {number} file - The file of the piece: 1 - 8
+	 * @return {Number} file - The file of the piece: 1 - 8
 	 */
 
 	get file() {
@@ -46,7 +46,7 @@ class Piece {
 
 	/**
 	 * Get the piece's rank
-	 * @return {number} rank - The rank of the piece: 1 - 8
+	 * @return {Number} rank - The rank of the piece: 1 - 8
 	 */
 
 	get rank() {
@@ -55,7 +55,7 @@ class Piece {
 
 	/**
 	 * Get the piece's id
-	 * @return {number} id - The id of the piece: 1 - 10 (where 10 = max possible number of any given piece per color)
+	 * @return {Number} id - The id of the piece: 1 - 10 (where 10 = max possible number of any given piece per color)
 	 */
 
 	get id() {
@@ -64,7 +64,7 @@ class Piece {
 
 	/**
 	 * Set the piece's color
-	 * @param {string} color - The color of the piece: white || black
+	 * @param {String} color - The color of the piece: white || black
 	 */
 
 	set color(color) {
@@ -75,7 +75,7 @@ class Piece {
 
 	/**
 	 * Set the piece's abbreviation
-	 * @param {string} abbr - The abbreviation of the piece: B, N, K, P, Q or R
+	 * @param {String} abbr - The abbreviation of the piece: B, N, K, P, Q or R
 	 */
 
 	set abbr(abbr) {
@@ -84,7 +84,7 @@ class Piece {
 
 	/**
 	 * Set the piece's color
-	 * @param {number} file - The file of the piece: 1 - 8
+	 * @param {Number} file - The file of the piece: 1 - 8
 	 */
 
 	set file(file) {
@@ -95,7 +95,7 @@ class Piece {
 
 	/**
 	 * Set the piece's rank
-	 * @param {number} rank - The rank of the piece: 1 - 8
+	 * @param {Number} rank - The rank of the piece: 1 - 8
 	 */
 
 	set rank(rank) {
@@ -106,7 +106,7 @@ class Piece {
 
 	/**
 	 * Get the piece's id
-	 * @param {number} id - The id of the piece: 1 - 10 (where 10 = max possible number of any given piece per color)
+	 * @param {Number} id - The id of the piece: 1 - 10 (where 10 = max possible number of any given piece per color)
 	 */
 
 	set id(id) {
@@ -120,13 +120,13 @@ class Piece {
 
 	/**
 	 * Get the piece's moves in a particular direction, used for "ranged" pieces (bishop, queen and rook)
-	 * @param {number} file - the file that the piece is currently occupying: 1 - 8
-	 * @param {number} rank - the rank that the piece is currently occupying: 1 - 8
-	 * @param {number} f - the piece's movement between files: -1, 0, 1
-	 * @param {number} r - the piece's movement between ranks: -1, 0, 1
-	 * @return {number[][]} moves - the moves of the piece that have already been calculated
-	 * @param {boolean} defending - whether the move's being calculated are attacking or defending. Defending counts pieces of the same color guarded by the piece
-	 * @return {number[][]} moves - the moves of the piece as an array of co-ordinates (also an array)
+	 * @param {Number} file - the file that the piece is currently occupying: 1 - 8
+	 * @param {Number} rank - the rank that the piece is currently occupying: 1 - 8
+	 * @param {Number} f - the piece's movement between files: -1, 0, 1
+	 * @param {Number} r - the piece's movement between ranks: -1, 0, 1
+	 * @return {Number[][]} moves - the moves of the piece that have already been calculated
+	 * @param {Boolean} defending - whether the move's being calculated are attacking or defending. Defending counts pieces of the same color guarded by the piece
+	 * @return {Number[][]} moves - the moves of the piece as an array of co-ordinates (also an array)
 	 */
 
 	moveOneWay(file, rank, f, r, moves, defending) {
@@ -150,7 +150,7 @@ class Piece {
 
 	/**
 	 * Returns the direction of the king from the piece. Used for checking for pinned pieces
-	 * @return {number[]} kingDirection - the direction of the king from the piece, null if another piece is in the way
+	 * @return {Number[]} kingDirection - the direction of the king from the piece, null if another piece is in the way
 	 */
 
 	getKingDirection() {
@@ -189,7 +189,7 @@ class Piece {
 
 	/**
 	 * Checks to see if a piece is pinned and if so gets the direction of the pin
-	 * @return {number[]} pinDirection - the direciton of the pin (ie the direction which the piece may be able to move), null if no pin
+	 * @return {Number[]} pinDirection - the direciton of the pin (ie the direction which the piece may be able to move), null if no pin
 	 */
 
 	getPinDirection() {

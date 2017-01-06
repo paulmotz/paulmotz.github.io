@@ -2,7 +2,7 @@ class Knight extends Piece {
 
 	/**
 	 * Get the Knight's moves
-	 * @return {number[][]} moves - the moves of the Knight as an array of co-ordinates (also an array)
+	 * @return {Number[][]} moves - the moves of the Knight as an array of co-ordinates (also an array)
 	 */
 
  	moves() {
@@ -30,7 +30,7 @@ class Knight extends Piece {
 
  	/**
 	 * Get the squares that the Knight protects
-	 * @return {number[][]} protectedSquares - the squares that the Knight protects as an array of co-ordinates (also an array)
+	 * @return {Number[][]} protectedSquares - the squares that the Knight protects as an array of co-ordinates (also an array)
 	 */
 
  	protectedSquares() {

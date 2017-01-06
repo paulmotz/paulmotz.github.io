@@ -3,7 +3,7 @@ class Bishop extends Piece {
 	/**
 	 * Get the Bishop's moves
 	 * @param {String[]} occupiedSquares - the squares that are currently occupied, array entries are piece names (eg wP3)
-	 * @return {number[][]} moves - the moves of the Bishop as an array of co-ordinates (also an array)
+	 * @return {Number[][]} moves - the moves of the Bishop as an array of co-ordinates (also an array)
 	 */
 
 	moves() {
@@ -42,7 +42,7 @@ class Bishop extends Piece {
 	/**
 	 * Get the squares that the Bishop protects
 	 * @param {String[]} occupiedSquares - the squares that are currently occupied, array entries are piece names (eg wP3)
-	 * @return {number[][]} protectedSquares - the squares that the Bishop protects as an array of co-ordinates (also an array)
+	 * @return {Number[][]} protectedSquares - the squares that the Bishop protects as an array of co-ordinates (also an array)
 	 */
 
 	protectedSquares() {

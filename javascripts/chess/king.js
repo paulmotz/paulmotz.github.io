@@ -6,11 +6,11 @@ class King extends Piece {
 
 	/*
 	 * Creates a king of the given color at the given location
-	 * @param {string} color - The color of the king: white || black
-	 * @param {string} abbr - The abbreviation of the piece: K for King
-	 * @param {number} file - file rank of the king: 1 - 8
-	 * @param {number} rank - the rank of the king: 1 - 8
-	 * @param {boolean} hasMoved - whether or not the king has moved (used for checking if castling is possible)
+	 * @param {String} color - The color of the king: white || black
+	 * @param {String} abbr - The abbreviation of the piece: K for King
+	 * @param {Number} file - file rank of the king: 1 - 8
+	 * @param {Number} rank - the rank of the king: 1 - 8
+	 * @param {bBoolean} hasMoved - whether or not the king has moved (used for checking if castling is possible)
 	 */
 
 	constructor(color, abbr, file, rank, id, hasMoved) {
@@ -20,7 +20,7 @@ class King extends Piece {
 
 	/**
 	 * Get the King's moves
-	 * @return {number[][]} moves - the moves of the King as an array of co-ordinates (also an array)
+	 * @return {Number[][]} moves - the moves of the King as an array of co-ordinates (also an array)
 	 */
 
  	moves() {

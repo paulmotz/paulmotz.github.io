@@ -30,6 +30,9 @@ var text = "#FFF";
 var whitePieces = "#FFF";
 var blackPieces = "#000";
 
+// store the game states so that a user can return to a previous position
+var gameStates = [];
+
 $(document).ready(function() {
 
 	// want element to still take up space on page, so don't use hide
@@ -53,7 +56,7 @@ $(document).ready(function() {
 
 	// game/logic variables
 
-	// display the number of moves
+	// display the Number of moves
 	var moveCounter = 0;
 
 	// used for checking 50-move draw rule
@@ -144,8 +147,7 @@ $(document).ready(function() {
 		drawBoard(true);
 		boardStrings = [];
 		$('.move-history').html('');
-		$('.result').html('');
-		$('.result-container').html('');
+		$('.result').html('.result-container').html('');
 		move('w', 'b', $('#radio-human').is(':checked'));	
 	}
 
@@ -174,10 +176,10 @@ $(document).ready(function() {
 	/**
 	 * adds a piece to the allPieces object
 	 * @param {String} colorAndPiece - the color and piece of the piece ie: wB = white bishop
-	 * @param {number} file - the file of the new piece
-	 * @param {number} rank - the rank of the new piece
-	 * @param {number} id - the id of the new piece
-	 * @param {boolean} hasMoved - whether the piece has moved or not (used to check if castling is allowed)
+	 * @param {Number} file - the file of the new piece
+	 * @param {Number} rank - the rank of the new piece
+	 * @param {Number} id - the id of the new piece
+	 * @param {Boolean} hasMoved - whether the piece has moved or not (used to check if castling is allowed)
 	 */
 
 	function addPiece(colorAndPiece, file, rank, id, hasMoved) {
@@ -207,7 +209,7 @@ $(document).ready(function() {
 
 	/**
 	 * Draw the board
-	 * @param {boolean} newGame - whether it is a new game or not
+	 * @param {Boolean} newGame - whether it is a new game or not
 	 */
 
 	function drawBoard(newGame) {
@@ -255,7 +257,7 @@ $(document).ready(function() {
 
 	/**
 	 * Draws the pieces on the board
-	 * @param {boolean} newGame - whether it is a new game or not
+	 * @param {Boolean} newGame - whether it is a new game or not
 	 */
 
 	function drawPieces(newGame) {
@@ -325,6 +327,10 @@ $(document).ready(function() {
 		}
 
 		$('.result-description').html(colorAbbreviations[currentColor] + " to move");
+
+		console.log(allPieces);
+		console.log(occupiedSquares);
+		console.log(attackedSquares);
 
 		// if human is moving, allow him/her to move
 		if (whiteDown && currentColor === 'w' || !whiteDown && currentColor === 'b' || noComp) {
@@ -598,9 +604,9 @@ $(document).ready(function() {
 
 	/** Promotes a pawn to a non-king piece (B, N, Q, R)
 	 * @param {string} piece - the color and type of the piece
-	 * @param {number} pieceIndex - the index of the piece in its corresponding array
-	 * @param {number} newIndex - the index of the square the pawn is moving to
-	 * @param {number[]} newSquare - the square the pawn is moving to
+	 * @param {Number} pieceIndex - the index of the piece in its corresponding array
+	 * @param {Number} newIndex - the index of the square the pawn is moving to
+	 * @param {Number[]} newSquare - the square the pawn is moving to
 	 */
 
 	function promote(piece, pieceIndex, newIndex, newSquare) {
@@ -631,7 +637,7 @@ $(document).ready(function() {
 
 	/**
 	 * Moves a rook as part of castling
-	 * @param {number[]} kingSquare - the file and rank of the king's move
+	 * @param {Number[]} kingSquare - the file and rank of the king's move
 	 */
 	function castle(kingSquare) {
 
@@ -675,7 +681,7 @@ $(document).ready(function() {
 	/**
 	 * Creates a new set of indices corresponding to the squares that a color is attacking
 	 * @param {String} color - the color of the pieces for which this is calculated
-	 * @return {number[]} attackedSquares - the squares that are being attacked
+	 * @return {Number[]} attackedSquares - the squares that are being attacked
 	 */
 
 	function getAttackedSquares() {
@@ -697,8 +703,8 @@ $(document).ready(function() {
 	/**
 	 * Finds all pieces of a given color that are attacking a given square
 	 * @param {String} color - the color of the pieces to return
-	 * @param {number} squareIndex - the index of the square for which the attacking pieces are desired
-	 * @return {number[]} attackingPieces - the pices that are attacking the square
+	 * @param {Number} squareIndex - the index of the square for which the attacking pieces are desired
+	 * @return {Number[]} attackingPieces - the pices that are attacking the square
 	 */
 
 	function getAttackingPieces(color, squareIndex) {
@@ -750,7 +756,7 @@ $(document).ready(function() {
 	/**
 	 * Removes a piece from the board and the game
 	 * @param {String} pieceToCapture - the string representation (colorPieceIndex) of the piece being captured
-	 * @param {number[]} square - the indices of the square of the piece being captured in the form [file, rank]
+	 * @param {Number[]} square - the indices of the square of the piece being captured in the form [file, rank]
 	 */
 
 	function capturePiece(pieceToCapture, square) {
@@ -763,17 +769,15 @@ $(document).ready(function() {
 		var index = findPieceIndex(piece, id);
 		pieceType.splice(index, 1);
 		drawOverPiece(square);
-
-		// remove this since want to go to previous position
-		// boardStrings = [];
+		boardStrings = [];
 	}
 
 	/**
 	 * Checks to see if a player is in checkmate
 	 * @param {string} currentColor - the player who is in check
-	 * @param {string} opponentColor - the player who is giving check
+	 * @param {String} opponentColor - the player who is giving check
 	 * @param {String[]} checkingPieces - the pieces that are giving check
-	 * @return {boolean} - whether the player is in checkmate
+	 * @return {Boolean} - whether the player is in checkmate
 	 */
 
 	function checkCheckmate(currentColor, opponentColor, checkingPieces) {
@@ -798,9 +802,9 @@ $(document).ready(function() {
 
 	/**
 	 * Maps the rank and file of a square to x and y co-ordinates corresponding with its offset
-	 * @param {number} file - the square's file: 1 - 8
-	 * @param {number} rank - the square's rank: 1 - 8
-	 * @return {number[]} offset - the offset of the square in the form [x, y]
+	 * @param {Number} file - the square's file: 1 - 8
+	 * @param {Number} rank - the square's rank: 1 - 8
+	 * @return {Number[]} offset - the offset of the square in the form [x, y]
 	 */
 
 	function getCoordinates(file, rank) {
@@ -817,9 +821,9 @@ $(document).ready(function() {
 
 	/**
 	 * Maps the x and y co-ordinates to a 8x8 grid with 1-indexing
-	 * @param {number} x - e.offsetX
-	 * @param {number} y - e.offsetY
-	 * @return {number[]} square - the indices of the square in the form [file, rank]
+	 * @param {Number} x - e.offsetX
+	 * @param {Number} y - e.offsetY
+	 * @return {Number[]} square - the indices of the square in the form [file, rank]
 	 */
 
 	function getSquare(x, y) {
@@ -838,7 +842,7 @@ $(document).ready(function() {
 	 * Highlights the two squares involved in the last move
 	 * @param {object} lastMove - the last move that was played (consists of old square, new square and piece that was moved)
 	 * @param {String} color - the color of the piece that was moved
-	 * @param {boolean} drawOver - whether the move is drawing over a previously highlighted move (true) or is highlighting a move (false)
+	 * @param {Boolean} drawOver - whether the move is drawing over a previously highlighted move (true) or is highlighting a move (false)
 	 */
 
 	function drawLastMove(lastMove, color, drawOver) {
@@ -882,8 +886,8 @@ $(document).ready(function() {
 
 	/**
 	 * Draws on the square at the given co-ordinates
-	 * @param {number} file - the square's file: 1 - 8
-	 * @param {number} rank - the square's rank: 1 - 8
+	 * @param {Number} file - the square's file: 1 - 8
+	 * @param {Number} rank - the square's rank: 1 - 8
 	 * @param {String} symbol - what to draw on the square
 	 * @param {String} color - the piece's color: w or b
 	 */
@@ -897,8 +901,8 @@ $(document).ready(function() {
 
 	/**
 	 * Draws a square and accounts for issues that may arrise by using floating-point values
-	 * @param {number[]} coordinates - the top left corner of the rectangle
-	 * @param {number} squareSize - the height and width of the square
+	 * @param {Number[]} coordinates - the top left corner of the rectangle
+	 * @param {Number} squareSize - the height and width of the square
 	 */
 
 	function drawSquare(coordinates, squareSize) {
@@ -936,7 +940,7 @@ $(document).ready(function() {
 	/**
 	 * Marks the square if the king is in check
 	 * @param {String} color - the color of the king in check: 'w' or 'b'
-	 * @param {boolean} inCheck - whether the king is in check
+	 * @param {Boolean} inCheck - whether the king is in check
 	 */
 
 	function drawCheckSquare(color, inCheck) {
@@ -964,8 +968,8 @@ $(document).ready(function() {
 
 	/**
 	 * Draws over a piece at the square at the given co-ordinates
-	 * @param {number} file - the square's file: 1 - 8
-	 * @param {number} rank - the square's rank: 1 - 8
+	 * @param {Number} file - the square's file: 1 - 8
+	 * @param {Number} rank - the square's rank: 1 - 8
 	 */
 
 	function drawOverPiece(square) {
@@ -983,7 +987,7 @@ $(document).ready(function() {
 
 	/**
 	 * Redraws a square and (if occupied) its piece at the given index
-	 * @param {number} index - the square's index: 1 - 63
+	 * @param {Number} index - the square's index: 1 - 63
 	 */
 
 	function redrawSquare(index) {
@@ -1001,8 +1005,8 @@ $(document).ready(function() {
 
 	/**
 	 * Draws on the square at the given co-ordinates
-	 * @param {number} file - the square's file: 1 - 8
-	 * @param {number} rank - the square's rank: 1 - 8
+	 * @param {Number} file - the square's file: 1 - 8
+	 * @param {Number} rank - the square's rank: 1 - 8
 	 */
 
 	function unmarkSquare(file, rank) {

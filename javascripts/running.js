@@ -514,10 +514,10 @@ function getColor(year, years, opacity) {
 /**
  * not yet implemented
  * Modifies the color based on how much the run's temperature deviated from the yearly average 
- * @param {number} yearIndex - a number corresponding to the current year with 0 representing the earliest year
- * @param {number} avgTemp - the average temperature for all runs that year (in degrees Celsius)
- * @param {number} temp - the temperature during the given run (in degrees Celsius)
- * @return {string} color
+ * @param {Number} yearIndex - a number corresponding to the current year with 0 representing the earliest year
+ * @param {Number} avgTemp - the average temperature for all runs that year (in degrees Celsius)
+ * @param {Number} temp - the temperature during the given run (in degrees Celsius)
+ * @return {String} color
  */
 
 function getColorRelative(yearIndex, avgTemp, temp) {
@@ -535,13 +535,22 @@ function getColorRelative(yearIndex, avgTemp, temp) {
 
 /**
  * Checks whether the portfolio dropdown is expanded, method returns a string rather than a boolean, so need to check whether string is 'true' or 'false'
- * @return {boolean} whether the dropdown is expanded or not
+ * @return {Boolean} whether the dropdown is expanded or not
  */
 
 function dropdownExpanded() {
 	if (document.getElementById('portfolio-dropdown').getAttribute('aria-expanded') === 'true') return true;
 	return false;
 }
+
+/**
+ * applies a sttyle in the appropraite color to the tooltip trianlge
+ * @param {String}
+ */
+
+// function stylize() {
+
+// }
 
 // console.log(document.getElementsByClassName('svg'));
 

@@ -1,6 +1,6 @@
 /**
  * Checks to see that there is at least one pair of bishop with opposing square colors
- * @return {boolean} - true if there is a pair of bishops with opposing square colors
+ * @return {Boolean} - true if there is a pair of bishops with opposing square colors
  */
 
 function differentColorBishops() {
@@ -22,8 +22,8 @@ function differentColorBishops() {
 
 /**
  * Maps the rank and file of a square to an integer that is unique among other squares
- * @param {number[]} square - the square's file, two numbers: 1 - 8
- * @return {number} index - the index of the square: 1 - 64
+ * @param {Number[]} square - the square's file, two numbers: 1 - 8
+ * @return {Number} index - the index of the square: 1 - 64
  */
 
 function squareToIndex(square) {
@@ -34,8 +34,8 @@ function squareToIndex(square) {
 
 /**
  * Maps the unique index of a square to its rank and file
- * @param {number} index - the index of the square: 1 - 64
- * @return {number[]} square - the indices of the square in the form [file, rank]
+ * @param {Number} index - the index of the square: 1 - 64
+ * @return {Number[]} square - the indices of the square in the form [file, rank]
  */
 
 function indexToSquare(index) {
@@ -47,16 +47,16 @@ function indexToSquare(index) {
  * Maps the unique index of a square to its algebraic notation represantaion
  * @param {String} piece - the color of the piece followed by its type
  * @param {String} pieceId - the id of the piece
- * @param {boolean} capture - whether the move captures a piece
- * @param {number} squareIndex - the index of the square: 1 - 64
- * @param {number[]} oldSquare - former location of the piece in the form [file, rank]
+ * @param {Boolean} capture - whether the move captures a piece
+ * @param {Number} squareIndex - the index of the square: 1 - 64
+ * @param {Number[]} oldSquare - former location of the piece in the form [file, rank]
  * @return {String} algSquare - the algebraic notation representatino of the square e.g. e4
  */
 
 function getAlgNotMove(piece, pieceId, capture, squareIndex, oldSquare) {
 	var pieceType = piece[1];
 	var pieceString = pieceType !== "P" ? pieceType : "";
-	pieceId = Number(pieceId); ///ensure pieceId is a number and not a string
+	pieceId = Number(pieceId); ///ensure pieceId is a Number and not a string
 	var capString = '';
 	var promotionString = '';
 
@@ -108,7 +108,7 @@ function getAlgNotMove(piece, pieceId, capture, squareIndex, oldSquare) {
 }
 
 /**
- * Creates a string representation of the board
+ * Creates a String representation of the board
  */
 
 function getBoardString() {
@@ -131,8 +131,8 @@ function getBoardString() {
 /**
  * Returns the piece's location in its corresponding array. Due to captures, the piece's id may !== its index
  * @param {String} piece - the piece type to find an index for (eg. wP for white pawn)
- * @param {number} id - the piece's id
- * @return {number} index 
+ * @param {Number} id - the piece's id
+ * @return {Number} index 
  */
 
 function findPieceIndex(piece, id) {
@@ -141,7 +141,7 @@ function findPieceIndex(piece, id) {
 
 	for (var p = 0; p < pieceType.length; p++) {
 
-		// different type (.id is a string, id is a number), so use == operator
+		// different type (.id is a String, id is a number), so use == operator
 		if (pieceType[p].id == id) {
 			return p;
 		}
@@ -152,7 +152,7 @@ function findPieceIndex(piece, id) {
  * Gets the legal moves of a piece when its king is in check
  * @param {String[]} checkingPieces - the pieces that are checking the piece's king
  * @param {String} clickedPiece - the piece that the player is trying to move
- * @return {number[]} legalMoves - the legal moves, represented as an array of board square indices, that the clicked piece can make
+ * @return {Number[]} legalMoves - the legal moves, represented as an array of board square indices, that the clicked piece can make
  */
 
 function getLegalMoves(checkingPieces, clickedPiece) {
@@ -232,10 +232,10 @@ function getLegalMoves(checkingPieces, clickedPiece) {
 
 /**
  * Calculates the path between a piece and a king if such a path exists
- * @param {number[]} checkingPieceSquare - the square of one of the checking piece
- * @param {number[]} kingSquare - the square of the other one of the king 
- * @param {boolean} extend - whether the path should be extended (used for also including the square beyond the king)
- * @return {number[][]} checkPath - an array of squares between the pieces, returns [] if no so path
+ * @param {Number[]} checkingPieceSquare - the square of one of the checking piece
+ * @param {Number[]} kingSquare - the square of the other one of the king 
+ * @param {Boolean} extend - whether the path should be extended (used for also including the square beyond the king)
+ * @return {Number[][]} checkPath - an array of squares between the pieces, returns [] if no so path
  */
 
 function getCheckPath(checkingPieceSquare, kingSquare, extend) {
@@ -262,8 +262,8 @@ function getCheckPath(checkingPieceSquare, kingSquare, extend) {
 /**
  * Checks to see if the game is a draw
  * @param {String} color - the color for which to check (used in checkStalemate)
- * @param {String[]} boardStrings - an array of strings representing board states
- * @return {boolean} - whether the game is a draw
+ * @param {String[]} boardStrings - an array of Strings representing board states
+ * @return {Boolean} - whether the game is a draw
  */
 
 function checkDraw(color, boardStrings, drawMoveCounter) {
@@ -282,7 +282,7 @@ function checkDraw(color, boardStrings, drawMoveCounter) {
  * Some example of drawn games:
  * 1-8 B + K vs K + 1-8 B (provided that all bishops have the same colors)
  * 1N + K vs 1N + K
- * @return {boolean} - whether or not there is enough material to a plater to checkmate
+ * @return {Boolean} - whether or not there is enough material to a plater to checkmate
  */
 
 function checkMatingMaterial() {
@@ -334,7 +334,7 @@ function checkMatingMaterial() {
 
 /**
  * Checks to see if the game is a draw by repetition
- * @return {boolean} - whether the game is a draw
+ * @return {Boolean} - whether the game is a draw
  */
 
 function checkDrawRep(boardStrings) {
@@ -354,7 +354,7 @@ function checkDrawRep(boardStrings) {
 
 /**
  * Checks to see if the game is a draw by the fifty-move rule
- * @return {boolean} - whether the game is a draw
+ * @return {Boolean} - whether the game is a draw
  */
 
 function checkDraw50(drawMoveCounter) {
@@ -369,8 +369,8 @@ function checkDraw50(drawMoveCounter) {
 
 /**
  * Checks to see if the game is a draw by stalemate
- * @param {string} color - the color to check if there are any legal moves
- * @return {boolean} - whether the game is a draw
+ * @param {String} color - the color to check if there are any legal moves
+ * @return {Boolean} - whether the game is a draw
  */
 
 function checkStalemate(color) {
@@ -390,10 +390,10 @@ function checkStalemate(color) {
 
 /**
  * Checks to see if a player is in checkmate
- * @param {string} currentColor - the player who is in check
- * @param {string} opponentColor - the player who is giving check
+ * @param {String} currentColor - the player who is in check
+ * @param {String} opponentColor - the player who is giving check
  * @param {String[]} color - the pieces that are giving check
- * @return {boolean} - whether the player is in checkmate
+ * @return {Boolean} - whether the player is in checkmate
  */
 
 function checkCheckmate(currentColor, opponentColor, checkingPieces) {

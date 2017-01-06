@@ -2,11 +2,11 @@ class Rook extends Piece {
 
 	/*
 	 * Creates a rook of the given color at the given location
-	 * @param {string} color - The color of the rook: white || black
-	 * @param {string} abbr - The abbreviation of the piece: R for Rook
-	 * @param {number} file - file rank of the rook: 1 - 8
-	 * @param {number} rank - the rank of the rook: 1 - 8
-	 * @param {boolean} hasMoved - whether or not the rook has moved (used for checking if castling is possible)
+	 * @param {String} color - The color of the rook: white || black
+	 * @param {String} abbr - The abbreviation of the piece: R for Rook
+	 * @param {Number} file - file rank of the rook: 1 - 8
+	 * @param {Number} rank - the rank of the rook: 1 - 8
+	 * @param {Boolean} hasMoved - whether or not the rook has moved (used for checking if castling is possible)
 	 */
 
 	constructor(color, abbr, file, rank, id, hasMoved) {
@@ -21,7 +21,7 @@ class Rook extends Piece {
 	/**
 	 * Get the Rook's moves
 	 * @param {String[]} occupiedSquares - the squares that are currently occupied, array entries are piece names (eg wP3)
-	 * @return {number[][]} moves - the moves of the Rook as an array of co-ordinates (also an array)
+	 * @return {Number[][]} moves - the moves of the Rook as an array of co-ordinates (also an array)
 	 */
 
 	moves() {
@@ -59,7 +59,7 @@ class Rook extends Piece {
 	/**
 	 * Get the squares that the Rook protects
 	 * @param {String[]} occupiedSquares - the squares that are currently occupied, array entries are piece names (eg wP3)
-	 * @return {number[][]} protectedSquares - the squares that the Rook protects as an array of co-ordinates (also an array)
+	 * @return {Number[][]} protectedSquares - the squares that the Rook protects as an array of co-ordinates (also an array)
 	 */
 
 	protectedSquares() {
