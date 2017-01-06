@@ -112,7 +112,7 @@ function draw(data) {
 
 	// custon tooltips inspired by: 
 	// http://stackoverflow.com/questions/16256454/d3-js-position-tooltips-using-element-position-not-mouse-position
-	$("svg circle, svg polygon").on('mouseover', function(e) {
+	$("svg circle, svg polygon").on('mousemove', function(e) {
 		if (!dropdownExpanded()) {
 			var xPos = e.pageX;
 			var yPos = e.pageY;

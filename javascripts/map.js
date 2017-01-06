@@ -26,36 +26,46 @@ var path = d3.geoPath()               // path generator that will convert GeoJSO
 		
 // Define linear scale for output
 var color = d3.scaleLinear()
-			  .range(["rgb(239,29,14)","rgb(35,32,102)"]);
+			  .range(["rgb(35,32,102)", "rgb(239,29,14)", "Purple", "Orange"]);
 
-var legendText = ["Cities Lived", "States Lived", "States Visited", "Nada"];
+var legendText = ["Democrat and Not Diabetic", "Republican and Diabetic", "Democrat and Diabetic", "Republican and Not Diabetic"];
 
-var obesityRates = [{"Alabama":13.5},{"Alaska":7.6},{"Arkansas":12.6},{"Arizona":10.1},{"California":10.0},{"Colorado":6.8},{"Connecticut":9.3},{"District of Columbia":8.5},{"Delaware":11.5},{"Florida":11.3},{"Georgia":11.3},{"Hawaii":8.5},{"Iowa":8.8},{"Idaho":8.1},{"Illinois":9.9},{"Indiana":11.4},{"Kansas":9.7},{"Kentucky":13.4},{"Louisiana":12.7},{"Maine":9.9},{"Maryland":10.3},{"Massachusetts":8.9},{"Michigan":10.7},{"Minnesota":7.6},{"Missouri":11.5},{"Mississippi":14.7},{"Montana":7.9},{"North Carolina":10.7},{"North Dakota":8.7},{"Nebraska":8.8},{"New Hampshire":8.1},{"New Jersey":9.0},{"New Mexico":11.5},{"Nevada":9.7},{"New York":9.8},{"Ohio":11.0},{"Oklahoma":11.7},{"Oregon":10.7},{"Pennsylvania":10.4},{"Rhode Island":9.0},{"South Carolina":11.8},{"South Dakota":9.3},{"Tennessee":12.7},{"Texas":11.4},{"Utah":7.0},{"Virginia":10.3},{"Vermont":8.2},{"Washington":8.4},{"Wisconsin":8.4},{"West Virginia":14.5},{"Wyoming":8.4}];
+var obesityRates = {"Alabama":13.5,"Alaska":7.6,"Arkansas":12.6,"Arizona":10.1,"California":10.0,"Colorado":6.8,"Connecticut":9.3,"District of Columbia":8.5,"Delaware":11.5,"Florida":11.3,"Georgia":11.3,"Hawaii":8.5,"Iowa":8.8,"Idaho":8.1,"Illinois":9.9,"Indiana":11.4,"Kansas":9.7,"Kentucky":13.4,"Louisiana":12.7,"Maine":9.9,"Maryland":10.3,"Massachusetts":8.9,"Michigan":10.7,"Minnesota":7.6,"Missouri":11.5,"Mississippi":14.7,"Montana":7.9,"North Carolina":10.7,"North Dakota":8.7,"Nebraska":8.8,"New Hampshire":8.1,"New Jersey":9.0,"New Mexico":11.5,"Nevada":9.7,"New York":9.8,"Ohio":11.0,"Oklahoma":11.7,"Oregon":10.7,"Pennsylvania":10.4,"Rhode Island":9.0,"South Carolina":11.8,"South Dakota":9.3,"Tennessee":12.7,"Texas":11.4,"Utah":7.0,"Virginia":10.3,"Vermont":8.2,"Washington":8.4,"Wisconsin":8.4,"West Virginia":14.5,"Wyoming":8.4}
 
 var redStates = 30;
 
-obesityRates = obesityRates.sort(function(a, b) {
-	return b[Object.keys(b)[0]] - a[Object.keys(a)[0]];
-})
-
 var fattestStates = [];
 
-for (var i = 0; i < 30; i++) {
-	fattestStates.push(Object.keys(obesityRates[i])[0]);
+for (var state in obesityRates) {
+	fattestStates.push([state, obesityRates[state]]);
 }
 
-//Create SVG element and append map to the SVG
+fattestStates.sort(function(a, b) {
+	return b[1] - a[1];
+});
 
-// svg.append('circle').attr("cx", 25).attr("cy", 25).attr("r", 25).style("fill", "purple");
+fattestStates = fattestStates.slice(0, redStates);
 
-// Append Div for tooltip to SVG
-// var div = d3.select("body")
-// 		    .append("div")   
-//     		.attr("class", "tooltip")               
-//     		.style("opacity", 0);
+fattestStatesObj = {};
+
+for (var i = 0; i < redStates; i++) {
+	fattestStatesObj[fattestStates[i][0]] = fattestStates[i][1];
+}
 
 // Load in my states data!
 d3.csv("stateslived.csv", function(data) {
+
+	var tooltipElection = d3.select("body").append("div")   
+	    .attr("class", "tooltip-election")
+	    .style("opacity", 0);
+
+    var tooltipFat = d3.select("body").append("div")   
+	    .attr("class", "tooltip-fat")
+	    .style("opacity", 0);
+
+	var tooltipCompare = d3.select("body").append("div")   
+	    .attr("class", "tooltip-fat")
+	    .style("opacity", 0);
 
 	var svgElection = d3.select('.svg-election')
 			.attr("width", width)
@@ -65,8 +75,11 @@ d3.csv("stateslived.csv", function(data) {
 			.attr("width", width)
 			.attr("height", height);
 
+	var svgCompare = d3.select('.svg-compare')
+			.attr("width", width)
+			.attr("height", height);
 
-	color.domain([0,1]); // setting the range of the input data
+	color.domain([0,1,2,3]); // setting the range of the input data
 
 	// Load GeoJSON data and merge with states data
 	d3.json("states.json", function(json) {
@@ -86,106 +99,137 @@ d3.csv("stateslived.csv", function(data) {
 				var jsonState = json.features[j].properties.name;
 
 				if (dataState == jsonState) {
-
-				// Copy the data value into the JSON
-				json.features[j].properties.republican = dataValue; 
-
-				// Stop looking through the JSON
-				break;
+					json.features[j].properties.republican = dataValue;		
+					break;
 				}
 			}
 		}
 
-	console.log(obesityRates);
-
-	// Bind the data to the SVG and create one path per GeoJSON feature
 	svgElection.selectAll("path")
 		.data(json.features)
 		.enter()
 		.append("path")
 		.attr("d", path)
+		.attr("class", function(d) {
+			return "election " + d.properties.name;
+		})
 		.style("stroke", "#fff")
 		.style("stroke-width", "1")
 		.style("fill", function(d) {
-
-			var value = Number (d.properties.republican);
-
-			return color(value);
-		});
+			var party = Number (d.properties.republican);
+			return color(party);
+		})
+		.on("mousemove", function(d) {   
+			var republican = d.properties.republican == 1 ? "Republican" : "Democrat";
+			tooltipElection.html(d.properties.name + "<br>" + republican);
+			tooltipElection.style("left", (d3.event.pageX) + "px")     
+	           .style("top", (d3.event.pageY - 28) + "px");
+	    	tooltipElection.transition()        
+	      	   .duration(200)      
+	           .style("opacity", .9);         
+		})
+	    .on("mouseout", function(d) {       
+	        tooltipElection.transition()        
+	           .duration(500)      
+	           .style("opacity", 0);   
+	    });
 
 	svgFat.selectAll("path")
 		.data(json.features)
 		.enter()
 		.append("path")
 		.attr("d", path)
+		.attr("class", function(d) {
+			return "diabetes " + d.properties.name;
+		})
 		.style("stroke", "#fff")
 		.style("stroke-width", "1")
 		.style("fill", function(d) {
-
 			var obesity = d.properties.name;
+			return fattestStatesObj.hasOwnProperty(obesity) ? color(1) : color(0);
+		})
+		.on("mousemove", function(d) {   
+			tooltipFat.html(d.properties.name + "<br>" + "Diabetes Rate: " + obesityRates[d.properties.name] + "%");
+			tooltipFat.style("left", (d3.event.pageX) + "px")     
+	           .style("top", (d3.event.pageY - 28) + "px");
+	    	tooltipFat.transition()        
+	      	   .duration(200)      
+	           .style("opacity", .9);      
+		})
+	    .on("mouseout", function(d) {       
+	        tooltipFat.transition()        
+	           .duration(500)      
+	           .style("opacity", 0);   
+	    });
 
-			return fattestStates.indexOf(obesity) === -1 ? color(1) : color(0);
-		});
-		 
-		// Map the cities I have lived in!
-		// d3.csv("cities-lived.csv", function(data) {
+    svgCompare.selectAll("path")
+		.data(json.features)
+		.enter()
+		.append("path")
+		.attr("d", path)
+		// .attr("class", function(d) {
+		// 	return "diabetes " + d.properties.name;
+		// })
+		.style("stroke", "#fff")
+		.style("stroke-width", "1")
+		.style("fill", function(d) {
+			var party = Number (d.properties.republican);
+			var obesity = d.properties.name;
+			var isFat = fattestStatesObj.hasOwnProperty(obesity);
 
-			// svg.selectAll("circle")
-			// 	.data(data)
-			// 	.enter()
-			// 	.append("circle")
-			// 	.attr("cx", function(d) {
-			// 		return projection([d.lon, d.lat])[0];
-			// 	})
-			// 	.attr("cy", function(d) {
-			// 		return projection([d.lon, d.lat])[1];
-			// 	})
-			// 	.attr("r", function(d) {
-			// 		return Math.sqrt(d.years) * 4;
-			// 	})
-			// 		.style("fill", "rgb(217,91,67)")	
-			// 		.style("opacity", 0.85)	
+			// skinny dems
+			if (!party && !isFat) {
+				return color(0);
+			}
 
-				// Modification of custom tooltip code provided by Malcolm Maclean, "D3 Tips and Tricks" 
-				// http://www.d3noob.org/2013/01/adding-tooltips-to-d3js-graph.html
-				// .on("mouseover", function(d) {      
-			 //    	div.transition()        
-			 //      	   .duration(200)      
-			 //           .style("opacity", .9);      
-			 //           div.text(d.place)
-			 //           .style("left", (d3.event.pageX) + "px")     
-			 //           .style("top", (d3.event.pageY - 28) + "px");    
-				// })   
+			// fat GOP
+			else if (party && isFat) {
+				return color(1);
+			}
 
-			 //    // fade out tooltip on mouse out               
-			 //    .on("mouseout", function(d) {       
-			 //        div.transition()        
-			 //           .duration(500)      
-			 //           .style("opacity", 0);   
-			 //    });
-		// });  
+			// fat dems
+			else if (!party && isFat) {
+				return color(2);
+			}
+
+			// skinny GOP
+			else {
+				return color(3);
+			}
+		})
+		.on("mousemove", function(d) {   
+			var party = d.properties.republican == 1 ? "Republican" : "Democrat";
+			tooltipCompare.html(d.properties.name + "<br>" + party + "<br>Diabetes Rate: " + obesityRates[d.properties.name] + "%");
+			tooltipCompare.style("left", (d3.event.pageX) + "px")     
+	           .style("top", (d3.event.pageY - 28) + "px");
+	    	tooltipCompare.transition()        
+	      	   .duration(200)      
+	           .style("opacity", .9);      
+		})
+	    .on("mouseout", function(d) {       
+	        tooltipCompare.transition()        
+	           .duration(500)      
+	           .style("opacity", 0);   
+	    });
         
-		// Modified Legend Code from Mike Bostock: http://bl.ocks.org/mbostock/3888852
-		// var legend = d3.select("body").append("svg")
-		//       			.attr("class", "legend")
-		//      			.attr("width", 140)
-		//     			.attr("height", 200)
-		//    				.selectAll("g")
-		//    				.data(color.domain().slice().reverse())
-		//    				.enter()
-		//    				.append("g")
-		//      			.attr("transform", function(d, i) { return "translate(0," + i * 20 + ")"; });
+		var legend = d3.select("body").append("svg")
+		      			.attr("class", "legend")
+		   				.selectAll("g")
+		   				.data(color.domain().slice())
+		   				.enter()
+		   				.append("g")
+		     			.attr("transform", function(d, i) { return "translate(50," + i * 20 + ")"; });
 
-		//   	legend.append("rect")
-		//    		  .attr("width", 18)
-		//    		  .attr("height", 18)
-		//    		  .style("fill", color);
+		  	legend.append("rect")
+		   		  .attr("width", 18)
+		   		  .attr("height", 18)
+		   		  .style("fill", color);
 
-		//   	legend.append("text")
-		//   		  .data(legendText)
-		//       	  .attr("x", 24)
-		//       	  .attr("y", 9)
-		//       	  .attr("dy", ".35em")
-		//       	  .text(function(d) { return d; });
+		  	legend.append("text")
+		  		  .data(legendText)
+		      	  .attr("x", 24)
+		      	  .attr("y", 9)
+		      	  .attr("dy", ".35em")
+		      	  .text(function(d) { return d; });
 	});
 });

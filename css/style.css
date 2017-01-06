@@ -120,7 +120,7 @@ body {
 	color: red;
 }
 
-.svg, .svg-fat, .svg-election {
+.svg, .svg-fat, .svg-election, .svg-compare {
   display: block;
   /*text-align: middle;*/
   margin: 0 auto;
@@ -131,6 +131,10 @@ body {
   margin-top: 0px;
 }
 
+path:hover {
+  fill-opacity: .7;
+}
+
 div.tooltip {   
   position: absolute;           
   text-align: center;           
@@ -138,6 +142,16 @@ div.tooltip {
   background: rgba(182, 182, 182, 0.6);   
   border: 1px solid rgba(5, 5, 5, 0.3);   
   border-radius: 2px;           
+}
+
+ div.tooltip-election, div.tooltip-fat, div.tooltip-compare{   
+  position: absolute;           
+  text-align: center;           
+  padding: 5px;             
+  background: rgb(282, 282, 282);
+  border: 1px solid black;      
+  border-radius: 2px;           
+  pointer-events: none;         
 }
 
 .tooltip-triangle {
