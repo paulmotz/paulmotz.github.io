@@ -92,18 +92,19 @@ d3.csv("stateslived.csv", function(data) {
 	// Load GeoJSON data and merge with states data
 	d3.json("states.json", function(json) {
 
+		console.log(data);
+		console.log(json);
+
 		for (var i = 0; i < data.length; i++) {
 
 			var dataState = data[i].state;
-
-			var dataValue = data[i].republican;
 
 			for (var j = 0; j < json.features.length; j++)  {
 
 				var jsonState = json.features[j].properties.name;
 
 				if (dataState == jsonState) {
-					json.features[j].properties.republican = dataValue;		
+					json.features[j].properties.republican = data[i].republican;		
 					break;
 				}
 			}
@@ -127,7 +128,8 @@ d3.csv("stateslived.csv", function(data) {
 				var republican = d.properties.republican == 1 ? "Republican" : "Democrat";
 				tooltipElection.html(d.properties.name + "<br>" + republican);
 				tooltipElection.style("left", (d3.event.pageX) + "px")     
-		           .style("top", (d3.event.pageY - 28) + "px");
+		        	.style("left", (d3.event.pageX + 9) + "px")  
+		        	.style("top", (d3.event.pageY + 9) + "px");
 		    	tooltipElection.transition()        
 		      	   .duration(200)      
 		           .style("opacity", .9);         
@@ -138,8 +140,10 @@ d3.csv("stateslived.csv", function(data) {
 		           .style("opacity", 0);   
 		    });
 
+	    // vanilla JS is great! http://vanilla-js.com
 		var legendElection = document.querySelector('.legend-election');
 
+		// inspired taken from http://bl.ocks.org/jkeohan/b8a3a9510036e40d3a4e
 		for (var l in legendTextElection) {
 			legendElection.innerHTML += "<p class='legend-item'><span class='square " + legendTextElection[l].toLowerCase() + "'></span><span>" + legendTextElection[l] + "</p></span>";
 		}
@@ -161,7 +165,8 @@ d3.csv("stateslived.csv", function(data) {
 			.on("mousemove", function(d) {   
 				tooltipFat.html(d.properties.name + "<br>" + "Diabetes Rate: " + obesityRates[d.properties.name] + "%");
 				tooltipFat.style("left", (d3.event.pageX) + "px")     
-		           .style("top", (d3.event.pageY - 28) + "px");
+		        	.style("left", (d3.event.pageX + 9) + "px")  
+		        	.style("top", (d3.event.pageY + 9) + "px");
 		    	tooltipFat.transition()        
 		      	   .duration(200)      
 		           .style("opacity", .9);      
@@ -172,10 +177,8 @@ d3.csv("stateslived.csv", function(data) {
 		           .style("opacity", 0);   
 		    });
 
-		// vanilla JS is great! http://vanilla-js.com
 	    var legendFat = document.querySelector('.legend-fat');
 
-	    // inspired taken from http://bl.ocks.org/jkeohan/b8a3a9510036e40d3a4e
 		for (var l in legendTextFat) {
 			legendFat.innerHTML += "<p class='legend-item'><span class='square " + legendTextFat[l].toLowerCase().split(' ').join('-')+ "'></span><span>" + legendTextFat[l] + "</p></span>";
 		}
@@ -220,8 +223,9 @@ d3.csv("stateslived.csv", function(data) {
 			.on("mousemove", function(d) {   
 				var party = d.properties.republican == 1 ? "Republican" : "Democrat";
 				tooltipCompare.html(d.properties.name + "<br>" + party + "<br>Diabetes Rate: " + obesityRates[d.properties.name] + "%");
-				tooltipCompare.style("left", (d3.event.pageX) + "px")     
-		           .style("top", (d3.event.pageY - 28) + "px");
+				tooltipCompare.style("left", (d3.event.pageX) + "px")   
+					.style("left", (d3.event.pageX + 9) + "px")  
+		        	.style("top", (d3.event.pageY + 9) + "px");
 		    	tooltipCompare.transition()        
 		      	   .duration(200)      
 		           .style("opacity", .9);      
