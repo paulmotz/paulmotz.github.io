@@ -23,12 +23,17 @@ var projection = d3.geoAlbersUsa()
 var path = d3.geoPath()               // path generator that will convert GeoJSON to SVG paths
 		  	 .projection(projection);  // tell path generator to use albersUsa projection
 
+var colors = ["rgb(35,32,102)", "rgb(239,29,14)", "Purple", "Orange"];
 		
-// Define linear scale for output
 var color = d3.scaleLinear()
-			  .range(["rgb(35,32,102)", "rgb(239,29,14)", "Purple", "Orange"]);
+			  .range(colors);
 
-var legendText = ["Democrat and Not Diabetic", "Republican and Diabetic", "Democrat and Diabetic", "Republican and Not Diabetic"];
+var legendTextElection = ["Democrat", "Republican"];
+var legendTextFat = ["Not Diabetic", "Diabetic"];
+var legendTextCompare = ["Democrat and Not Diabetic", "Republican and Diabetic", "Democrat and Diabetic", "Republican and Not Diabetic"];
+
+var caseValues = new Array(4);
+caseValues.fill(0);
 
 var obesityRates = {"Alabama":13.5,"Alaska":7.6,"Arkansas":12.6,"Arizona":10.1,"California":10.0,"Colorado":6.8,"Connecticut":9.3,"District of Columbia":8.5,"Delaware":11.5,"Florida":11.3,"Georgia":11.3,"Hawaii":8.5,"Iowa":8.8,"Idaho":8.1,"Illinois":9.9,"Indiana":11.4,"Kansas":9.7,"Kentucky":13.4,"Louisiana":12.7,"Maine":9.9,"Maryland":10.3,"Massachusetts":8.9,"Michigan":10.7,"Minnesota":7.6,"Missouri":11.5,"Mississippi":14.7,"Montana":7.9,"North Carolina":10.7,"North Dakota":8.7,"Nebraska":8.8,"New Hampshire":8.1,"New Jersey":9.0,"New Mexico":11.5,"Nevada":9.7,"New York":9.8,"Ohio":11.0,"Oklahoma":11.7,"Oregon":10.7,"Pennsylvania":10.4,"Rhode Island":9.0,"South Carolina":11.8,"South Dakota":9.3,"Tennessee":12.7,"Texas":11.4,"Utah":7.0,"Virginia":10.3,"Vermont":8.2,"Washington":8.4,"Wisconsin":8.4,"West Virginia":14.5,"Wyoming":8.4}
 
@@ -79,7 +84,8 @@ d3.csv("stateslived.csv", function(data) {
 			.attr("width", width)
 			.attr("height", height);
 
-	color.domain([0,1,2,3]); // setting the range of the input data
+	// colorCompare.domain([0,1]); 
+	color.domain([0,1,2,3]);
 
 	// Load GeoJSON data and merge with states data
 	d3.json("states.json", function(json) {
@@ -105,131 +111,136 @@ d3.csv("stateslived.csv", function(data) {
 			}
 		}
 
-	svgElection.selectAll("path")
-		.data(json.features)
-		.enter()
-		.append("path")
-		.attr("d", path)
-		.attr("class", function(d) {
-			return "election " + d.properties.name;
-		})
-		.style("stroke", "#fff")
-		.style("stroke-width", "1")
-		.style("fill", function(d) {
-			var party = Number (d.properties.republican);
-			return color(party);
-		})
-		.on("mousemove", function(d) {   
-			var republican = d.properties.republican == 1 ? "Republican" : "Democrat";
-			tooltipElection.html(d.properties.name + "<br>" + republican);
-			tooltipElection.style("left", (d3.event.pageX) + "px")     
-	           .style("top", (d3.event.pageY - 28) + "px");
-	    	tooltipElection.transition()        
-	      	   .duration(200)      
-	           .style("opacity", .9);         
-		})
-	    .on("mouseout", function(d) {       
-	        tooltipElection.transition()        
-	           .duration(500)      
-	           .style("opacity", 0);   
-	    });
+		svgElection.selectAll("path")
+			.data(json.features)
+			.enter()
+			.append("path")
+			.attr("d", path)
+			.attr("class", function(d) {
+				return "election " + d.properties.name;
+			})
+			.style("stroke", "#fff")
+			.style("stroke-width", "1")
+			.style("fill", function(d) {
+				var party = Number (d.properties.republican);
+				return color(party);
+			})
+			.on("mousemove", function(d) {   
+				var republican = d.properties.republican == 1 ? "Republican" : "Democrat";
+				tooltipElection.html(d.properties.name + "<br>" + republican);
+				tooltipElection.style("left", (d3.event.pageX) + "px")     
+		           .style("top", (d3.event.pageY - 28) + "px");
+		    	tooltipElection.transition()        
+		      	   .duration(200)      
+		           .style("opacity", .9);         
+			})
+		    .on("mouseout", function(d) {       
+		        tooltipElection.transition()        
+		           .duration(500)      
+		           .style("opacity", 0);   
+		    });
 
-	svgFat.selectAll("path")
-		.data(json.features)
-		.enter()
-		.append("path")
-		.attr("d", path)
-		.attr("class", function(d) {
-			return "diabetes " + d.properties.name;
-		})
-		.style("stroke", "#fff")
-		.style("stroke-width", "1")
-		.style("fill", function(d) {
-			var obesity = d.properties.name;
-			return fattestStatesObj.hasOwnProperty(obesity) ? color(1) : color(0);
-		})
-		.on("mousemove", function(d) {   
-			tooltipFat.html(d.properties.name + "<br>" + "Diabetes Rate: " + obesityRates[d.properties.name] + "%");
-			tooltipFat.style("left", (d3.event.pageX) + "px")     
-	           .style("top", (d3.event.pageY - 28) + "px");
-	    	tooltipFat.transition()        
-	      	   .duration(200)      
-	           .style("opacity", .9);      
-		})
-	    .on("mouseout", function(d) {       
-	        tooltipFat.transition()        
-	           .duration(500)      
-	           .style("opacity", 0);   
-	    });
+		var legendElection = document.querySelector('.legend-election');
 
-    svgCompare.selectAll("path")
-		.data(json.features)
-		.enter()
-		.append("path")
-		.attr("d", path)
-		// .attr("class", function(d) {
-		// 	return "diabetes " + d.properties.name;
-		// })
-		.style("stroke", "#fff")
-		.style("stroke-width", "1")
-		.style("fill", function(d) {
-			var party = Number (d.properties.republican);
-			var obesity = d.properties.name;
-			var isFat = fattestStatesObj.hasOwnProperty(obesity);
+		for (var l in legendTextElection) {
+			legendElection.innerHTML += "<p class='legend-item'><span class='square " + legendTextElection[l].toLowerCase() + "'></span><span>" + legendTextElection[l] + "</p></span>";
+		}
 
-			// skinny dems
-			if (!party && !isFat) {
-				return color(0);
-			}
+		svgFat.selectAll("path")
+			.data(json.features)
+			.enter()
+			.append("path")
+			.attr("d", path)
+			.attr("class", function(d) {
+				return "diabetes " + d.properties.name;
+			})
+			.style("stroke", "#fff")
+			.style("stroke-width", "1")
+			.style("fill", function(d) {
+				var obesity = d.properties.name;
+				return fattestStatesObj.hasOwnProperty(obesity) ? color(1) : color(0);
+			})
+			.on("mousemove", function(d) {   
+				tooltipFat.html(d.properties.name + "<br>" + "Diabetes Rate: " + obesityRates[d.properties.name] + "%");
+				tooltipFat.style("left", (d3.event.pageX) + "px")     
+		           .style("top", (d3.event.pageY - 28) + "px");
+		    	tooltipFat.transition()        
+		      	   .duration(200)      
+		           .style("opacity", .9);      
+			})
+		    .on("mouseout", function(d) {       
+		        tooltipFat.transition()        
+		           .duration(500)      
+		           .style("opacity", 0);   
+		    });
 
-			// fat GOP
-			else if (party && isFat) {
-				return color(1);
-			}
+		// vanilla JS is great! http://vanilla-js.com
+	    var legendFat = document.querySelector('.legend-fat');
 
-			// fat dems
-			else if (!party && isFat) {
-				return color(2);
-			}
+	    // inspired taken from http://bl.ocks.org/jkeohan/b8a3a9510036e40d3a4e
+		for (var l in legendTextFat) {
+			legendFat.innerHTML += "<p class='legend-item'><span class='square " + legendTextFat[l].toLowerCase().split(' ').join('-')+ "'></span><span>" + legendTextFat[l] + "</p></span>";
+		}
 
-			// skinny GOP
-			else {
-				return color(3);
-			}
-		})
-		.on("mousemove", function(d) {   
-			var party = d.properties.republican == 1 ? "Republican" : "Democrat";
-			tooltipCompare.html(d.properties.name + "<br>" + party + "<br>Diabetes Rate: " + obesityRates[d.properties.name] + "%");
-			tooltipCompare.style("left", (d3.event.pageX) + "px")     
-	           .style("top", (d3.event.pageY - 28) + "px");
-	    	tooltipCompare.transition()        
-	      	   .duration(200)      
-	           .style("opacity", .9);      
-		})
-	    .on("mouseout", function(d) {       
-	        tooltipCompare.transition()        
-	           .duration(500)      
-	           .style("opacity", 0);   
-	    });
-        
-		var legend = d3.select("body").append("svg")
-		      			.attr("class", "legend")
-		   				.selectAll("g")
-		   				.data(color.domain().slice())
-		   				.enter()
-		   				.append("g")
-		     			.attr("transform", function(d, i) { return "translate(50," + i * 20 + ")"; });
+	    svgCompare.selectAll("path")
+			.data(json.features)
+			.enter()
+			.append("path")
+			.attr("d", path)
+			// .attr("class", function(d) {
+			// 	return "diabetes " + d.properties.name;
+			// })
+			.style("stroke", "#fff")
+			.style("stroke-width", "1")
+			.style("fill", function(d) {
+				var party = Number (d.properties.republican);
+				var obesity = d.properties.name;
+				var isFat = fattestStatesObj.hasOwnProperty(obesity);
 
-		  	legend.append("rect")
-		   		  .attr("width", 18)
-		   		  .attr("height", 18)
-		   		  .style("fill", color);
+				// skinny dems
+				if (!party && !isFat) {
+					caseValues[0]++;
+					return color(0);
+				}
 
-		  	legend.append("text")
-		  		  .data(legendText)
-		      	  .attr("x", 24)
-		      	  .attr("y", 9)
-		      	  .attr("dy", ".35em")
-		      	  .text(function(d) { return d; });
+				// fat GOP
+				else if (party && isFat) {
+					caseValues[1]++;
+					return color(1);
+				}
+
+				// fat dems
+				else if (!party && isFat) {
+					caseValues[2]++;
+					return color(2);
+				}
+
+				// skinny GOP
+				else {
+					caseValues[3]++;
+					return color(3);
+				}
+			})
+
+			.on("mousemove", function(d) {   
+				var party = d.properties.republican == 1 ? "Republican" : "Democrat";
+				tooltipCompare.html(d.properties.name + "<br>" + party + "<br>Diabetes Rate: " + obesityRates[d.properties.name] + "%");
+				tooltipCompare.style("left", (d3.event.pageX) + "px")     
+		           .style("top", (d3.event.pageY - 28) + "px");
+		    	tooltipCompare.transition()        
+		      	   .duration(200)      
+		           .style("opacity", .9);      
+			})
+		    .on("mouseout", function(d) {       
+		        tooltipCompare.transition()        
+		           .duration(500)      
+		           .style("opacity", 0);   
+		    });
+
+	    var legendCompare = document.querySelector('.legend-compare');
+
+		for (var l in legendTextCompare) {
+			legendCompare.innerHTML += "<p class='legend-item'><span class='square " + legendTextCompare[l].toLowerCase().split(' ').join('-')+ "'></span><span>" + legendTextCompare[l] + "</p></span>";
+		}
 	});
 });

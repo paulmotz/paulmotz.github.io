@@ -122,7 +122,6 @@ body {
 
 .svg, .svg-fat, .svg-election, .svg-compare {
   display: block;
-  /*text-align: middle;*/
   margin: 0 auto;
 }
 
@@ -158,6 +157,28 @@ div.tooltip {
   width: 0; 
   height: 0;  
 }
+
+.legend {
+  text-align: center;
+  margin: 10px 0 50px 0;
+}
+
+.legend-item {
+  display: inline;
+  margin: 0 8px;
+}
+
+.square {
+    display: inline-block;
+    height: 10px;
+    margin-right: .5em;
+    width: 10px;
+}
+
+.democrat, .not-diabetic, .democrat-and-not-diabetic { background: rgb(35,32,102);}
+.republican, .diabetic, .republican-and-diabetic { background: rgb(239,29,14);}
+.democrat-and-diabetic {background: purple;}
+.republican-and-not-diabetic {background: orange;}
 
 /*.bottom-tip {
   width: 0; 
