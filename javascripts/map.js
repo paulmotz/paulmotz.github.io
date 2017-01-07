@@ -1,5 +1,10 @@
 /*  This visualization was made possible by modifying code provided by:
 
+I used Michelle Chandra's US State Map as a reference
+http://bl.ocks.org/michellechandra/0b2ce4923dc9b5809922
+
+...which in turn references:
+
 Scott Murray, Choropleth example from "Interactive Data Visualization for the Web" 
 https://github.com/alignedleft/d3-book/blob/master/chapter_12/05_choropleth.html   
 		
@@ -8,16 +13,13 @@ http://www.d3noob.org/2013/01/adding-tooltips-to-d3js-graph.html
 
 Mike Bostock, Pie Chart Legend
 http://bl.ocks.org/mbostock/3888852  */
-
 		
-//Width and height of map
 var width = 960;
 var height = 500;
 
-// D3 Projection
 var projection = d3.geoAlbersUsa()
 				   .translate([width/2, height/2])    // translate to center of screen
-				   .scale([1000]);          // scale things down so see entire US
+				   .scale([1000]);          // scale things down to see entire US
         
 // Define path generator
 var path = d3.geoPath()               // path generator that will convert GeoJSON to SVG paths
@@ -57,6 +59,7 @@ for (var i = 0; i < redStates; i++) {
 	fattestStatesObj[fattestStates[i][0]] = fattestStates[i][1];
 }
 
+// TODO: should change this once I find election data
 // Load in my states data!
 d3.csv("stateslived.csv", function(data) {
 
@@ -84,22 +87,17 @@ d3.csv("stateslived.csv", function(data) {
 			.attr("width", width)
 			.attr("height", height);
 
-	// colorCompare.domain([0,1]); 
 	color.domain([0,1,2,3]);
 
 	// Load GeoJSON data and merge with states data
 	d3.json("states.json", function(json) {
 
-		// Loop through each state data value in the .csv file
 		for (var i = 0; i < data.length; i++) {
 
-			// Grab State Name
 			var dataState = data[i].state;
 
-			// Grab data value 
 			var dataValue = data[i].republican;
 
-			// Find the corresponding state inside the GeoJSON
 			for (var j = 0; j < json.features.length; j++)  {
 
 				var jsonState = json.features[j].properties.name;
@@ -187,9 +185,6 @@ d3.csv("stateslived.csv", function(data) {
 			.enter()
 			.append("path")
 			.attr("d", path)
-			// .attr("class", function(d) {
-			// 	return "diabetes " + d.properties.name;
-			// })
 			.style("stroke", "#fff")
 			.style("stroke-width", "1")
 			.style("fill", function(d) {
