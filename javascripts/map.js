@@ -178,7 +178,7 @@ d3.json("data/maps/electionresults.json", function(data) {
 		legendFat.innerHTML += "The " + redStates + " fattest states (" + redStates	+ " is the number of states that voted Republican).<br>";    
 
 		for (var l in legendTextFat) {
-			legendFat.innerHTML += "<p class='legend-item'><span class='square " + legendTextFat[l].toLowerCase().split(' ').join('-')+ "'></span><span>" + legendTextFat[l] + "</p></span>";
+			legendFat.innerHTML += "<p class='legend-item'><span class='square " + legendTextFat[l].toLowerCase().split(' ').join('-')+ "'></span><span>" + legendTextFat[l] + " (" + (l == 1 ? redStates : 51 - redStates) + ")</p></span>";
 		}
 
 	    svgCompare.selectAll("path")
