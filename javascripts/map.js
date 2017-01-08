@@ -92,20 +92,15 @@ d3.json("data/maps/electionresults.json", function(data) {
 	color.domain([0,1,2,3]);
 
 	// Load GeoJSON data and merge with states data
-	d3.json("data/maps/states.json", function(json) {
-
-		console.log(yearlyData);
+	d3.json("data/maps/states_geo.json", function(json) {
 
 		for (var state in yearlyData) {
+			for (var i = 0; i < json.features.length; i++)  {
 
-			console.log(state);
+				var jsonState = json.features[i].properties.name;
 
-			for (var j = 0; j < json.features.length; j++)  {
-
-				var jsonState = json.features[j].properties.name;
-
-				if (state == jsonState) {
-					json.features[j].properties.republican = yearlyData[state];		
+				if (state === jsonState) {
+					json.features[i].properties.republican = yearlyData[state];		
 					break;
 				}
 			}
@@ -146,7 +141,7 @@ d3.json("data/maps/electionresults.json", function(data) {
 
 		// inspired by http://bl.ocks.org/jkeohan/b8a3a9510036e40d3a4e
 		for (var l in legendTextElection) {
-			legendElection.innerHTML += "<p class='legend-item'><span class='square " + legendTextElection[l].toLowerCase() + "'></span><span>" + legendTextElection[l] + "</p></span>";
+			legendElection.innerHTML += "<p class='legend-item'><span class='square " + legendTextElection[l].toLowerCase() + "'></span><span>" + legendTextElection[l] + " (" + (l == 1 ? redStates : 51 - redStates) + ")</p></span>";
 		}
 
 		svgFat.selectAll("path")
@@ -179,6 +174,8 @@ d3.json("data/maps/electionresults.json", function(data) {
 		    });
 
 	    var legendFat = document.querySelector('.legend-fat');
+
+		legendFat.innerHTML += "The " + redStates + " fattest states (" + redStates	+ " is the number of states that voted Republican).<br>";    
 
 		for (var l in legendTextFat) {
 			legendFat.innerHTML += "<p class='legend-item'><span class='square " + legendTextFat[l].toLowerCase().split(' ').join('-')+ "'></span><span>" + legendTextFat[l] + "</p></span>";
@@ -241,6 +238,7 @@ d3.json("data/maps/electionresults.json", function(data) {
 
 		for (var l in legendTextCompare) {
 			legendCompare.innerHTML += "<p class='legend-item'><span class='square " + legendTextCompare[l].toLowerCase().split(' ').join('-')+ "'></span><span>" + legendTextCompare[l] + " (" + caseValues[l] + ")</p></span>";
+			// if (l == 1) legendCompare.innerHTML += "<br>";
 		}
 	});
 });
