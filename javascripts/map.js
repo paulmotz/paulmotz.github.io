@@ -61,7 +61,9 @@ for (var i = 0; i < redStates; i++) {
 
 // TODO: should change this once I find election data
 // Load in my states data!
-d3.csv("stateslived.csv", function(data) {
+d3.json("data/maps/electionresults.json", function(data) {
+
+	var yearlyData = data["2016"];
 
 	var tooltipElection = d3.select("body").append("div")   
 	    .attr("class", "tooltip-election")
@@ -90,21 +92,20 @@ d3.csv("stateslived.csv", function(data) {
 	color.domain([0,1,2,3]);
 
 	// Load GeoJSON data and merge with states data
-	d3.json("states.json", function(json) {
+	d3.json("data/maps/states.json", function(json) {
 
-		console.log(data);
-		console.log(json);
+		console.log(yearlyData);
 
-		for (var i = 0; i < data.length; i++) {
+		for (var state in yearlyData) {
 
-			var dataState = data[i].state;
+			console.log(state);
 
 			for (var j = 0; j < json.features.length; j++)  {
 
 				var jsonState = json.features[j].properties.name;
 
-				if (dataState == jsonState) {
-					json.features[j].properties.republican = data[i].republican;		
+				if (state == jsonState) {
+					json.features[j].properties.republican = yearlyData[state];		
 					break;
 				}
 			}
@@ -143,7 +144,7 @@ d3.csv("stateslived.csv", function(data) {
 	    // vanilla JS is great! http://vanilla-js.com
 		var legendElection = document.querySelector('.legend-election');
 
-		// inspired taken from http://bl.ocks.org/jkeohan/b8a3a9510036e40d3a4e
+		// inspired by http://bl.ocks.org/jkeohan/b8a3a9510036e40d3a4e
 		for (var l in legendTextElection) {
 			legendElection.innerHTML += "<p class='legend-item'><span class='square " + legendTextElection[l].toLowerCase() + "'></span><span>" + legendTextElection[l] + "</p></span>";
 		}
@@ -239,7 +240,7 @@ d3.csv("stateslived.csv", function(data) {
 	    var legendCompare = document.querySelector('.legend-compare');
 
 		for (var l in legendTextCompare) {
-			legendCompare.innerHTML += "<p class='legend-item'><span class='square " + legendTextCompare[l].toLowerCase().split(' ').join('-')+ "'></span><span>" + legendTextCompare[l] + "</p></span>";
+			legendCompare.innerHTML += "<p class='legend-item'><span class='square " + legendTextCompare[l].toLowerCase().split(' ').join('-')+ "'></span><span>" + legendTextCompare[l] + " (" + caseValues[l] + ")</p></span>";
 		}
 	});
 });
