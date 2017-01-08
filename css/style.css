@@ -176,10 +176,14 @@ div.tooltip {
     width: 10px;
 }
 
-.democrat, .not-diabetic, .democrat-and-not-diabetic { background: rgb(35,32,102);}
-.republican, .diabetic, .republican-and-diabetic { background: rgb(239,29,14);}
-.democrat-and-diabetic {background: purple;}
-.republican-and-not-diabetic {background: orange;}
+.democrat, .not-obese, .democrat-and-not-obese { background: rgb(35,32,102);}
+.republican, .obese, .republican-and-obese { background: rgb(239,29,14);}
+.democrat-and-obese {background: purple;}
+.republican-and-not-obese {background: orange;}
+
+.change {
+  text-align: center;
+}
 
 /*.bottom-tip {
   width: 0; 

@@ -27,11 +27,11 @@
 		<div class="main">
 			<div class='row'>
 				<div class='col-xs-12'>
-					<h3>Trump</h3>
+					<h3 class="election"></h3>
 					<div class="d3-area-election">
 						<svg class="svg-election"></svg>
 					</div>
-					<div class="legend legend-election">Election results of the 50 states (ME and NE treated as one state each) + DC<br></div>
+					<div class="legend legend-election"></div>
 				</div>
 			</div>
 			<div class='row'>
@@ -45,14 +45,23 @@
 			</div>
 			<div class='row'>
 				<div class='col-xs-12'>
-					<h3>Trump v Diabetes</h3>
+					<h3>Comparison on Political Preferences and Obesity</h3>
 					<div class="d3-area-compare">
 						<svg class="svg-compare"></svg>
 					</div>
 					<div class="legend legend-compare">
-						A comparison to see the relation between voting and diabetes rates.<br>
-						A "Diabetic" state is one that was coloured red in the previous map.<br>
 					</div>
+				</div>
+			</div>
+			<div class='row'>
+				<div class='col-xs-12'>
+					<p class='change'>Select a different year:
+						<select class="select" name="select">
+							<option value="2008">2008</option>
+							<option value="2012">2012</option>
+							<option value="2016" selected="selected">2016</option>
+						</select>
+					</p>
 				</div>
 			</div>
 			<div class='row'>
