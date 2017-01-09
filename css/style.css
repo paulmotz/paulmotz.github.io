@@ -46,6 +46,15 @@ h1, h2, h3, h4 {
   text-decoration: none;
 }
 
+.skills-list {
+    margin-left: 0;
+    padding-left: 0;
+}
+
+.skills-item {
+    margin-left: 2em;
+}
+
 .index-container {
   position: relative;
 }
