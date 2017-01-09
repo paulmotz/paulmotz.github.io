@@ -158,6 +158,11 @@ div.tooltip {
   height: 0;  
 }
 
+.foreword {
+  text-align: left;
+  font-size: 16px;
+}
+
 .legend {
   text-align: center;
   line-height: 150%;
