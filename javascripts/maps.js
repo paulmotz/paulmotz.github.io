@@ -162,7 +162,7 @@ d3.json("data/maps/election_results.json", function(data) {
 			// vanilla JS is great! http://vanilla-js.com
 		    var election = document.querySelector('.election');
 
-			election.innerHTML = elections[year];
+			election.innerHTML = elections[year] + " - " + year;
 
 			var legendElection = document.querySelector('.legend-election');
 
