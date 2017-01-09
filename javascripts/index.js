@@ -16,15 +16,23 @@ $(document).ready(function() {
 	$("#fcc-img").attr("src", urls[r]);
 
 	alignOverlay();
+	fixRow();
 	  $(window).resize(function() {
 	    alignOverlay();
+	    fixRow();
 	  });
 });
 
 function alignOverlay () {
-  var $pWidth = parseInt($('.project').css('width'));
-  var $oWidth = parseInt($('.project-overlay').css('width'));
-  var $l = $('.project').offset().left;
-  var m = ($pWidth - $oWidth) / 2;
-  $('.project-overlay').css('margin', '0 ' + m + 'px');
+	var $pWidth = parseInt($('.project').css('width'));
+	var $oWidth = parseInt($('.project-overlay').css('width'));
+	var $l = $('.project').offset().left;
+	var m = ($pWidth - $oWidth) / 2;
+	$('.project-overlay').css('margin', '0 ' + m + 'px');
+}
+
+function fixRow() {
+	var $nB = $('#header').position().top;xw
+	// $('.project-row').css({top : $nB + 'px'});
+	console.log($nB);
 }
