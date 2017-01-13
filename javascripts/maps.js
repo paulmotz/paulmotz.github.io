@@ -25,7 +25,7 @@ var projection = d3.geoAlbersUsa()
 var path = d3.geoPath()               // path generator that will convert GeoJSON to SVG paths
 		  	 .projection(projection);  // tell path generator to use albersUsa projection
 
-var colors = ["rgb(35,32,102)", "rgb(239,29,14)", "Purple", "Orange"];
+var colors = ["rgb(35,32,102)", "rgb(239,29,14)", "Purple", "DarkOrange"];
 		
 var color = d3.scaleLinear()
 			  .range(colors);
