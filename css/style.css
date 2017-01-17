@@ -191,6 +191,11 @@ div.tooltip {
     width: 10px;
 }
 
+.small-text {
+  font-size: 0.5em;
+  vertical-align: middle;
+}
+
 .democrat, .not-obese, .democrat-and-not-obese { background: rgb(35,32,102);}
 .republican, .obese, .republican-and-obese { background: rgb(239,29,14);}
 .democrat-and-obese {background: purple;}
