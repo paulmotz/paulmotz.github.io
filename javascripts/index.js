@@ -13,7 +13,7 @@ $(document).ready(function() {
 	// 'https://68.media.tumblr.com/4d1d5170d2b8edd9bbbc1273e91767e6/tumblr_ojp9431Srr1sxd6n3o1_1280.png',
 	// 'https://68.media.tumblr.com/794d8ad028467a8a428700fd362e7e31/tumblr_ojp9lzWDCo1sxd6n3o2_540.png'];
 
-	var locs = ['images/FCC/Quote540.png', 'images/FCC/Weather540.png', 'images/FCC/Wiki540.png', 'images/FCC/AOM540.png', 'images/FCC/Calc540.png', 'images/FCC/Pomo540.png', 'images/FCC/TicTacToe540.png'];
+	var locs = ['images/FCC/Quote540.png', 'images/FCC/Weather540.png', 'images/FCC/Wiki540.png', 'images/FCC/AOM540.png', 'images/FCC/Calc540.png', 'images/FCC/Pomo540.png', 'images/FCC/TicTacToe540.png', 'images/FCC/Simon540.png'];
 
 	var r = Math.floor(Math.random() * locs.length);
 
