@@ -168,6 +168,13 @@ div.tooltip {
   height: 0;  
 }
 
+.running-label {
+  /*font-weight: bold;*/
+  letter-spacing: 0.05em;
+  font-size: 16px;
+  text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black, -1px -1px black, 1px -1px black, -1px 1px black, 1px 1px black;
+}
+
 .foreword {
   text-align: left;
   font-size: 16px;

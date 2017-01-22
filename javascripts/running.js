@@ -22,7 +22,7 @@ var x = d3.scaleLinear()
 	.range([margins.left, plotWidth]);
 
 var y = d3.scaleLinear()
-	.domain([3,7])
+	.domain([3,7.5])
 	.range([plotHeight,margins.top]);
 
 var r = d3.scaleSqrt()
@@ -63,8 +63,6 @@ function draw(data) {
 	var triangleSize = 8;
 
 	var svg = d3.select('.svg').attr('width',width).attr('height',height);
-
-	console.log(svg);
 
 	// x-axis
 	svg.append('g').attr('transform', 'translate(0,' + plotHeight + ')').call(d3.axisBottom(x).tickValues(monthDays).tickFormat(function(d,i){ return monthAbr[i]}));
@@ -392,20 +390,20 @@ function plotAll(svg, runs, years) {
 
 	for (var index in years) {
 		var year = years[index];
-		$('.options').append('<div class="checkbox-inline ' + 'checkbox-' + year + '" style="color:' + getColor(year, years, 1.0) + '"><label><input type="checkbox" name="'+year+'" value="one" checked>'+year+'</label></div>');
+		$('.options').append('<div class="checkbox-inline ' + 'checkbox-' + year + '" style="color:' + getColor(year, years, 1.0) + '"><label class="running-label"><input type="checkbox" name="'+year+'" value="one" checked>'+year+'</label></div>');
 		$('input[type=checkbox]').change(function() {
 			var yearData = '.' + this.name;
 			var checkbox = '.checkbox-' + this.name;
 			if (this.checked) {
 				($(yearData)).show();
-				$(checkbox).css('color', getColor(this.name, years, 1.0));
+				$(checkbox).css('color', getColor(Number(this.name), years, 1.0));
 			}
 			else {
 				($(yearData)).hide();
 				$(checkbox).css('color', '#999');
 			}
 			var co = getRunCentre();
-			console.log(co);
+			// console.log(co);
 		});
 	}
 }
@@ -501,8 +499,8 @@ function plotYear(svg, runs, year) {
 
 function getColor(year, years, opacity) {
 	var firstYear = years[0]; // since years are sorted in ascending order
-	var yearIndex = year - firstYear;
-	var colorValues = [[256, 0, 0], [0, 256, 0], [0, 0, 256], [256, 256, 0], [256, 0, 256], [0, 256, 256], [256, 256, 256]];
+	var yearIndex = years.indexOf(Number(year)); // ensure year is a number and not a string
+	var colorValues = [[139 ,69, 19], [256, 0, 0], [0, 256, 0], [0, 0, 256], [256, 256, 0], [256, 0, 256], [0, 256, 256], [256, 256, 256]];
 	// var yearColor = colorValues[yearIndex];
 	// for (var hue in yearColor) {
 	// 	if (yearColor[hue]) {
