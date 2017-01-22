@@ -388,24 +388,49 @@ function plotAll(svg, runs, years) {
 		}		
 	});	
 
+	$('.options').html('');
+
 	for (var index in years) {
 		var year = years[index];
-		$('.options').append('<div class="checkbox-inline ' + 'checkbox-' + year + '" style="color:' + getColor(year, years, 1.0) + '"><label class="running-label"><input type="checkbox" name="'+year+'" value="one" checked>'+year+'</label></div>');
-		$('input[type=checkbox]').change(function() {
-			var yearData = '.' + this.name;
-			var checkbox = '.checkbox-' + this.name;
-			if (this.checked) {
+		$('.options').append('<div class="checkbox-inline ' + 'checkbox-' + year + '" style="color:' + getColor(year, years, 1.0) + '"><label class="running-label"><input type="checkbox" name="'+year+'" value="one" checked="true">'+year+'</label></div>');
+	}
+
+	$('input[type=checkbox]').change(function() {
+		var yearData = '.' + this.name;
+		var checkbox = '.checkbox-' + this.name;
+		if (this.checked) {
+			// if (this.name === "2011") {
+			// 	svg.selectAll("*").remove();
+			// 	y = d3.scaleLinear()
+			// 		.domain([3,7.5])
+			// 		.range([plotHeight,margins.top]);
+			// 	d3.csv("./data/all.csv", draw);
+			// 	console.log(this);
+			// 	this.checked = false;
+			// }
+			// else {
 				($(yearData)).show();
-				$(checkbox).css('color', getColor(Number(this.name), years, 1.0));
-			}
-			else {
+				$(checkbox).css('color', getColor(Number(this.name), years, 1.0));	
+			// }
+		}
+		else {
+			// if (this.name === "2011") {
+ 		// 		svg.selectAll("*").remove();
+			// 	y = d3.scaleLinear()
+			// 		.domain([3,7])
+			// 		.range([plotHeight,margins.top]);
+			// 	d3.csv("./data/all.csv", draw);
+			// 	console.log(this);
+			// 	this.checked = false;
+			// 	console.log(this);
+			// }
+			// else {
 				($(yearData)).hide();
 				$(checkbox).css('color', '#999');
-			}
-			var co = getRunCentre();
-			// console.log(co);
-		});
-	}
+			// }				
+		}
+		var co = getRunCentre();
+	});
 }
 
 /**
@@ -489,24 +514,16 @@ function plotYear(svg, runs, year) {
 }
 
 /**
- * not yet implemented
  * Assigns a color based on the year of the run
  * @param {number} year - the year of the run
- * @param {number[]} year - the years for which there is running data
+ * @param {number[]} years - the years for which there is running data
  * @param {number} opacity - the desired opacity of the color
  * @return {string} color
  */
 
 function getColor(year, years, opacity) {
-	var firstYear = years[0]; // since years are sorted in ascending order
 	var yearIndex = years.indexOf(Number(year)); // ensure year is a number and not a string
 	var colorValues = [[139 ,69, 19], [256, 0, 0], [0, 256, 0], [0, 0, 256], [256, 256, 0], [256, 0, 256], [0, 256, 256], [256, 256, 256]];
-	// var yearColor = colorValues[yearIndex];
-	// for (var hue in yearColor) {
-	// 	if (yearColor[hue]) {
-	// 		// yearColor[hue] += increment;
-	// 	}
-	// }
 	var colorString = 'rgba(' + colorValues[yearIndex].join() + ',' + opacity + ')';
 	return colorString;
 }
@@ -522,13 +539,7 @@ function getColor(year, years, opacity) {
 
 function getColorRelative(yearIndex, avgTemp, temp) {
 	var increment = Math.round(temp);
-	var colorValues = [[256, 0, 0], [0, 256, 0], [0, 0, 256], [256, 256, 0], [256, 0, 256], [0, 256, 256], [256, 256, 256]];
-	// var yearColor = colorValues[yearIndex];
-	// for (var hue in yearColor) {
-	// 	if (yearColor[hue]) {
-	// 		// yearColor[hue] += increment;
-	// 	}
-	// }
+	var colorValues = [[139 ,69, 19], [256, 0, 0], [0, 256, 0], [0, 0, 256], [256, 256, 0], [256, 0, 256], [0, 256, 256], [256, 256, 256]];
 	var colorString = 'rgba(' + colorValues[yearIndex].join() + ',0.3)';
 	return colorString;
 }
