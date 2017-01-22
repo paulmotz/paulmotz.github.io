@@ -529,22 +529,6 @@ function getColor(year, years, opacity) {
 }
 
 /**
- * not yet implemented
- * Modifies the color based on how much the run's temperature deviated from the yearly average 
- * @param {Number} yearIndex - a number corresponding to the current year with 0 representing the earliest year
- * @param {Number} avgTemp - the average temperature for all runs that year (in degrees Celsius)
- * @param {Number} temp - the temperature during the given run (in degrees Celsius)
- * @return {String} color
- */
-
-function getColorRelative(yearIndex, avgTemp, temp) {
-	var increment = Math.round(temp);
-	var colorValues = [[139 ,69, 19], [256, 0, 0], [0, 256, 0], [0, 0, 256], [256, 256, 0], [256, 0, 256], [0, 256, 256], [256, 256, 256]];
-	var colorString = 'rgba(' + colorValues[yearIndex].join() + ',0.3)';
-	return colorString;
-}
-
-/**
  * Checks whether the portfolio dropdown is expanded, method returns a string rather than a boolean, so need to check whether string is 'true' or 'false'
  * @return {Boolean} whether the dropdown is expanded or not
  */
