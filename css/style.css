@@ -20,11 +20,6 @@ h1, h2, h3, h4 {
   padding-top: 40px;
 }
 
-.chess-container {
-  height: 100%;
-  margin-bottom: 40px;
-}
-
 .navbar {
   margin-bottom: 0;
 }
@@ -61,34 +56,10 @@ h1, h2, h3, h4 {
 
 .project-row {
   position: absolute;
-  /*top: 50%;
-  transform: translate(0, -50%);*/
-  /*margin-top: 50px;*/
-}
-
-.game-settings h4, .moves-display {
-  text-align: center;
-}
-
-.game-settings {
-  margin: auto 0px;
 }
 
 input[type="radio"] {
   margin: 0px 20px;
-}
-
-label {
-  font-weight: normal;
-}
-
-.radio-control {
-  display: block;
-  font-weight: none;
-}
-
-.game-controls {
-  text-align: center;
 }
 
 .description {
@@ -124,12 +95,6 @@ body {
   text-align: center;
 }
 
-.delim-select {
-	visibility: hidden;
-	display: none;
-	color: red;
-}
-
 .svg, .svg-fat, .svg-election, .svg-compare {
   display: block;
   margin: 0 auto;
@@ -142,74 +107,6 @@ body {
 
 path:hover {
   fill-opacity: .7;
-}
-
-div.tooltip {   
-  position: absolute;           
-  text-align: center;           
-  padding: 6px;             
-  background: rgba(182, 182, 182, 0.6);   
-  border: 1px solid rgba(5, 5, 5, 0.3);   
-  border-radius: 2px;           
-}
-
- div.tooltip-election, div.tooltip-fat, div.tooltip-compare{   
-  position: absolute;           
-  text-align: center;           
-  padding: 5px;             
-  background: rgb(282, 282, 282);
-  border: 1px solid black;      
-  border-radius: 2px;           
-  pointer-events: none;         
-}
-
-.tooltip-triangle {
-  width: 0; 
-  height: 0;  
-}
-
-.running-label {
-  /*font-weight: bold;*/
-  letter-spacing: 0.05em;
-  font-size: 16px;
-  text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black, -1px -1px black, 1px -1px black, -1px 1px black, 1px 1px black;
-}
-
-.foreword {
-  text-align: left;
-  font-size: 16px;
-}
-
-.legend {
-  text-align: center;
-  line-height: 150%;
-  margin: 10px 0 50px 0;
-}
-
-.legend-item {
-  display: inline;
-  margin: 0 8px;
-}
-
-.square {
-    display: inline-block;
-    height: 10px;
-    margin-right: .5em;
-    width: 10px;
-}
-
-.small-text {
-  font-size: 0.5em;
-  vertical-align: middle;
-}
-
-.democrat, .not-obese, .democrat-and-not-obese { background: rgb(35,32,102);}
-.republican, .obese, .republican-and-obese { background: rgb(239,29,14);}
-.democrat-and-obese {background: purple;}
-.republican-and-not-obese {background: orange;}
-
-.change {
-  text-align: center;
 }
 
 /*.bottom-tip {

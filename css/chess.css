@@ -3,8 +3,16 @@
 	margin: 0px 0px 0px auto;
 }
 
-.game-settings, .move-container {
-	/*margin: 0px auto;*/
+.chess-container {
+  height: 100%;
+  margin-bottom: 40px;
+}
+
+.square {
+    display: inline-block;
+    height: 10px;
+    margin-right: .5em;
+    width: 10px;
 }
 
 .content {
@@ -13,6 +21,27 @@
 
 .col-md-3 {
 	height: 100%;
+}
+
+label {
+  font-weight: normal;
+}
+
+.radio-control {
+  display: block;
+  font-weight: none;
+}
+
+.game-controls {
+  text-align: center;
+}
+
+.game-settings h4, .moves-display {
+  text-align: center;
+}
+
+.game-settings {
+  margin: auto 0px;
 }
 
 @media (max-width: 1200px){
@@ -75,15 +104,6 @@
 #chessboard {
 	max-width: 500px;
 	height: 100%;
-	/*height: auto;*/
-	/*width: auto;*/
-	/*height: 100%;*/
-	/*width: 500px;*/
-	/*height: 500px;*/
-}
-
-.btn {
-	/*margin-bottom: 25px;*/
 }
 
 .move-history {

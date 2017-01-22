@@ -1,0 +1,39 @@
+.legend {
+  text-align: center;
+  line-height: 150%;
+  margin: 10px 0 50px 0;
+}
+
+.legend-item {
+  display: inline;
+  margin: 0 8px;
+}
+
+ div.tooltip-election, div.tooltip-fat, div.tooltip-compare{   
+  position: absolute;           
+  text-align: center;           
+  padding: 5px;             
+  background: rgb(282, 282, 282);
+  border: 1px solid black;      
+  border-radius: 2px;           
+  pointer-events: none;         
+}
+
+.foreword {
+  text-align: left;
+  font-size: 16px;
+}
+
+.small-text {
+  font-size: 0.5em;
+  vertical-align: middle;
+}
+
+.democrat, .not-obese, .democrat-and-not-obese { background: rgb(35,32,102);}
+.republican, .obese, .republican-and-obese { background: rgb(239,29,14);}
+.democrat-and-obese {background: purple;}
+.republican-and-not-obese {background: orange;}
+
+.change {
+  text-align: center;
+}
