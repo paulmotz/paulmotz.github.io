@@ -9,7 +9,7 @@
   margin: 0 8px;
 }
 
- div.tooltip-election, div.tooltip-fat, div.tooltip-compare{   
+ div.tooltip-election, div.tooltip-obese, div.tooltip-compare {   
   position: absolute;           
   text-align: center;           
   padding: 5px;             
@@ -27,6 +27,11 @@
 .small-text {
   font-size: 0.5em;
   vertical-align: middle;
+}
+
+.svg-obese, .svg-election, .svg-compare {
+  display: block;
+  margin: 0 auto;
 }
 
 .democrat, .not-obese, .democrat-and-not-obese { background: rgb(35,32,102);}

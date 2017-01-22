@@ -31,7 +31,7 @@ var color = d3.scaleLinear()
 			  .range(colors);
 
 var legendTextElection = ["Democrat", "Republican"];
-var legendTextFat = ["Not Obese", "Obese"];
+var legendTextObese = ["Not Obese", "Obese"];
 var legendTextCompare = ["Democrat and Not Obese", "Republican and Obese", "Democrat and Obese", "Republican and Not Obese"];
 
 var elections = {"2008" : "Obama vs. McCain", "2012" : "Obama vs. Romney", "2016" : "Trump vs. Clinton"};
@@ -71,38 +71,38 @@ d3.json("data/maps/election_results.json", function(data) {
 		var caseValues = new Array(4);
 		caseValues.fill(0);
 
-		var fattestStates = [];
+		var mostObeseStates = [];
 
 		for (var state in yearlyData) {
 			numRedStates += yearlyData[state];
 		}
 
 		for (var state in yearlyObesityRates) {
-			fattestStates.push([state, yearlyObesityRates[state]]);
+			mostObeseStates.push([state, yearlyObesityRates[state]]);
 		}
 
-		fattestStates.sort(function(a, b) {
+		mostObeseStates.sort(function(a, b) {
 			return b[1] - a[1];
 		});
 
-		fattestStates = fattestStates.slice(0, numRedStates);
+		mostObeseStates = mostObeseStates.slice(0, numRedStates);
 
-		fattestStatesObj = {};
+		mostObeseStatesObj = {};
 
 		for (var i = 0; i < numRedStates; i++) {
-			fattestStatesObj[fattestStates[i][0]] = fattestStates[i][1];
+			mostObeseStatesObj[mostObeseStates[i][0]] = mostObeseStates[i][1];
 		}
 
 		var tooltipElection = d3.select("body").append("div")   
 		    .attr("class", "tooltip-election")
 		    .style("opacity", 0);
 
-	    var tooltipFat = d3.select("body").append("div")   
-		    .attr("class", "tooltip-fat")
+	    var tooltipObese = d3.select("body").append("div")   
+		    .attr("class", "tooltip-obese")
 		    .style("opacity", 0);
 
 		var tooltipCompare = d3.select("body").append("div")   
-		    .attr("class", "tooltip-fat")
+		    .attr("class", "tooltip-compare")
 		    .style("opacity", 0);
 
 		// http://stackoverflow.com/questions/22452112/nvd3-clear-svg-before-loading-new-chart
@@ -112,7 +112,7 @@ d3.json("data/maps/election_results.json", function(data) {
 				.attr("width", width)
 				.attr("height", height);
 
-		var svgFat = d3.select('.svg-fat')
+		var svgObese = d3.select('.svg-obese')
 				.attr("width", width)
 				.attr("height", height);
 
@@ -181,7 +181,7 @@ d3.json("data/maps/election_results.json", function(data) {
 				legendElection.innerHTML += "<p class='legend-item'><span class='square " + legendTextElection[l].toLowerCase() + "'></span><span>" + legendTextElection[l] + " (" + (l == 1 ? numRedStates : 51 - numRedStates) + ")</p></span>";
 			}
 
-			svgFat.selectAll("path")
+			svgObese.selectAll("path")
 				.data(json.features)
 				.enter()
 				.append("path")
@@ -193,34 +193,34 @@ d3.json("data/maps/election_results.json", function(data) {
 				.style("stroke-width", "1")
 				.style("fill", function(d) {
 					var obesity = d.properties.name;
-					return fattestStatesObj.hasOwnProperty(obesity) ? color(1) : color(0);
+					return mostObeseStatesObj.hasOwnProperty(obesity) ? color(1) : color(0);
 				})
 				.on("mousemove", function(d) {   
-					tooltipFat.html(d.properties.name + "<br>" + "Obesity Rate: " + yearlyObesityRates[d.properties.name] + "%");
-					tooltipFat.style("left", (d3.event.pageX) + "px")     
+					tooltipObese.html(d.properties.name + "<br>" + "Obesity Rate: " + yearlyObesityRates[d.properties.name] + "%");
+					tooltipObese.style("left", (d3.event.pageX) + "px")     
 			        	.style("left", (d3.event.pageX + 9) + "px")  
 			        	.style("top", (d3.event.pageY + 9) + "px");
-			    	tooltipFat.transition()        
+			    	tooltipObese.transition()        
 			      	   .duration(200)      
 			           .style("opacity", .9);      
 				})
 			    .on("mouseout", function(d) {       
-			        tooltipFat.transition()        
+			        tooltipObese.transition()        
 			           .duration(500)      
 			           .style("opacity", 0);   
 			    });
 
-		    var legendFat = document.querySelector('.legend-fat');
+		    var legendObese = document.querySelector('.legend-obese');
 
-		    legendFat.innerHTML = "";
+		    legendObese.innerHTML = "";
 
-			legendFat.innerHTML += "The " + numRedStates + " most obese states (" + numRedStates	+ " is the number of states that voted Republican that year).<br>";    
+			legendObese.innerHTML += "The " + numRedStates + " most obese states (" + numRedStates	+ " is the number of states that voted Republican that year).<br>";    
 
-			for (var l in legendTextFat) {
-				legendFat.innerHTML += "<p class='legend-item'><span class='square " + legendTextFat[l].toLowerCase().split(' ').join('-')+ "'></span><span>" + legendTextFat[l] + " (" + (l == 1 ? numRedStates : 51 - numRedStates) + ")</p></span>";
+			for (var l in legendTextObese) {
+				legendObese.innerHTML += "<p class='legend-item'><span class='square " + legendTextObese[l].toLowerCase().split(' ').join('-')+ "'></span><span>" + legendTextObese[l] + " (" + (l == 1 ? numRedStates : 51 - numRedStates) + ")</p></span>";
 			}
 
-			// console.log(fattestStatesObj);
+			// console.log(mostObeseStatesObj);
 
 		    svgCompare.selectAll("path")
 				.data(json.features)
@@ -232,22 +232,22 @@ d3.json("data/maps/election_results.json", function(data) {
 				.style("fill", function(d) {
 					var party = Number (d.properties.republican);
 					var obesity = d.properties.name;
-					var isFat = fattestStatesObj.hasOwnProperty(obesity);
+					var isObese = mostObeseStatesObj.hasOwnProperty(obesity);
 
 					// skinny dems
-					if (!party && !isFat) {
+					if (!party && !isObese) {
 						caseValues[0]++;
 						return color(0);
 					}
 
-					// fat GOP
-					else if (party && isFat) {
+					// obese GOP
+					else if (party && isObese) {
 						caseValues[1]++;
 						return color(1);
 					}
 
-					// fat dems
-					else if (!party && isFat) {
+					// obese dems
+					else if (!party && isObese) {
 						caseValues[2]++;
 						return color(2);
 					}
