@@ -37,3 +37,10 @@
 .change {
   text-align: center;
 }
+
+.square {
+  display: inline-block;
+  height: 10px;
+  margin-right: .5em;
+  width: 10px;
+}

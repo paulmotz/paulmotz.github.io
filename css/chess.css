@@ -8,13 +8,6 @@
   margin-bottom: 40px;
 }
 
-.square {
-    display: inline-block;
-    height: 10px;
-    margin-right: .5em;
-    width: 10px;
-}
-
 .content {
 	height: 500px;
 }
