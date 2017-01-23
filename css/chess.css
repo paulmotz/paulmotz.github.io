@@ -6,6 +6,7 @@
 .chess-container {
   height: 100%;
   margin-bottom: 40px;
+  padding-top: 10px;
 }
 
 .content {
@@ -14,6 +15,10 @@
 
 .col-md-3 {
 	height: 100%;
+}
+
+.description {
+	margin: 10px 0 20px 0;
 }
 
 label {

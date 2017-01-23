@@ -65,14 +65,6 @@ input[type="radio"] {
 .description {
   font-size: 1.2em;
   text-align: center;
-  margin-bottom: 20px;
-}
-
-.title {
-  font-weight: bold;
-  text-decoration: underline;
-  height: 20px;
-  margin: 0px auto;
 }
 
 .nav {
