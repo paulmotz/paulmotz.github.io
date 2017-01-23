@@ -16,4 +16,4 @@ This is a visualization that I made using [D3.js](https://d3js.org) of my runs f
 
 ## FreeCodeCamp Projects
 
-I have been completed the [FreeCodeCamp](https://www.freecodecamp.com) Front End Development Program. You can find my certificate [here](https://www.freecodecamp.com/paulmotz/front-end-certification) and my projects [here](http://s.codepen.io/paulmotz/debug/wKwPrX).
+I have completed the [FreeCodeCamp](https://www.freecodecamp.com) Front End Development Program. You can find my certificate [here](https://www.freecodecamp.com/paulmotz/front-end-certification) and my projects [here](http://s.codepen.io/paulmotz/debug/wKwPrX).
