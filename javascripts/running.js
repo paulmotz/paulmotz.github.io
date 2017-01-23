@@ -381,10 +381,13 @@ function plotAll(svg, runs, years) {
 		}		
 	});	
 
-	$('.options').html('');
+	$('.options').html('<h4>Show data from the following years:</h4>');
 
 	for (var index in years) {
 		var year = years[index];
+		if (index > 0 && index % 3 === 0) {
+			$('.options').append('<br>');
+		}
 		$('.options').append('<div class="checkbox-inline ' + 'checkbox-' + year + '" style="color:' + getColor(year, years, 1.0) + '"><label class="running-label"><input type="checkbox" name="'+year+'" value="one" checked="true">'+year+'</label></div>');
 	}
 
