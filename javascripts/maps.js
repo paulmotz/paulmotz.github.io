@@ -31,8 +31,8 @@ var color = d3.scaleLinear()
 			  .range(colors);
 
 var legendTextElection = ["Democrat", "Republican"];
-var legendTextObese = ["Not Obese", "Obese"];
-var legendTextCompare = ["Democrat and Not Obese", "Republican and Obese", "Democrat and Obese", "Republican and Not Obese"];
+var legendTextObese = ["Less Obese", "More Obese"];
+var legendTextCompare = ["Democrat and Less Obese", "Republican and More Obese", "Democrat and More Obese", "Republican and Less Obese"];
 
 var elections = {"2008" : "Obama vs. McCain", "2012" : "Obama vs. Romney", "2016" : "Trump vs. Clinton"};
 
@@ -277,7 +277,7 @@ d3.json("data/maps/election_results.json", function(data) {
 
 		    var legendCompare = document.querySelector('.legend-compare');
 
-		    legendCompare.innerHTML = 'A comparison to see the relation between voting and Obesity rates.<br>An "Obese" state is one that was coloured red in the previous map.<br>'
+		    legendCompare.innerHTML = 'A comparison to see the relation between voting and obesity rates.<br>This uses the same divsions as the previous two maps.<br>'
 
 			for (var l in legendTextCompare) {
 				legendCompare.innerHTML += "<p class='legend-item'><span class='square " + legendTextCompare[l].toLowerCase().split(' ').join('-')+ "'></span><span>" + legendTextCompare[l] + " (" + caseValues[l] + ")</p></span>";
