@@ -1,13 +1,201 @@
+:root {
+	--css-blue: #026FB9;
+	--html-orange: #E34D2A;
+	--java-orange: #FB5928;
+	--js-yellow: #EFD645;
+	/*--mongo-green: #69B23F;*/
+	--mongo-green: #5A9636;
+	--node-green: #7FBD42;
+	--python-blue: #376D9B;
+	--sql-grey: #888;
+}
+
+body {
+
+}
+
+.main-header, .skills-header, .box-bio {
+	display: table;
+	position: relative;
+}
+
+.vertical-center {
+	display: table-cell;
+    text-align: center;
+    vertical-align: middle;
+    height: 100%;
+}
+
+.bio {
+	text-align: left;
+	font-size: 18px;
+	line-height: 30px;
+}
+
 .tiny {
 	text-align: center;
 }
-
 
 .skills-list {
     margin-left: 0;
     padding-left: 0;
 }
 
-.skills-item {
-    margin-left: 2em;
+.box {
+	height: 100px;
+	position: relative;
 }
+
+.box-small {
+	margin-top: 10px;
+	height: 40px;
+	position: relative;
+}
+
+.box-skills {
+	background-color: #222;
+	text-align: middle;
+	border-radius: 15px;
+	border: 3px solid #777;
+}
+
+.box-skill {
+	color: #EEEEEE;
+	height: 100px;
+	box-sizing: border-box;
+	margin: auto;
+	position: relative;
+}
+
+.skill-label {
+	height: 25%;
+	margin: 0 auto 0 auto;
+	vertical-align: top;
+}
+
+.box-center {
+	/*width: 400px;*/
+	text-align: center;
+}
+
+.icon-box {
+	height: 75%;
+	display: table;
+	position: relative;
+	width: 100%;
+}
+
+.vector-icon {
+	position: relative;
+	font-size: 36px;
+	display: table-cell;
+    text-align: center;
+    vertical-align: middle;
+}
+
+.fa-vertical-align {
+	height: 0px;
+    vertical-align: middle;
+}
+
+#java-icon {
+	height: 45px;
+	margin-top: 15px;
+	display: inline-block;
+    vertical-align: middle;
+}
+
+#python-icon {
+	height: 45px;
+	margin-top: 15px;
+	display: inline-block;
+    vertical-align: middle;
+}
+
+#r-icon {
+	height: 25px;
+	margin-top: 22px;
+	display: inline-block;
+    vertical-align: middle;
+}
+
+#d3-icon {
+	height: 29px;
+	margin-top: 24px;
+	display: inline-block;
+    vertical-align: middle;
+}
+
+#angular-icon {
+	height: 29px;
+	margin-top: 24px;
+	display: inline-block;
+    vertical-align: middle;
+}
+
+#express-icon {
+	height: 33px;
+	margin-top: 24px;
+	display: inline-block;
+    vertical-align: middle;
+}
+
+/*Select all Font Mfizz icons
+and move them over a bit since they have some space to the right
+*/
+.offset-js {
+	left: 4px;
+}
+
+.offset-java {
+	left: 6px;
+}
+
+.offset-node {
+	left: 3px;
+}
+
+.offset-db{
+	left: 4px;
+}
+
+.icon-javascript-alt {
+	color: var(--js-yellow); /*JS yellow*/
+}
+
+.fa-css3 {
+	color: var(--css-blue);
+}
+
+.fa-html5 {
+	color: var(--html-orange);
+}
+
+.icon-java {
+	color: var(--java-orange);
+}
+
+.icon-python {
+	color: var(--python-blue);
+}
+
+.fa-database {
+	color: #333;
+}
+
+.icon-database {
+	color: var(--sql-grey);
+}
+
+.icon-nodejs {
+	color: var(--node-green);
+}
+
+.icon-mongodb {
+	color: var(--mongo-green);
+}
+
+
+
+
+

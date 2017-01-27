@@ -7,6 +7,8 @@
 		<link rel="stylesheet" href="css/bootstrap.min.css">
 		<link href="css/style.css" rel="stylesheet" type="text/css">
 		<link href="css/about.css" rel="stylesheet" type="text/css">
+		<link href="css/font-awesome-4.7.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+		<link href="css/font-mfizz-2.3.0/font-mfizz.css" rel="stylesheet" type="text/css">
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
 		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 		<script src="https://d3js.org/d3.v4.min.js"></script>
@@ -25,39 +27,128 @@
 	<body>
 		<div id="header">
 		</div>
-		<div class="container">
-			<div class="row">
-				<div class="col-xs-12">
-					<div id="header"></div>
-					<h2>About Me:</h2>
-					<div class="about">
-						<p>
-							I'm a self-taught full stack  developer based in Waterloo, Ontario, Canada.
+		<section id="about">
+			<div class="container">
+				<div class="row">
+					<div class="col-xs-12 box main-header">
+						<h2 class="vertical-center">About Me</h2>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-lg-12 box box-bio">
+						<p class="bio vertical-center">
+							I'm a self-taught full stack developer from Waterloo, Ontario, Canada. I recently completed FreeCodeCamp's Front End Devlopment Program. I have taken several courses online on Computer Science and Software Engineering Fundamentals.
 						</p>
-						<p>
-							Rather than learning the frameowrk du jour, I have focused on attaining a good grasp of how to reason like a computer scientist. That said, I am familiar with the following languages, frameworks and technologies:
-				     	</p>
-					    <ul class="skills-list">
-					    	<li class="skills-item"><strong>Most comfortable:</strong>
-					        	Javascript, jQuery, Python, Java, R
-					        </li>
-					        <li class="skills-item"><strong>Somewhat comfortable:</strong>
-					        	Ruby, Ruby on Rails, C#, VBA, Matlab/GNU Octave, SQL, HTML, CSS, Bootstrap, D3.js, AJAX, Node.js, Express.js, MongoDB
-					        </li>
-					        <li class="skills-item"><strong>Working Knowledge:</strong>
-					        	Swift, C/C++, PHP, Scala, XML, XSLT
-					    	</li>
-				    	</ul>
-				        <p>
-				        	I am also familiar with: Git, Agile Methodologies, TDD and BDD and Unix operating systems.
-				        </p>
-				        <p>
-				         	In my spare time, I enjoy running, biking, playing guitar, reading and craft beer.
-				        </p>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-xs-12 box skills-header">
+						<h3 class="vertical-center">
+							Languages and Frameworks
+						</h3>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-xs-12 box-small skills-header">
+						<h4 class="vertical-center">
+							Experienced
+						</h4>
+					</div>
+				</div>
+				<div class="row box-skills">
+					<div class="col-lg-4 col-sm-6 col-xs-12 box-skill box-center">
+						<div class="icon-box">
+							<i class="icon-javascript-alt offset-js vector-icon"></i>
+						</div>
+						<div class="skill-label">JavaScript + jQuery</div>
+					</div>
+					<div class="col-lg-4 col-sm-6 col-xs-12 box-skill box-center">
+						<div class="icon-box">
+							<img src="data/icons/Java.png" id="java-icon" class="custon-icon">
+						</div>
+						<div class="skill-label">Java</div>
+					</div>
+					<div class="col-lg-4 col-sm-6 col-xs-12 box-skill box-center">
+						<div class="icon-box">
+							<img src="data/icons/Python.png" id="python-icon" class="custon-icon">
+						</div>
+						<div class="skill-label">Python</div>
+					</div>
+					<div class="col-lg-4 col-sm-6 col-xs-12 box-skill box-center">
+						<div class="icon-box">
+							<i class="fa fa-html5 fa-3x fa-vertical-align"></i>
+						</div>
+						<div class="skill-label">HTML</div>
+					</div>
+					<div class="col-lg-4 col-sm-6 col-xs-12 box-skill box-center">
+						<div class="icon-box">
+							<i class="fa fa-css3 fa-3x fa-vertical-align"></i>
+						</div>
+						<div class="skill-label">CSS + Bootstrap</div>
+					</div>
+					<div class="col-lg-4 col-sm-6 col-xs-12 box-skill box-center">
+						<div class="icon-box">
+							<img src="data/icons/R_logo.png" id="r-icon" class="custon-icon">
+						</div>
+						<div class="skill-label">R</div>
+					</div>
+				</div>
+
+				<div class="row">
+					<div class="col-xs-12 box-small skills-header">
+						<h4 class="vertical-center">
+							Currently Exploring
+						</h4>
+					</div>
+				</div>	
+				<div class="row box-skills">
+					<div class="col-lg-4 col-sm-6 col-xs-12 box-skill box-center">
+						<div class="icon-box">
+							<i class="icon-database offset-db vector-icon"></i>
+						</div>
+						<div class="skill-label">SQL</div>
+					</div>
+					<div class="col-lg-4 col-sm-6 col-xs-12 box-skill box-center">
+						<div class="icon-box">
+							<i class="icon-nodejs offset-node vector-icon"></i>
+						</div>
+						<div class="skill-label">Node.js</div>
+					</div>
+					<div class="col-lg-4 col-sm-6 col-xs-12 box-skill box-center">
+						<div class="icon-box">
+							<i class="icon-mongodb vector-icon"></i>
+						</div>
+						<div class="skill-label">MongoDB</div>
+					</div>
+					<div class="col-lg-4 col-sm-6 col-xs-12 box-skill box-center">
+						<div class="icon-box">
+							<img src="data/icons/D3.png" id="d3-icon">
+						</div>
+						<div class="skill-label">D3.js</div>
+					</div>
+					<div class="col-lg-4 col-sm-6 col-xs-12 box-skill box-center">
+						<div class="icon-box">
+							<img src="data/icons/Angular.png" id="angular-icon">
+						</div>
+						<div class="skill-label">Angular.js</div>
+					</div>
+					<div class="col-lg-4 col-sm-6 col-xs-12 box-skill box-center">
+						<div class="icon-box">
+							<img src="data/icons/Express.png" id="express-icon">
+						</div>
+						<div class="skill-label">Express.js</div>
+					</div>				        
+				</div>
+
+				<div class="row">
+					<div class="col-lg-12 box box-bio">
+						<p class="bio vertical-center">
+							In my spare time, I enjoy running, biking, playing guitar, reading and craft beer.	
+						</p>
 					</div>
 				</div>
 			</div>
-		</div>
+		</section>
 		<div id="footer">
 		</div>
 	</body>

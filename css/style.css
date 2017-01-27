@@ -1,20 +1,21 @@
 * {
-  font-family: 'HelveticaNeue-Light', sans-serif;
+  font-family: 'HelveticaNeue', sans-serif;
   margin: 0;
   padding: 0;
 }
 
 html, body, .container {
   height: 100%;
+  color: #222;
 }
 
 h1, h2, h3, h4 {
   text-align: center;
 }
 
-.row {
+/*.row {
   width: 100%;
-}
+}*/
 
 .main {
   padding-top: 40px;
@@ -134,3 +135,24 @@ path:hover {
   height: 100%;
   padding-top: 28%;
 }
+
+/* highlight color */
+
+::-moz-selection {
+  text-shadow: none;
+  background: #fed136;
+}
+::selection {
+  text-shadow: none;
+  background: #fed136;
+}
+img::selection {
+  background: transparent;
+}
+img::-moz-selection {
+  background: transparent;
+}
+body {
+  webkit-tap-highlight-color: #fed136;
+}
+
