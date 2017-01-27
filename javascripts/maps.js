@@ -214,7 +214,7 @@ d3.json("data/maps/election_results.json", function(data) {
 
 		    legendObese.innerHTML = "";
 
-			legendObese.innerHTML += "The " + numRedStates + " most obese states (" + numRedStates	+ " is the number of states that voted Republican that year).<br>";    
+			legendObese.innerHTML += "The " + numRedStates + " most obese states (" + numRedStates	+ " is the number of states that voted Republican in " + year +").<br>";    
 
 			for (var l in legendTextObese) {
 				legendObese.innerHTML += "<p class='legend-item'><span class='square " + legendTextObese[l].toLowerCase().split(' ').join('-')+ "'></span><span>" + legendTextObese[l] + " (" + (l == 1 ? numRedStates : 51 - numRedStates) + ")</p></span>";
