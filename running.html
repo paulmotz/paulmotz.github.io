@@ -44,9 +44,19 @@
 			</div>
 			<div class='row'>
 				<div class='col-xs-12'>
-					<div class='row options'>
-						<h4>Show data from the following years:</h4>
+					<div class='row' id='years-to-display'>
+						<h4 class="form-header">Show data from the following years:</h4>
 					</div>
+				</div>
+			</div>
+			<div class='row'>
+				<div class='col-xs-12'>
+					<form id="races-to-display">
+						<h4 class="form-header">Show data from:</h4>
+						<label class="radio-inline running-label radio-race"><input type="radio" name="radioruns" value="race">Races</label>
+						<label class="radio-inline running-label radio-casual"><input type="radio" name="radioruns" value="casual">Casual Runs</label>
+						<label class="radio-inline running-label radio-both"><input type="radio" name="radioruns" value="both" checked="checked">Both</label>
+					</form>
 				</div>
 			</div>
 			<div class='row'>

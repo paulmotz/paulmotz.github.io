@@ -381,52 +381,55 @@ function plotAll(svg, runs, years) {
 		}		
 	});	
 
-	$('.options').html('<h4>Show data from the following years:</h4>');
+	$('#years-to-display').html('<h4 class="form-header">Show data from the following years:</h4>');
 
 	for (var index in years) {
 		var year = years[index];
 		if (index > 0 && index % 3 === 0) {
-			$('.options').append('<br>');
+			$('#years-to-display').append('<br>');
 		}
-		$('.options').append('<div class="checkbox-inline ' + 'checkbox-' + year + '" style="color:' + getColor(year, years, 1.0) + '"><label class="running-label"><input type="checkbox" name="'+year+'" value="one" checked="true">'+year+'</label></div>');
+		$('#years-to-display').append('<div class="checkbox-inline ' + 'checkbox-' + year + '" style="color:' + getColor(year, years, 1.0) + '"><label class="running-label"><input type="checkbox" name="'+year+'" value="one" checked="true">'+year+'</label></div>');
 	}
 
 	$('input[type=checkbox]').change(function() {
-		var yearData = '.' + this.name;
-		var checkbox = '.checkbox-' + this.name;
-		if (this.checked) {
-			// if (this.name === "2011") {
-			// 	svg.selectAll("*").remove();
-			// 	y = d3.scaleLinear()
-			// 		.domain([3,7.5])
-			// 		.range([plotHeight,margins.top]);
-			// 	d3.csv("./data/all.csv", draw);
-			// 	console.log(this);
-			// 	this.checked = false;
-			// }
-			// else {
-				($(yearData)).show();
-				$(checkbox).css('color', getColor(Number(this.name), years, 1.0));	
-			// }
+		displayRuns(years);
+	});
+
+
+	$('input[type=radio]').change(function() {
+		displayRuns(years)
+	});
+}
+
+function displayRuns(years) {
+	let checkboxes = $('input[type=checkbox]');
+	let checkedYears = [];
+	for (let checkbox of checkboxes) {
+		if (checkbox.checked) {
+			checkedYears.push(checkbox.name);
+		}
+	}
+	let checkedRadio = $('input[name=radioruns]:checked', '#races-to-display').val();
+	for (let year of years) {
+		if (checkedYears.indexOf(String(year)) !== -1) {
+			if (checkedRadio === 'race') {
+				$('circle.' + year).hide();
+				$('polygon.' + year).show();
+			}
+			else if (checkedRadio === 'casual') {
+				$('circle.' + year).show();
+				$('polygon.' + year).hide();
+			}
+			else {
+				$('circle.' + year).show();
+				$('polygon.' + year).show();
+			}
 		}
 		else {
-			// if (this.name === "2011") {
- 		// 		svg.selectAll("*").remove();
-			// 	y = d3.scaleLinear()
-			// 		.domain([3,7])
-			// 		.range([plotHeight,margins.top]);
-			// 	d3.csv("./data/all.csv", draw);
-			// 	console.log(this);
-			// 	this.checked = false;
-			// 	console.log(this);
-			// }
-			// else {
-				($(yearData)).hide();
-				$(checkbox).css('color', '#999');
-			// }				
+			$('circle.' + year).hide();
+			$('polygon.' + year).hide();
 		}
-		var co = getRunCentre();
-	});
+	}
 }
 
 /**

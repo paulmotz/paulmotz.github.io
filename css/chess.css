@@ -30,6 +30,10 @@ label {
   font-weight: none;
 }
 
+input[type="radio"] {
+  margin: 0px 20px;
+}
+
 .game-controls {
   text-align: center;
 }
