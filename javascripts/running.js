@@ -133,7 +133,7 @@ function draw(data) {
 				tooltipY = yPos + tooltipOffset
 
 				tooltip.style("border", '1px solid ' + color) // for colored borders
-					.style("left", tooltipX + "px")     
+					.style("left", tooltipX + "px")
 	      			.style("top", tooltipY + "px");
 
       			// styling for the arrow      			
@@ -400,6 +400,11 @@ function plotAll(svg, runs, years) {
 		displayRuns(years)
 	});
 }
+
+/**
+ * Displays the proper runs based on the checkboxes and radio button selected
+ * @param {number[]} years - the years for which there is running data
+ */
 
 function displayRuns(years) {
 	let checkboxes = $('input[type=checkbox]');
