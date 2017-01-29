@@ -37,13 +37,18 @@ ul {
 	line-height: 30px;
 }
 
-.tiny {
-	text-align: center;
+.skills-list {
+	 margin-left: 2em;
+/*    margin-left: 0;
+    padding-left: 0;*/
 }
 
-.skills-list {
-    margin-left: 0;
-    padding-left: 0;
+/*.skills-item {
+    margin-left: 2em;
+}*/
+
+.course-provider {
+	font-weight: bold;
 }
 
 .box {
