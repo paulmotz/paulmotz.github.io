@@ -283,6 +283,17 @@ d3.json("data/maps/election_results.json", function(data) {
 				legendCompare.innerHTML += "<p class='legend-item'><span class='square " + legendTextCompare[l].toLowerCase().split(' ').join('-')+ "'></span><span>" + legendTextCompare[l] + " (" + caseValues[l] + ")</p></span>";
 				// if (l == 1) legendCompare.innerHTML += "<br>";
 			}
+
+			var prediction = document.getElementById('prediction');
+			var correctlyPredicted = caseValues[0] + caseValues[1];
+			prediction.innerHTML = 'If you had sorted the 50 states + DC by the obesity rate in ' +
+									year + ', ' + 
+								   'knew how many states both parties would win in ' +
+								   year +
+								   ' and predicted states by predicting the most obese as Republican and least obese as Democrat, ' +
+								   'you would have predicted ' +
+								   correctlyPredicted + '/51 states ' +
+								   'or ' + Math.round(correctlyPredicted/0.51) + '% correctly.';
 		});
 	}
 });
