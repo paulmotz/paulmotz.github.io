@@ -103,10 +103,11 @@ function draw(data) {
 
 	// custon tooltips inspired by: 
 	// http://stackoverflow.com/questions/16256454/d3-js-position-tooltips-using-element-position-not-mouse-position
-	$("svg circle, svg polygon").on('mousemove', function(e) {
+	$("svg circle, svg polygon").on('mouseover', function(e) {
 		if (!dropdownExpanded()) {
-			var xPos = e.pageX;
-			var yPos = e.pageY;
+			let rect = this.getBoundingClientRect();
+			var xPos = rect.left + rect.width / 2;
+			var yPos = rect.top + rect.height / 2;
 			tooltip.style("opacity", 1); 
 			tooltipTriangle.style("opacity", 1); 
 			$(tooltip._groups[0][0]).css("z-index", 999);
@@ -126,11 +127,14 @@ function draw(data) {
 			var x = co[0];
 			var y = co[1];
 
-			// run is below the average on the graph
+			// let tooltipOffset = rect.width; // could also have used this.getAttribute('r') * 2)
+			tooltipOffset = 28;
+
+			// run is below the average on the graph, position its tooltip below as well
 			if (yPos > y) {
 
-				tooltipX = xPos - tooltipWidth / 2
-				tooltipY = yPos + tooltipOffset
+				tooltipX = xPos - tooltipWidth / 2;
+				tooltipY = yPos + tooltipOffset;
 
 				tooltip.style("border", '1px solid ' + color) // for colored borders
 					.style("left", tooltipX + "px")
@@ -473,3 +477,4 @@ function dropdownExpanded() {
 
 // console.log(document.getElementsByClassName('svg'));
 
+// 
