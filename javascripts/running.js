@@ -160,12 +160,12 @@ function draw(data) {
 				if (tooltipY < sTop) {
 					tooltipY = yPos - tooltipHeight/2;
 					
-					// if run is left of center, put tooltip to the right
+					// if run is left of center, put tooltip to the left
 					if (xPos < x) {
 						tooltipX = xPos - tooltipOffset - tooltipWidth;
 						
 						// styling for the arrow
-		      			t.offset({left: tooltipX + tooltipWidth, top: tooltipY + tooltipHeight / 2 - triangleSize});
+		      			t.offset({left: tooltipX + tooltipWidth - 1, top: tooltipY + tooltipHeight / 2 - triangleSize});
 		      			t.css({"border-left": "8px solid " + color});
 		 				t.css({"border-right": "0px solid transparent"});
 		      			t.css({"border-bottom": "8px solid transparent"});
