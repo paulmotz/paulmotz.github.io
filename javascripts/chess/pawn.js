@@ -2,19 +2,19 @@ class Pawn extends Piece {
 
 	moves() {
 
-		var color = this.color;
- 		var file = this._file;
- 		var rank = this._rank;
- 		var moves = [];
- 		var rookPin = false; // a vertical pin
- 		var bishopPinBD = false; // a diagonal pin that is parallel with the large black diagonal (A1-H8)
- 		var bishopPinWD = false; // a diagonal pin that is parallel with the large white diagonal (A8-H1)
+		let color = this.color;
+ 		let file = this._file;
+ 		let rank = this._rank;
+ 		let moves = [];
+ 		let rookPin = false; // a vertical pin
+ 		let bishopPinBD = false; // a diagonal pin that is parallel with the large black diagonal (A1-H8)
+ 		let bishopPinWD = false; // a diagonal pin that is parallel with the large white diagonal (A8-H1)
 
  		// pawn pin checks work, but I don't think it is very elegant
-		var pD = this.getPinDirection();
+		let pD = this.getPinDirection();
  		if (pD) {
- 			var f = pD[0];
- 			var r = pD[1];
+ 			let f = pD[0];
+ 			let r = pD[1];
 
  			// horizontal/vertical pin
  			if ((f + r) % 2 !== 0) {
@@ -116,13 +116,13 @@ class Pawn extends Piece {
 	 */
 
  	protectedSquares(occupiedSquares) {
- 		var color = this._color
- 		var file = this._file;
- 		var rank = this._rank;
-		var protectedSquares = color === 'w' ? [[file - 1, rank + 1], [file + 1, rank + 1]] : [[file - 1, rank - 1], [file + 1, rank - 1]];
+ 		let color = this._color
+ 		let file = this._file;
+ 		let rank = this._rank;
+		let protectedSquares = color === 'w' ? [[file - 1, rank + 1], [file + 1, rank + 1]] : [[file - 1, rank - 1], [file + 1, rank - 1]];
 
 		// ensure protected squares are off the board. Only need to check file and not rank.
-		var protectedSquares = protectedSquares.filter(function(square) {
+		let protectedSquares = protectedSquares.filter(function(square) {
 			return square[0] > 0 && square[0] < 9;
 		});
 

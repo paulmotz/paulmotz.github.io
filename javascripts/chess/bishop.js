@@ -7,16 +7,16 @@ class Bishop extends Piece {
 	 */
 
 	moves() {
-		var moves = [];
+		let moves = [];
 
-		var file = this._file;
-		var rank = this._rank;
+		let file = this._file;
+		let rank = this._rank;
 
-		var pD = this.getPinDirection();
+		let pD = this.getPinDirection();
  		if (pD) {
 
- 			var f = pD[0];
- 			var r = pD[1];
+ 			let f = pD[0];
+ 			let r = pD[1];
 
  			// horizontal/vertical pin, bishop cannot move
  			if ((f + r) % 2 !== 0) {
@@ -46,10 +46,10 @@ class Bishop extends Piece {
 	 */
 
 	protectedSquares() {
-		var protectedSquares = [];
+		let protectedSquares = [];
 
-		var file = this._file;
-		var rank = this._rank;
+		let file = this._file;
+		let rank = this._rank;
 
 		protectedSquares = this.moveOneWay(file, rank, -1, -1, protectedSquares, true);
 		protectedSquares = this.moveOneWay(file, rank, -1, +1, protectedSquares, true);

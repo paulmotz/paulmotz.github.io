@@ -7,14 +7,14 @@ class Queen extends Piece {
 	 */
 
 	moves() {
-		var moves = [];
-		var file = this._file;
-		var rank = this._rank;
+		let moves = [];
+		let file = this._file;
+		let rank = this._rank;
 
-		var pD = this.getPinDirection();
+		let pD = this.getPinDirection();
  		if (pD) {
- 			var f = pD[0];
- 			var r = pD[1];
+ 			let f = pD[0];
+ 			let r = pD[1];
 
 			// queen can only move in line with the pinning piece
 			moves = this.moveOneWay(file, rank,  f,  r, moves, false);
@@ -41,9 +41,9 @@ class Queen extends Piece {
 	 */
 
 	protectedSquares() {
-		var protectedSquares = [];
-		var file = this._file;
-		var rank = this._rank;
+		let protectedSquares = [];
+		let file = this._file;
+		let rank = this._rank;
 
 		protectedSquares = this.moveOneWay(file, rank, -1, 0, protectedSquares, true);
 		protectedSquares = this.moveOneWay(file, rank, +1, 0, protectedSquares, true);

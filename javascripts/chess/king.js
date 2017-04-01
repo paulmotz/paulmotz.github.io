@@ -25,25 +25,25 @@ class King extends Piece {
 
  	moves() {
 
- 		var color = this._color;
- 		var opponentColor = otherColor(color);
- 		var file = this._file;
- 		var rank = this._rank;
- 		var hasMoved = this._hasMoved;
- 		var possibleMoves = [ [file - 1, rank + 1], [file, rank + 1], [file + 1, rank + 1], 
+ 		let color = this._color;
+ 		let opponentColor = otherColor(color);
+ 		let file = this._file;
+ 		let rank = this._rank;
+ 		let hasMoved = this._hasMoved;
+ 		let possibleMoves = [ [file - 1, rank + 1], [file, rank + 1], [file + 1, rank + 1], 
  							  [file - 1, rank],                       [file + 1, rank], 
  							  [file - 1, rank - 1], [file, rank - 1], [file + 1, rank - 1] ];
 
 
 
-		var moves = possibleMoves.filter(function(square){
+		let moves = possibleMoves.filter(function(square){
 			return square[0] > 0 && square[0] < 9 && square[1] > 0 && square[1] < 9 && 
 			(!occupiedSquares[squareToIndex([square[0], square[1]]) - 1] || occupiedSquares[squareToIndex([square[0], square[1]]) - 1][0] !== color) &&
 			!attackedSquares[opponentColor].has(squareToIndex(square));			
 		});
 
-		var colorRook = color + 'R';
-		var queensideRook = allPieces[colorRook][findPieceIndex(colorRook, 0)];
+		let colorRook = color + 'R';
+		let queensideRook = allPieces[colorRook][findPieceIndex(colorRook, 0)];
 
 		// queenside castling
 		if (!hasMoved && queensideRook && !queensideRook.hasMoved && 
@@ -52,7 +52,7 @@ class King extends Piece {
 			moves.push([file - 2, rank]);
 		}
 
-		var kingsideRook = allPieces[colorRook][findPieceIndex(colorRook, 1)];
+		let kingsideRook = allPieces[colorRook][findPieceIndex(colorRook, 1)];
 
 		// kingside castling
 		if (!hasMoved && kingsideRook && !kingsideRook.hasMoved && 
@@ -70,16 +70,16 @@ class King extends Piece {
 	 */
 
  	protectedSquares() {
- 		var color = this._color;
- 		var file = this._file;
- 		var rank = this._rank;
- 		var hasMoved = this._hasMoved;
- 		var possibleMoves = [ [file - 1, rank + 1], [file, rank + 1], [file + 1, rank + 1], 
+ 		let color = this._color;
+ 		let file = this._file;
+ 		let rank = this._rank;
+ 		let hasMoved = this._hasMoved;
+ 		let possibleMoves = [ [file - 1, rank + 1], [file, rank + 1], [file + 1, rank + 1], 
  							  [file - 1, rank],                       [file + 1, rank], 
  							  [file - 1, rank - 1], [file, rank - 1], [file + 1, rank - 1] ];
 
  		// only need to check if square is on the board
-		var protectedSquares = possibleMoves.filter(function(square){
+		let protectedSquares = possibleMoves.filter(function(square){
 			return square[0] > 0 && square[0] < 9 && square[1] > 0 && square[1] < 9;			
 		});
 

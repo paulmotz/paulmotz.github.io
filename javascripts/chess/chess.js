@@ -5,73 +5,73 @@
  *
 */
 
-var allPieces;
-var occupiedSquares;
-var enPassantPawn;
-var attackedSquares = { 'w' : new Set(), 'b' : new Set() };
+let allPieces;
+let occupiedSquares;
+let enPassantPawn;
+let attackedSquares = { 'w' : new Set(), 'b' : new Set() };
 
 // the two players' colors
-var colors = ['w', 'b'];
-var colorAbbreviations = {'w' : 'White', 'b' : 'Black'};
+let colors = ['w', 'b'];
+let colorAbbreviations = {'w' : 'White', 'b' : 'Black'};
 
 // square colors
-var dark = '#555';
-var light = '#999';
-var clicked = "orange";
-var highlightedDark = "Green";
-var highlightedLight = "lime";
-var check = "#FF0000";
+let dark = '#555';
+let light = '#999';
+let clicked = "orange";
+let highlightedDark = "Green";
+let highlightedLight = "lime";
+let check = "#FF0000";
 
 // board colors
-var edge = "#000";
-var text = "#FFF";
+let edge = "#000";
+let text = "#FFF";
 
 // piece colors
-var whitePieces = "#FFF";
-var blackPieces = "#000";
+let whitePieces = "#FFF";
+let blackPieces = "#000";
 
 // store the game states so that a user can return to a previous position
-var gameStates = [];
+let gameStates = [];
 
 $(document).ready(function() {
 
 	// want element to still take up space on page, so don't use hide
 	$('.moves-display').css('visibility', 'hidden');
 
-	var $board = $('#chessboard');
-	var delay = 500;
+	let $board = $('#chessboard');
+	let delay = 500;
 
-	// visual/layout variables
-	var height = parseInt($board.css('height'));
-	var width = parseInt($board.css('width'));
-	var squareSize = height / 10;
-	var lineWidth = height / 100;
+	// visual/layout letiables
+	let height = parseInt($board.css('height'));
+	let width = parseInt($board.css('width'));
+	let squareSize = height / 10;
+	let lineWidth = height / 100;
 
-	var markedSquares = new Set();
+	let markedSquares = new Set();
 
-	var board = $board[0];
-	var ctx = board.getContext('2d');
-	var files = ['', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', ''];
-	var ranks = ['', '1', '2', '3', '4', '5', '6', '7', '8', ''];
+	let board = $board[0];
+	let ctx = board.getContext('2d');
+	let files = ['', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', ''];
+	let ranks = ['', '1', '2', '3', '4', '5', '6', '7', '8', ''];
 
-	// game/logic variables
+	// game/logic letiables
 
 	// display the Number of moves
-	var moveCounter = 0;
+	let moveCounter = 0;
 
 	// used for checking 50-move draw rule
-	var drawMoveCounter;
+	let drawMoveCounter;
 
-	var lastMove = {};	
+	let lastMove = {};	
 
-	var pieceNames = {'B' : 'Bishop', 'N' : 'Knight', 'K' : 'King', 'P' : 'Pawn', 'Q' : 'Queen', 'R' : 'Rook'};
-	var pieceAbbreviations = {'Bishop' : 'B', 'Knight' : 'N', 'King' : 'K', 'Pawn' : 'P', 'Queen' : 'Q', 'Rook' : 'R'};
+	let pieceNames = {'B' : 'Bishop', 'N' : 'Knight', 'K' : 'King', 'P' : 'Pawn', 'Q' : 'Queen', 'R' : 'Rook'};
+	let pieceAbbreviations = {'Bishop' : 'B', 'Knight' : 'N', 'King' : 'K', 'Pawn' : 'P', 'Queen' : 'Q', 'Rook' : 'R'};
 
 	// https://en.wikipedia.org/wiki/Chess_symbols_in_Unicode
-	var pieceSymbols = {'bB': '♝', 'bN': '♞', 'bK': '♚', 'bP': '♟', 'bQ': '♛', 'bR': '♜', 'wB': '♗', 'wN': '♘', 'wK': '♔', 'wP': '♙', 'wQ': '♕', 'wR': '♖'};
+	let pieceSymbols = {'bB': '♝', 'bN': '♞', 'bK': '♚', 'bP': '♟', 'bQ': '♛', 'bR': '♜', 'wB': '♗', 'wN': '♘', 'wK': '♔', 'wP': '♙', 'wQ': '♕', 'wR': '♖'};
 
 	// // kings and queens have arrays of length 1 for convenience in later methods
-	var pieceStartingPositions = {'wB' : [[3, 1], [6, 1]],
+	let pieceStartingPositions = {'wB' : [[3, 1], [6, 1]],
 									  'wN' : [[2, 1], [7, 1]],
 									  'wK' : [[5, 1]],
 									  'wP' : [[1, 2], [2, 2], [3, 2], [4, 2], [5, 2], [6, 2], [7, 2], [8, 2]],
@@ -87,9 +87,9 @@ $(document).ready(function() {
 
 
 	// remove pieces for testing purposes
-	// var pieceNames = {'N' : 'Knight', 'K' : 'King'};
+	// let pieceNames = {'N' : 'Knight', 'K' : 'King'};
 
-	// var pieceStartingPositions = {'wB' : [[6, 3], [6, 1]],
+	// let pieceStartingPositions = {'wB' : [[6, 3], [6, 1]],
 	// 								  'wN' : [[2, 1], [7, 1]],
 	// 								  'wK' : [[8, 1]],
 	// 								  'wP' : [[1, 2], [2, 2], [3, 2], [4, 2], [5, 2], [6, 2], [7, 2], [8, 2]],
@@ -106,19 +106,19 @@ $(document).ready(function() {
 	// represent all pieces as entries in arrays for dynamic access (kings could have been single entry)
 	allPieces = {'wB' : [], 'wN' : [], 'wK' : [], 'wP' : [], 'wQ' : [], 'wR' : [], 'bB' : [], 'bN' : [], 'bK' : [], 'bP' : [], 'bQ' : [], 'bR' : [] };
 
-	var whiteDown = true;
-	var humanTurn;
-	var whiteToMove = true;
+	let whiteDown = true;
+	let humanTurn;
+	let whiteToMove = true;
 
-	var markedSquares = new Set();
-	var boardStrings;
+	let markedSquares = new Set();
+	let boardStrings;
 
 	newGame();
 
 	$('.btn').on('click', function() {
 		$('.radio-piece').each(function() {
-			var selection = $(this).parent().find('input');
-			var piece = selection.val();
+			let selection = $(this).parent().find('input');
+			let piece = selection.val();
 			if ($('#radio-white').is(':checked') || $('#radio-human').is(':checked')) {
 				whiteDown = true;
 				$(this).parent().find('span').html(pieceSymbols['w' + piece] + " " + pieceNames[piece])
@@ -135,7 +135,7 @@ $(document).ready(function() {
 	});
 
 	/**
-	 * Starts a new game and initialized global variables to starting values
+	 * Starts a new game and initialized global letiables to starting values
 	 */
 
 	function newGame() {
@@ -158,15 +158,15 @@ $(document).ready(function() {
 	function initializePieces() {
 
 		// reset allPieces object
-		for (var key in allPieces) {
+		for (let key in allPieces) {
 			allPieces[key] = [];
 		}
- 		for (var color in colors) {
-			for (var pn in pieceNames) {
-				var colorAndPiece = colors[color] + pn;
-				for (var pc = 0; pc < pieceStartingPositions[colorAndPiece].length; pc++) {					
-					var file = pieceStartingPositions[colorAndPiece][pc][0];
-					var rank = pieceStartingPositions[colorAndPiece][pc][1];
+ 		for (let color in colors) {
+			for (let pn in pieceNames) {
+				let colorAndPiece = colors[color] + pn;
+				for (let pc = 0; pc < pieceStartingPositions[colorAndPiece].length; pc++) {					
+					let file = pieceStartingPositions[colorAndPiece][pc][0];
+					let rank = pieceStartingPositions[colorAndPiece][pc][1];
 					addPiece(colorAndPiece, file, rank, pc, false);
 				}
 			}
@@ -183,8 +183,8 @@ $(document).ready(function() {
 	 */
 
 	function addPiece(colorAndPiece, file, rank, id, hasMoved) {
-		var color = colorAndPiece[0];
-		var piece = colorAndPiece[1];
+		let color = colorAndPiece[0];
+		let piece = colorAndPiece[1];
 		switch (piece) {
 			case 'B':
 				allPieces[colorAndPiece].push(new Bishop(color, piece, file, rank, id));
@@ -222,11 +222,11 @@ $(document).ready(function() {
 		ctx.textBaseline = "middle"; 
 		ctx.font = "20px serif";
 
-		for (var r = 0; r < 10; r++) {
-			for (var f = 0; f < 10; f++) {
+		for (let r = 0; r < 10; r++) {
+			for (let f = 0; f < 10; f++) {
 
-				var fileIndex = whiteDown ? f : 9 - f;
-				var rankIndex = whiteDown ? 9 - r : r;
+				let fileIndex = whiteDown ? f : 9 - f;
+				let rankIndex = whiteDown ? 9 - r : r;
 
 				// rank falls off the board, write the file name
 				if (r === 0 || r === 9) {
@@ -264,27 +264,27 @@ $(document).ready(function() {
 		if (newGame) occupiedSquares = Array(64); // reset the occupied squares if it is a new game
 
 		// if (bs) {
-		// 	for (var i = 0; i < bs.length; i+=2) {
+		// 	for (let i = 0; i < bs.length; i+=2) {
 		// 		if (bs[i] != '_') {
-		// 			var piece = bs.slice(i, i + 2);
-		// 			var index = (i + 2) / 2;
-		// 			var file = indexToSquare(index)[0];
-		// 			var rank = indexToSquare(index)[1];
+		// 			let piece = bs.slice(i, i + 2);
+		// 			let index = (i + 2) / 2;
+		// 			let file = indexToSquare(index)[0];
+		// 			let rank = indexToSquare(index)[1];
 		// 			drawOnSquare(file, rank, pieceSymbols[piece], piece[0]);
 		// 		}
 		// 	}
 		// }
 
 		// else {
-			for (var pieceType in allPieces) {
-				var pieces = allPieces[pieceType];
-				for (var i in pieces) {
-					var piece = pieces[i];
-					var file = piece._file;
-					var rank = piece.rank;
-					var index = squareToIndex([file, rank]);
+			for (let pieceType in allPieces) {
+				let pieces = allPieces[pieceType];
+				for (let i in pieces) {
+					let piece = pieces[i];
+					let file = piece._file;
+					let rank = piece.rank;
+					let index = squareToIndex([file, rank]);
 					occupiedSquares[index - 1] = pieceType + i;
-					var symbol = pieceSymbols[pieceType];
+					let symbol = pieceSymbols[pieceType];
 					drawOnSquare(file, rank, symbol, pieceType[0]);
 				}
 			}
@@ -300,14 +300,14 @@ $(document).ready(function() {
 
 	function move(currentColor, opponentColor, noComp) {
 
-		var boardString = getBoardString();
+		let boardString = getBoardString();
 		
 		boardStrings.push(boardString);
 
 		// used in king.js for getting legal king moves
 		attackedSquares = getAttackedSquares();
 
-		var checkingPieces = inCheck(currentColor);
+		let checkingPieces = inCheck(currentColor);
 
 		// only draw the last move if there was a last move
 		if (lastMove['oldSquare']) {
@@ -339,25 +339,25 @@ $(document).ready(function() {
 
 			inCheck(currentColor);
 
-			var fromTo = [];
-			var legalMoves = [];
-			var selectedPiece = '';
+			let fromTo = [];
+			let legalMoves = [];
+			let selectedPiece = '';
 			$board.on('click', function(e) {
 
-				var x0 = e.offsetX;
-				var y0 = e.offsetY;
+				let x0 = e.offsetX;
+				let y0 = e.offsetY;
 
 				if (x0 > squareSize && y0 > squareSize && x0 < 9 * squareSize && y0 < 9 * squareSize) {
-					var square = getSquare(x0, y0);
-					var index = squareToIndex(square);	
+					let square = getSquare(x0, y0);
+					let index = squareToIndex(square);	
 
 					fromTo.push(index); 		
 
 					// if the two clicked squares represent a valid move, move the piece
 					if (legalMoves.indexOf(index) !== -1) {
 
-						var nextMove =  {'piece' : selectedPiece.slice(0, 2), 'id' : selectedPiece[2], 'move' : square};
-						var algNot = movePiece(nextMove);
+						let nextMove =  {'piece' : selectedPiece.slice(0, 2), 'id' : selectedPiece[2], 'move' : square};
+						let algNot = movePiece(nextMove);
 
 						if (lastMove['oldSquare']) {
 							drawLastMove(lastMove, opponentColor, true);
@@ -383,7 +383,7 @@ $(document).ready(function() {
 
 					// reset the move sequence if it is invalid
 					else if (fromTo.length === 2) {
-						for (var s in fromTo) {
+						for (let s in fromTo) {
 							redrawSquare(fromTo[s]);
 						}
 						fromTo = [];
@@ -398,15 +398,15 @@ $(document).ready(function() {
 					// if the clicked square has a piece of the correct color in it, get its moves
 					if (selectedPiece && selectedPiece[0] === currentColor && fromTo.length === 1) {
 						ctx.beginPath();
-						var c = getCoordinates(square[0], square[1]);
+						let c = getCoordinates(square[0], square[1]);
 						ctx.rect(c[0] + lineWidth/2, c[1] + lineWidth/2, squareSize - lineWidth, squareSize - lineWidth);			
 						ctx.lineWidth = lineWidth;
 						ctx.strokeStyle = clicked;
 						ctx.stroke();
 						ctx.closePath();
-						var pieceName = selectedPiece.slice(0, 2);
-						var id = selectedPiece[2]; // only need one digit since id can never be greater than 9 (8 pawns promoted to B/N/R)
-						var index = findPieceIndex(pieceName, id);
+						let pieceName = selectedPiece.slice(0, 2);
+						let id = selectedPiece[2]; // only need one digit since id can never be greater than 9 (8 pawns promoted to B/N/R)
+						let index = findPieceIndex(pieceName, id);
 						
 						// if the king is not in check
 						if (!checkingPieces.length) {
@@ -433,58 +433,58 @@ $(document).ready(function() {
 			humanTurn = false;
 
 			// construct array of possible moves
-			var moves = [];
+			let moves = [];
 			for (pieceTypes in allPieces) {
-				var pieceType = pieceTypes[1];
+				let pieceType = pieceTypes[1];
 
 				// only get moves from the correct color of pieces
 				if (pieceTypes[0] === currentColor) {
-					var pieceArray = allPieces[pieceTypes];
-					for (var piece in pieceArray) {
+					let pieceArray = allPieces[pieceTypes];
+					for (let piece in pieceArray) {
 
-						var pieceMoves;
+						let pieceMoves;
 
 						if (!checkingPieces.length) {
 							pieceMoves = pieceArray[piece].moves();
 						}
 
 						else {
-							var selectedPiece = currentColor + pieceArray[piece].abbr + pieceArray[piece].id;
+							let selectedPiece = currentColor + pieceArray[piece].abbr + pieceArray[piece].id;
 							pieceMoves = getLegalMoves(checkingPieces, selectedPiece).map(indexToSquare);
 						}
 
-						for (var i in pieceMoves) {
-							var m =  {'piece' : pieceTypes, 'id' : pieceArray[piece].id, 'move' : pieceMoves[i]};
+						for (let i in pieceMoves) {
+							let m =  {'piece' : pieceTypes, 'id' : pieceArray[piece].id, 'move' : pieceMoves[i]};
 							moves.push(m);
 						}
 					}
 				}
 			}
-			var numMoves = moves.length;
+			let numMoves = moves.length;
 
 			if (!numMoves && inCheck(currentColor).length) {
-				var winningColor = colorAbbreviations[opponentColor]
+				let winningColor = colorAbbreviations[opponentColor]
 				$('.result-description').html("Checkmate! " + winningColor + " wins!");
-				var resultString = winningColor === 'White' ? '1-0' : '0-1';
+				let resultString = winningColor === 'White' ? '1-0' : '0-1';
 				$('.move-container').append(resultString);
 				$('.move-container').append("<span class='result'>" + resultString + "</span>");
 				drawCheckSquare(currentColor, false); // make the square the normal color
 				return;			
 			}
 
-			var r = Math.floor(Math.random() * numMoves);
+			let r = Math.floor(Math.random() * numMoves);
 
-			var compMove = moves[r];
-			var piece = compMove.piece;
-			var pieceObject = allPieces[piece][findPieceIndex(piece, compMove.id)];
+			let compMove = moves[r];
+			let piece = compMove.piece;
+			let pieceObject = allPieces[piece][findPieceIndex(piece, compMove.id)];
 			if (lastMove['oldSquare']) {
 				drawLastMove(lastMove, opponentColor, true);
 			}
 			lastMove = {'oldSquare' : [pieceObject.file, pieceObject.rank] , 'newSquare' : compMove.move, 'piece' : piece + compMove.id};
-			var pieceType = piece[1];
+			let pieceType = piece[1];
 
 			// movePiece checks whether a king or rook has moved. This should be done after checking for castling
-			var algNot = movePiece(moves[r]);
+			let algNot = movePiece(moves[r]);
 
 			inCheck(currentColor);
 
@@ -503,32 +503,32 @@ $(document).ready(function() {
 
 	function movePiece(move) {
 
-		var algNot = '';
+		let algNot = '';
 
-		var piece = move.piece;
-		var color = piece[0];
-		var pieceType = piece[1];
-		var id = move.id;
-		var newSquare = move.move;
-		var newIndex = squareToIndex(newSquare);
-		var file = newSquare[0];
-		var rank = newSquare[1];
+		let piece = move.piece;
+		let color = piece[0];
+		let pieceType = piece[1];
+		let id = move.id;
+		let newSquare = move.move;
+		let newIndex = squareToIndex(newSquare);
+		let file = newSquare[0];
+		let rank = newSquare[1];
 
 		// pawn moves reset the fifty-move rule counter
 		if (pieceType === 'P') {
 			drawMoveCounter = 0;
 		}
 
-		var symbol = pieceSymbols[piece];
+		let symbol = pieceSymbols[piece];
 
 		drawOnSquare(file, rank, symbol, color);
 
-		var pieceIndex = findPieceIndex(piece, id);
+		let pieceIndex = findPieceIndex(piece, id);
 
-		var oldFile = allPieces[piece][pieceIndex].file;
-		var oldRank = allPieces[piece][pieceIndex].rank;
-		var oldSquare = [oldFile, oldRank];
-		var oldIndex = squareToIndex(oldSquare);
+		let oldFile = allPieces[piece][pieceIndex].file;
+		let oldRank = allPieces[piece][pieceIndex].rank;
+		let oldSquare = [oldFile, oldRank];
+		let oldIndex = squareToIndex(oldSquare);
 
 		if (occupiedSquares[newIndex - 1]) {
 			algNot = getAlgNotMove(piece, id, true, newIndex, oldSquare)
@@ -595,9 +595,9 @@ $(document).ready(function() {
 		}
 		drawOverPiece(oldSquare);
 
-		var defendingColor = color === 'w' ? 'b' : 'w'; 
+		let defendingColor = color === 'w' ? 'b' : 'w'; 
 
-		var checkingPieces = inCheck(defendingColor);
+		let checkingPieces = inCheck(defendingColor);
 	
 		return algNot;
 	}
@@ -613,24 +613,24 @@ $(document).ready(function() {
 
 		// newIndex is calculated using 1-indexing, it is only used for array accesses in this function, so decrement it
 		newIndex--;
-		var color = piece[0];
-		var file = newSquare[0];
-		var rank = newSquare[1];
+		let color = piece[0];
+		let file = newSquare[0];
+		let rank = newSquare[1];
 		if (humanTurn) {
-			var pieceName = $('input[name=piece]:checked').val();
+			let pieceName = $('input[name=piece]:checked').val();
 		}
 		else {
-			var pieces = ['B', 'N', 'Q', 'R'];
-			var pieceName = pieces[Math.floor(Math.random() * pieces.length)];
+			let pieces = ['B', 'N', 'Q', 'R'];
+			let pieceName = pieces[Math.floor(Math.random() * pieces.length)];
 		}
-		var newPiece = color + pieceName;
-		var index = allPieces[newPiece].length > 0 ? allPieces[newPiece][allPieces[newPiece].length - 1].id + 1 : allPieces[newPiece].length;
-		var symbol = pieceSymbols[newPiece];
+		let newPiece = color + pieceName;
+		let index = allPieces[newPiece].length > 0 ? allPieces[newPiece][allPieces[newPiece].length - 1].id + 1 : allPieces[newPiece].length;
+		let symbol = pieceSymbols[newPiece];
 		drawOverPiece(newSquare);
 		drawOnSquare(file, rank, symbol, newPiece[0]);
 		addPiece(newPiece, file, rank, index, true);
 		allPieces[piece].splice(pieceIndex, 1);
-		var pieceId = newPiece + index;
+		let pieceId = newPiece + index;
 		occupiedSquares[newIndex] = pieceId;
 		boardStrings = [];
 	}
@@ -641,8 +641,8 @@ $(document).ready(function() {
 	 */
 	function castle(kingSquare) {
 
-		var kingFile = kingSquare[0];
-		var kingRank = kingSquare[1];
+		let kingFile = kingSquare[0];
+		let kingRank = kingSquare[1];
 		if ((kingFile !== 3 && kingFile !== 7) || (kingRank !== 1 && kingRank !== 8)) return;
 
 		// queenside castling
@@ -650,12 +650,12 @@ $(document).ready(function() {
 
 			// white
 			if (kingRank === 1) {
-				var rookMove = {'piece' : 'wR', 'id' : 0, 'move' : [4, 1]};
+				let rookMove = {'piece' : 'wR', 'id' : 0, 'move' : [4, 1]};
 			}
 
 			// black
 			else if (kingRank === 8) {
-				var rookMove = {'piece' : 'bR', 'id' : 0, 'move' : [4, 8]};
+				let rookMove = {'piece' : 'bR', 'id' : 0, 'move' : [4, 8]};
 			}
 
 			movePiece(rookMove);
@@ -666,12 +666,12 @@ $(document).ready(function() {
 
 			// white
 			if (kingRank === 1) {
-				var rookMove = {'piece' : 'wR', 'id' : 1, 'move' : [6, 1]};
+				let rookMove = {'piece' : 'wR', 'id' : 1, 'move' : [6, 1]};
 			}
 
 			// black
 			else if (kingRank === 8) {
-				var rookMove = {'piece' : 'bR', 'id' : 1, 'move' : [6, 8]};
+				let rookMove = {'piece' : 'bR', 'id' : 1, 'move' : [6, 8]};
 			}
 
 			movePiece(rookMove);
@@ -685,13 +685,13 @@ $(document).ready(function() {
 	 */
 
 	function getAttackedSquares() {
-		var attackedSquares = { 'w' : new Set(), 'b' : new Set() };
-		for (var pieceType in allPieces) {
+		let attackedSquares = { 'w' : new Set(), 'b' : new Set() };
+		for (let pieceType in allPieces) {
 			// if (pieceType[0] === color) {
-				var pieceArray = allPieces[pieceType];
-				for (var piece in pieceArray) {
-					var pieceMoves = pieceArray[piece].protectedSquares();
-					for (var i in pieceMoves) {
+				let pieceArray = allPieces[pieceType];
+				for (let piece in pieceArray) {
+					let pieceMoves = pieceArray[piece].protectedSquares();
+					for (let i in pieceMoves) {
 						attackedSquares[pieceType[0]].add(squareToIndex(pieceMoves[i]));
 					}
 				}
@@ -708,15 +708,15 @@ $(document).ready(function() {
 	 */
 
 	function getAttackingPieces(color, squareIndex) {
-		var attackingPieces = [];
-		for (var pieceType in allPieces) {
+		let attackingPieces = [];
+		for (let pieceType in allPieces) {
 			if (pieceType[0] === color) {
-				var pieceArray = allPieces[pieceType];
-				for (var piece in pieceArray) {
+				let pieceArray = allPieces[pieceType];
+				for (let piece in pieceArray) {
 
 					// use protectedSquares instead of move since pinned pieces can still check
-					var pieceMoves = pieceArray[piece].protectedSquares();
-					for (var i in pieceMoves) {
+					let pieceMoves = pieceArray[piece].protectedSquares();
+					for (let i in pieceMoves) {
 						if (squareToIndex(pieceMoves[i]) === squareIndex) {
 							attackingPieces.push(color + pieceArray[piece].abbr + pieceArray[piece].id);
 						}
@@ -735,11 +735,11 @@ $(document).ready(function() {
 
 	function inCheck(defendingColor) {
 
-		var attackingColor = otherColor(defendingColor);
+		let attackingColor = otherColor(defendingColor);
 
-		var king = allPieces[defendingColor + 'K'][0];
-		var kingIndex = squareToIndex([king.file, king.rank]);
-		var attackingPieces = getAttackingPieces(attackingColor, kingIndex);
+		let king = allPieces[defendingColor + 'K'][0];
+		let kingIndex = squareToIndex([king.file, king.rank]);
+		let attackingPieces = getAttackingPieces(attackingColor, kingIndex);
 		if (attackingPieces.length) {
 			drawCheckSquare(defendingColor, true);
 		}
@@ -763,10 +763,10 @@ $(document).ready(function() {
 
 		// captures reset the fifty-move rule counter
 		drawMoveCounter = 0;
-		var piece = pieceToCapture.slice(0, 2);
-		var id = pieceToCapture[2];
-		var pieceType = allPieces[piece];
-		var index = findPieceIndex(piece, id);
+		let piece = pieceToCapture.slice(0, 2);
+		let id = pieceToCapture[2];
+		let pieceType = allPieces[piece];
+		let index = findPieceIndex(piece, id);
 		pieceType.splice(index, 1);
 		drawOverPiece(square);
 		boardStrings = [];
@@ -781,20 +781,20 @@ $(document).ready(function() {
 	 */
 
 	function checkCheckmate(currentColor, opponentColor, checkingPieces) {
-		for (var pieceType in allPieces) {
+		for (let pieceType in allPieces) {
 			if (pieceType[0] === currentColor) {
-				var pieces = allPieces[pieceType];
-				for (var j in pieces) {
-					var selectedPiece = pieces[j].color + pieces[j].abbr + pieces[j].id;
+				let pieces = allPieces[pieceType];
+				for (let j in pieces) {
+					let selectedPiece = pieces[j].color + pieces[j].abbr + pieces[j].id;
 					if (getLegalMoves(checkingPieces, selectedPiece).length) {
 						return false;
 					}
 				}
 			}
 		}
-		var winningColor = colorAbbreviations[opponentColor]
+		let winningColor = colorAbbreviations[opponentColor]
 		$('.result-description').html("Checkmate! " + winningColor + " wins!");
-		var resultString = winningColor === 'White' ? '1-0' : '0-1';
+		let resultString = winningColor === 'White' ? '1-0' : '0-1';
 		$('.result').html(resultString);
 		drawCheckSquare(currentColor, false); // make the square the normal color
 		return true;
@@ -809,12 +809,12 @@ $(document).ready(function() {
 
 	function getCoordinates(file, rank) {
 		if (whiteDown) {
-			var x = file * squareSize;
-			var y = (9 - rank) * squareSize;
+			let x = file * squareSize;
+			let y = (9 - rank) * squareSize;
 		}
 		else {
-			var x = (9 - file) * squareSize;
-			var y = rank * squareSize;
+			let x = (9 - file) * squareSize;
+			let y = rank * squareSize;
 		}
 		return [x, y];
 	}
@@ -827,13 +827,13 @@ $(document).ready(function() {
 	 */
 
 	function getSquare(x, y) {
-		var file = Math.floor(x/squareSize);
-		var rank = Math.floor(y/squareSize);
+		let file = Math.floor(x/squareSize);
+		let rank = Math.floor(y/squareSize);
 		if (whiteDown) {
-			var square = [file, 9 - rank];
+			let square = [file, 9 - rank];
 		}
 		else {
-			var square = [9 - file, rank];
+			let square = [9 - file, rank];
 		}
 		return square;
 	}
@@ -846,12 +846,12 @@ $(document).ready(function() {
 	 */
 
 	function drawLastMove(lastMove, color, drawOver) {
-		var oldFile = lastMove['oldSquare'][0];
-		var oldRank = lastMove['oldSquare'][1];
-		var newFile = lastMove['newSquare'][0];
-		var newRank = lastMove['newSquare'][1];
-		var oldSquareCoordinates = getCoordinates(oldFile, oldRank);
-		var newSquareCoordinates = getCoordinates(newFile, newRank);
+		let oldFile = lastMove['oldSquare'][0];
+		let oldRank = lastMove['oldSquare'][1];
+		let newFile = lastMove['newSquare'][0];
+		let newRank = lastMove['newSquare'][1];
+		let oldSquareCoordinates = getCoordinates(oldFile, oldRank);
+		let newSquareCoordinates = getCoordinates(newFile, newRank);
 
 		if ((oldFile + oldRank) % 2 === 0) {
 			ctx.fillStyle = drawOver ? dark : highlightedDark;
@@ -868,13 +868,13 @@ $(document).ready(function() {
 		}
 		ctx.fillRect(newSquareCoordinates[0], newSquareCoordinates[1], squareSize, squareSize);
 
-		var piece = lastMove.piece.slice(0, 2);
-		var id = lastMove.piece[2];
+		let piece = lastMove.piece.slice(0, 2);
+		let id = lastMove.piece[2];
 
 		// TODO: clean up this ternary and if statement
 
 		// write an empty string instead of the piece symbol if the piece is being captured but is not on the square that the new piece is moving to (en passant)
-		var symbol = allPieces[piece][findPieceIndex(piece, id)] ? pieceSymbols[piece] : '';
+		let symbol = allPieces[piece][findPieceIndex(piece, id)] ? pieceSymbols[piece] : '';
 
 		// pawn that has reached the last rank
 		if (piece === 'wP' && newRank === 8 || piece === 'bP' && newRank === 1) {
@@ -894,7 +894,7 @@ $(document).ready(function() {
 
 	function drawOnSquare(file, rank, symbol, color) {
 		ctx.fillStyle = colorAbbreviations[color];
-		var coordinates = getCoordinates(file, rank);
+		let coordinates = getCoordinates(file, rank);
 		ctx.font = squareSize + "px serif";
 		ctx.fillText(symbol, coordinates[0] + (0.5 * squareSize), coordinates[1] + (0.5 * squareSize));
 	}
@@ -907,10 +907,10 @@ $(document).ready(function() {
 
 	function drawSquare(coordinates, squareSize) {
 
-		var drawLocationF = coordinates[0];
-		var drawLocationR = coordinates[1];
-		var drawSizeF = squareSize;
-		var drawSizeR = squareSize;
+		let drawLocationF = coordinates[0];
+		let drawLocationR = coordinates[1];
+		let drawSizeF = squareSize;
+		let drawSizeR = squareSize;
 
 		// floating point values cause sub pixel rendering which causes red to linger even after square is drawn over
 
@@ -944,11 +944,11 @@ $(document).ready(function() {
 	 */
 
 	function drawCheckSquare(color, inCheck) {
-		var king = color + 'K';
-		var file = allPieces[king][0].file;
-		var rank = allPieces[king][0].rank;
-		var symbol = pieceSymbols[king];
-		var coordinates = getCoordinates(file, rank);
+		let king = color + 'K';
+		let file = allPieces[king][0].file;
+		let rank = allPieces[king][0].rank;
+		let symbol = pieceSymbols[king];
+		let coordinates = getCoordinates(file, rank);
 		if (inCheck) {
 			ctx.fillStyle = check;
 		}
@@ -973,9 +973,9 @@ $(document).ready(function() {
 	 */
 
 	function drawOverPiece(square) {
-		var file = square[0];
-		var rank = square[1];
-		var coordinates = getCoordinates(file, rank);
+		let file = square[0];
+		let rank = square[1];
+		let coordinates = getCoordinates(file, rank);
 		if ((file + rank) % 2 === 0) {
 			ctx.fillStyle = dark;
 		}
@@ -991,14 +991,14 @@ $(document).ready(function() {
 	 */
 
 	function redrawSquare(index) {
-		var square = indexToSquare(index);
+		let square = indexToSquare(index);
 		drawOverPiece(square);
 		unmarkSquare(square[0], square[1]);
-		var piece = occupiedSquares[index - 1];
+		let piece = occupiedSquares[index - 1];
 		
 		// if redrawn square had a piece on it, redraw it
 		if (piece) {
-			var color = piece[0];
+			let color = piece[0];
 			drawOnSquare(square[0], square[1], pieceSymbols[piece.slice(0, 2)], color);
 		}	
 	}
@@ -1017,7 +1017,7 @@ $(document).ready(function() {
 		else {
 			ctx.strokeStyle = light;
 		}
-		var c = getCoordinates(file, rank);
+		let c = getCoordinates(file, rank);
 		ctx.rect(c[0] + lineWidth/2, c[1] + lineWidth/2, squareSize - lineWidth, squareSize - lineWidth);			
 		ctx.lineWidth = lineWidth;
 		ctx.stroke();
@@ -1032,9 +1032,9 @@ $(document).ready(function() {
 
 	function updateMoves(color, algNot) {
 
-		var defendingColor = otherColor(color)
-		var checkingPieces = inCheck(defendingColor);
-		var checkSymbol = '';
+		let defendingColor = otherColor(color)
+		let checkingPieces = inCheck(defendingColor);
+		let checkSymbol = '';
 
 		if (checkingPieces.length) {
 
@@ -1068,8 +1068,8 @@ $(document).ready(function() {
 
 		// 	// should really be decremented by one, but the first boardString is the starting position, 
 		// 	// which means that the index will need to be incremented by one
-		// 	var colorIndex = $(this).index();
-		// 	var moveIndex = $(this).parent().index();
+		// 	let colorIndex = $(this).index();
+		// 	let moveIndex = $(this).parent().index();
 		// 	console.log(boardStrings[2 * moveIndex + colorIndex]);
 		// 	drawBoard(false, boardStrings[2 * moveIndex + colorIndex]);
 		// });

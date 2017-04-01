@@ -9,33 +9,33 @@
 // data.pace = +/.+?(?=:)/.exec(row.Pace)[0];
 // data.pace = row.Pace.match(/.+:/);
 
-var runs = [];
+let runs = [];
 
-var margins = {'top' : 20, 'right' : 20, 'bottom' : 50, 'left' : 70};
-var height = 500;
-var width = 960;
-var plotHeight = height - margins.top - margins.bottom;
-var plotWidth = width - margins.right - margins.left;
+let margins = {'top' : 20, 'right' : 20, 'bottom' : 50, 'left' : 70};
+let height = 500;
+let width = 960;
+let plotHeight = height - margins.top - margins.bottom;
+let plotWidth = width - margins.right - margins.left;
 
-var x = d3.scaleLinear()
+let x = d3.scaleLinear()
 	.domain([0,365])
 	.range([margins.left, plotWidth]);
 
-var y = d3.scaleLinear()
+let y = d3.scaleLinear()
 	.domain([3,7.5])
 	.range([plotHeight,margins.top]);
 
-var r = d3.scaleSqrt()
+let r = d3.scaleSqrt()
 	.domain([0,10])
 	.range([1,10]);
 
-var monthDays = [0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334];
-var monthAbr = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-var monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+let monthDays = [0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334];
+let monthAbr = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+let monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 
-var months = [];
+let months = [];
 
-for (var i = 0; i < monthDays.length; i++) {
+for (let i = 0; i < monthDays.length; i++) {
 	months.push({"val" : monthDays[i].toString(), "key" : monthNames[i]})
 }
 
@@ -50,28 +50,28 @@ function draw(data) {
 
 	runs = getRuns(data);
 
-	var tooltip = d3.select("body").append("div")   
+	let tooltip = d3.select("body").append("div")   
 	    .attr("class", "tooltip")
 	    .style("opacity", 0);
 
-	var tooltipOffset = 28;
+	let tooltipOffset = 28;
 
-    var tooltipTriangle = d3.select("body").append("div")
+    let tooltipTriangle = d3.select("body").append("div")
     	.attr("class", "tooltip-triangle")
     	.style("opacity", 0);
 
-	var triangleSize = 8;
+	let triangleSize = 8;
 
-	var svg = d3.select('.svg').attr('width',width).attr('height',height);
+	let svg = d3.select('.svg').attr('width',width).attr('height',height);
 
 	// x-axis
 	svg.append('g').attr('transform', 'translate(0,' + plotHeight + ')').call(d3.axisBottom(x).tickValues(monthDays).tickFormat(function(d,i){ return monthAbr[i]}));
 
 	// y-axis
 	svg.append('g').attr('transform', 'translate(' + margins.left + ',0)').call(d3.axisLeft(y).tickFormat(function(d) { 
-		var min = Math.floor(d / 1);
-		var sec = d % 1 * 60;
-		var filler = sec < 10 ? ':0' : ':';
+		let min = Math.floor(d / 1);
+		let sec = d % 1 * 60;
+		let filler = sec < 10 ? ':0' : ':';
 		return min + filler + sec;
 	}));
 
@@ -91,9 +91,9 @@ function draw(data) {
 
 	// plot the data (an array) with the longest runs first (so that smaller circles (short runs) are drawn on top of larger ones) if it only contains the running data 
 	// plot the data (an object) in chronological order if there is aggregate yearly data
-	var years = [];
-	for (var run in runs) {
-		var thisYear = runs[run].date.getFullYear();
+	let years = [];
+	for (let run in runs) {
+		let thisYear = runs[run].date.getFullYear();
 		if (years.indexOf(thisYear) === -1) {
 			years.push(thisYear);
 		}
@@ -106,26 +106,26 @@ function draw(data) {
 	$("svg circle, svg polygon").on('mouseover', function(e) {
 		if (!dropdownExpanded()) {
 			let rect = this.getBoundingClientRect();
-			var xPos = rect.left + rect.width / 2;
-			var yPos = rect.top + rect.height / 2;
+			let xPos = rect.left + rect.width / 2;
+			let yPos = rect.top + rect.height / 2;
 			tooltip.style("opacity", 1); 
 			tooltipTriangle.style("opacity", 1); 
 			$(tooltip._groups[0][0]).css("z-index", 999);
-			var color = this.getAttribute('fill');
+			let color = this.getAttribute('fill');
 			color = (color.replace("0.3", "0.7"));
 			tooltip.html(this.getAttribute('title'));
-			var tooltipHeight = tooltip._groups[0][0].offsetHeight;
-			var tooltipWidth = tooltip._groups[0][0].offsetWidth;	
+			let tooltipHeight = tooltip._groups[0][0].offsetHeight;
+			let tooltipWidth = tooltip._groups[0][0].offsetWidth;	
 
-			var t = $(".tooltip-triangle");
+			let t = $(".tooltip-triangle");
 
-			var tooltipX;
-			var tooltipY;
+			let tooltipX;
+			let tooltipY;
 
-			var co = getRunCentre();
+			let co = getRunCentre();
 
-			var x = co[0];
-			var y = co[1];
+			let x = co[0];
+			let y = co[1];
 
 			// let tooltipOffset = rect.width; // could also have used this.getAttribute('r') * 2)
 			tooltipOffset = 28;
@@ -150,9 +150,9 @@ function draw(data) {
 
 			// run is above the average on the graph
 			else {
-				var tooltipX = xPos - tooltipWidth/2
-				var tooltipY = yPos - tooltipOffset - tooltipHeight;
-				var sTop = $('.svg').offset().top; // TODO: this should not be calculated every time
+				let tooltipX = xPos - tooltipWidth/2
+				let tooltipY = yPos - tooltipOffset - tooltipHeight;
+				let sTop = $('.svg').offset().top; // TODO: this should not be calculated every time
 				
 
 				// tooltip would hit the title, put it on the side instead
@@ -224,9 +224,9 @@ d3.csv("./data/all.csv", draw);
  */
 
 function getRunCentre() {
-	var x = 0;
-	var y = 0;
-	var count = 0;
+	let x = 0;
+	let y = 0;
+	let count = 0;
 	$('circle').each(function(item) {
 		if($('input[name=' + this.getAttribute('class') + ']')[0].checked) {
 			x += (this.getBoundingClientRect().left + this.getBoundingClientRect().width/2);
@@ -245,15 +245,15 @@ function getRunCentre() {
 
 function getRuns(data) {
 
-	var runs = [];
-	var colonIndex = 0;
+	let runs = [];
+	let colonIndex = 0;
 
 	data.forEach(function(row) {
 
 		// if I ran that day, grab the relevant info
 		if (row.Dist && row.Date) {
-			var data = {};
-			var timeString = !row["Start Time"] ? '' : ' ' + row["Start Time"];
+			let data = {};
+			let timeString = !row["Start Time"] ? '' : ' ' + row["Start Time"];
 			data.date = new Date(row.Date + timeString);
 			data.dist = +row.Dist;
 			data.duration = +row.Duration;
@@ -266,13 +266,13 @@ function getRuns(data) {
 		}
 	});
 
-	var sortedRuns = runs.sort(
+	let sortedRuns = runs.sort(
 		function(a, b) {
 			return b.dist - a.dist;
 		}
 	);
 
-	// var sortedRuns = sortRuns(runs);
+	// let sortedRuns = sortRuns(runs);
 
 	return sortedRuns;
 }
@@ -285,14 +285,14 @@ function getRuns(data) {
 
 function sortRuns(runs) {
 
-	var numRuns = runs.length;
-	var sortedRuns = {'years' : [], 'avgTemp' : {} };
-	var thisYear = '0';
-	var year;
-	var temp = 0
-	var tempCount = 0;
+	let numRuns = runs.length;
+	let sortedRuns = {'years' : [], 'avgTemp' : {} };
+	let thisYear = '0';
+	let year;
+	let temp = 0
+	let tempCount = 0;
 
-	for (var i = 0; i < numRuns; i++) {
+	for (let i = 0; i < numRuns; i++) {
 		year = runs[i].date.getFullYear();
 		if (year !== thisYear) {
 			if (runs[i].temp) {
@@ -331,18 +331,18 @@ function sortRuns(runs) {
 function plotAll(svg, runs, years) {
 
 	runs.forEach(function(row) {
-		var day = row.date.getDate();
-		var month = row.date.getMonth();
-		var year = row.date.getFullYear();
-		var leap = year % 4 === 0 && month > 1 ? 1 : 0;
-		var daysIntoYear = monthDays[month] + day + leap;
+		let day = row.date.getDate();
+		let month = row.date.getMonth();
+		let year = row.date.getFullYear();
+		let leap = year % 4 === 0 && month > 1 ? 1 : 0;
+		let daysIntoYear = monthDays[month] + day + leap;
 
 		// string representation of data for tooltips
-		var dateString = monthNames[row.date.getMonth()] + ' ' + row.date.getDate() + ' ' + row.date.getFullYear();
-		var minuteString = Math.floor(row.pace / 1).toString();
-		var secondString = Math.round(row.pace % 1 * 60).toString();
+		let dateString = monthNames[row.date.getMonth()] + ' ' + row.date.getDate() + ' ' + row.date.getFullYear();
+		let minuteString = Math.floor(row.pace / 1).toString();
+		let secondString = Math.round(row.pace % 1 * 60).toString();
 		secondString = secondString.length === 1 ? '0' + secondString : secondString;
-		var paceString = minuteString + ':' + secondString + ' min/km';
+		let paceString = minuteString + ':' + secondString + ' min/km';
 
 		if (!row.race) {
 			svg.append('circle')
@@ -355,13 +355,13 @@ function plotAll(svg, runs, years) {
 				.attr('title', 'Date: ' + dateString + '<br>Pace: ' + paceString + '<br>Dist ' + row.dist + ' km');
 		}
 		if (row.race) {
-			var cX = x(daysIntoYear);
-			var cY = y(row.pace);
-			var rS = r(row.dist);
-			var side = rS * Math.cos(18/180*Math.PI); 
-			var pentBisectRad = rS * Math.sin(18/180*Math.PI);
-			var pentCornRad = pentBisectRad / Math.cos(36/180*Math.PI);
-			var star = [{'x':cX, 'y':cY - rS},
+			let cX = x(daysIntoYear);
+			let cY = y(row.pace);
+			let rS = r(row.dist);
+			let side = rS * Math.cos(18/180*Math.PI); 
+			let pentBisectRad = rS * Math.sin(18/180*Math.PI);
+			let pentCornRad = pentBisectRad / Math.cos(36/180*Math.PI);
+			let star = [{'x':cX, 'y':cY - rS},
 						{'x':cX + pentCornRad * Math.sin(36/180*Math.PI), 'y':cY - pentCornRad * Math.cos(36/180*Math.PI)},
 						{'x':cX + side, 'y':cY - pentCornRad * Math.cos(36/180*Math.PI)},
 						{'x':cX + pentCornRad * Math.cos(18/180*Math.PI), 'y':cY + pentCornRad * Math.sin(18/180*Math.PI)},
@@ -372,7 +372,7 @@ function plotAll(svg, runs, years) {
 						{'x':cX - side, 'y':cY - pentCornRad * Math.cos(36/180*Math.PI)},
 						{'x':cX - pentCornRad * Math.sin(36/180*Math.PI), 'y':cY - pentCornRad * Math.cos(36/180*Math.PI)}];
 
-			var starString = star.map(function(p) {
+			let starString = star.map(function(p) {
 				return [p.x,p.y].join(',');
 			}).join(', ');
 
@@ -387,8 +387,8 @@ function plotAll(svg, runs, years) {
 
 	$('#years-to-display').html('<h4 class="form-header">Show data from the following years:</h4>');
 
-	for (var index in years) {
-		var year = years[index];
+	for (let index in years) {
+		let year = years[index];
 		if (index > 0 && index % 3 === 0) {
 			$('#years-to-display').append('<br>');
 		}
@@ -450,9 +450,9 @@ function displayRuns(years) {
  */
 
 function getColor(year, years, opacity) {
-	var yearIndex = years.indexOf(Number(year)); // ensure year is a number and not a string
-	var colorValues = [[139 ,69, 19], [256, 0, 0], [0, 256, 0], [0, 0, 256], [256, 256, 0], [256, 0, 256], [0, 256, 256], [256, 256, 256]];
-	var colorString = 'rgba(' + colorValues[yearIndex].join() + ',' + opacity + ')';
+	let yearIndex = years.indexOf(Number(year)); // ensure year is a number and not a string
+	let colorValues = [[139 ,69, 19], [256, 0, 0], [0, 256, 0], [0, 0, 256], [256, 256, 0], [256, 0, 256], [0, 256, 256], [256, 256, 256]];
+	let colorString = 'rgba(' + colorValues[yearIndex].join() + ',' + opacity + ')';
 	return colorString;
 }
 

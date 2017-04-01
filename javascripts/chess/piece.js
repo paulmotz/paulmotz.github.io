@@ -133,7 +133,7 @@ class Piece {
 		while (file + f >= 1 && file + f <= 8 && rank + r >= 1 && rank + r <= 8) {
 			file += f;
 			rank += r;
-			var index = squareToIndex([file, rank]) - 1;
+			let index = squareToIndex([file, rank]) - 1;
 			if (occupiedSquares[index]) {
 				if (defending) {
 					moves.push([file, rank]);
@@ -154,21 +154,21 @@ class Piece {
 	 */
 
 	getKingDirection() {
-		var file = this.file;
-		var rank = this.rank;
-		var piece = occupiedSquares[squareToIndex([file, rank]) - 1];
-		var pieceType = piece[1];
+		let file = this.file;
+		let rank = this.rank;
+		let piece = occupiedSquares[squareToIndex([file, rank]) - 1];
+		let pieceType = piece[1];
 		if (pieceType === 'K') {
 			return null; // TODO: maybe this should be a special value
 		}
-		var directions = [[-1,  1], [0,  1], [1,  1],
+		let directions = [[-1,  1], [0,  1], [1,  1],
 						  [-1,  0],          [1,  0],
 						  [-1, -1], [0, -1], [1, -1]];
 
-		for (var i in directions) {
-			var currDir = directions[i];
-			var f = currDir[0];
-			var r = currDir[1];
+		for (let i in directions) {
+			let currDir = directions[i];
+			let f = currDir[0];
+			let r = currDir[1];
 			while (file + f >= 1 && file + f <= 8 && rank + r >= 1 && rank + r <= 8) {
 				file += f;
 				rank += r;
@@ -193,20 +193,20 @@ class Piece {
 	 */
 
 	getPinDirection() {
-		var kd = this.getKingDirection();
+		let kd = this.getKingDirection();
 		if (!kd) return;
 		else {
-			var file = this.file;
-			var rank = this.rank;
-			var f = -kd[0];
-			var r = -kd[1];
+			let file = this.file;
+			let rank = this.rank;
+			let f = -kd[0];
+			let r = -kd[1];
 
 			// diagonal move
 			if ((f + r) % 2 === 0) {
 				while (file + f >= 1 && file + f <= 8 && rank + r >= 1 && rank + r <= 8) {
 					file += f;
 					rank += r;
-					var inlinePiece = occupiedSquares[squareToIndex([file, rank]) - 1];
+					let inlinePiece = occupiedSquares[squareToIndex([file, rank]) - 1];
 					if (inlinePiece) {
 						if (inlinePiece[0] !== this.color && (inlinePiece[1] === 'B' || inlinePiece[1] === 'Q')) {
 							return [f, r];
@@ -223,7 +223,7 @@ class Piece {
 				while (file + f >= 1 && file + f <= 8 && rank + r >= 1 && rank + r <= 8) {
 					file += f;
 					rank += r;
-					var inlinePiece = occupiedSquares[squareToIndex([file, rank]) - 1];
+					let inlinePiece = occupiedSquares[squareToIndex([file, rank]) - 1];
 					if (inlinePiece) {
 						if (inlinePiece[0] !== this.color && (inlinePiece[1] === 'R' || inlinePiece[1] === 'Q')) {
 							return [f, r];
