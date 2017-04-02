@@ -106,8 +106,10 @@ function draw(data) {
 	$("svg circle, svg polygon").on('mouseover', function(e) {
 		if (!dropdownExpanded()) {
 			let rect = this.getBoundingClientRect();
-			let xPos = rect.left + rect.width / 2;
-			let yPos = rect.top + rect.height / 2;
+			let xScroll = $(window).scrollLeft();
+			let yScroll = $(window).scrollTop();
+			let xPos = rect.left + rect.width / 2 + xScroll;
+			let yPos = rect.top + rect.height / 2 + yScroll;
 			tooltip.style("opacity", 1); 
 			tooltipTriangle.style("opacity", 1); 
 			$(tooltip._groups[0][0]).css("z-index", 999);
@@ -252,7 +254,6 @@ function getRuns(data) {
 
 		// if I ran that day, grab the relevant info
 		if (row.Dist && row.Date) {
-			console.log(row)
 			let data = {};
 			let timeString = !row["Start Time"] ? '' : ' ' + row["Start Time"];
 			data.date = new Date(row.Date + timeString);
@@ -318,8 +319,6 @@ function sortRuns(runs) {
 
 	// add last year's temperature
 	sortedRuns.avgTemp[thisYear] = temp/tempCount;
-
-	console.log(sortedRuns);
 
 	return sortedRuns;
 }
