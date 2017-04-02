@@ -252,6 +252,7 @@ function getRuns(data) {
 
 		// if I ran that day, grab the relevant info
 		if (row.Dist && row.Date) {
+			console.log(row)
 			let data = {};
 			let timeString = !row["Start Time"] ? '' : ' ' + row["Start Time"];
 			data.date = new Date(row.Date + timeString);
@@ -317,6 +318,8 @@ function sortRuns(runs) {
 
 	// add last year's temperature
 	sortedRuns.avgTemp[thisYear] = temp/tempCount;
+
+	console.log(sortedRuns);
 
 	return sortedRuns;
 }
