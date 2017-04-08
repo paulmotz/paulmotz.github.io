@@ -40,7 +40,7 @@ class Rook extends Piece {
  				return moves;
  			}
  			else {
-
+ 				
  				// rook can only move in line with the pinning piece
  				moves = this.moveOneWay(file, rank,  f,  r, moves, false);
  				moves = this.moveOneWay(file, rank, -f, -r, moves, false);

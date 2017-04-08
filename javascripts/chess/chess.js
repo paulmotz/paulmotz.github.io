@@ -327,9 +327,9 @@ $(document).ready(function() {
 
 		$('.result-description').html(colorAbbreviations[currentColor] + " to move");
 
-		// console.log(allPieces);
-		// console.log(occupiedSquares);
-		// console.log(attackedSquares);
+		console.log(allPieces);
+		console.log(occupiedSquares);
+		console.log(attackedSquares);
 
 		// if human is moving, allow him/her to move
 		if (whiteDown && currentColor === 'w' || !whiteDown && currentColor === 'b' || noComp) {
@@ -615,12 +615,13 @@ $(document).ready(function() {
 		let color = piece[0];
 		let file = newSquare[0];
 		let rank = newSquare[1];
+		let pieceName;
 		if (humanTurn) {
-			let pieceName = $('input[name=piece]:checked').val();
+			pieceName = $('input[name=piece]:checked').val();
 		}
 		else {
 			let pieces = ['B', 'N', 'Q', 'R'];
-			let pieceName = pieces[Math.floor(Math.random() * pieces.length)];
+			pieceName = pieces[Math.floor(Math.random() * pieces.length)];
 		}
 		let newPiece = color + pieceName;
 		let index = allPieces[newPiece].length > 0 ? allPieces[newPiece][allPieces[newPiece].length - 1].id + 1 : allPieces[newPiece].length;
@@ -644,17 +645,19 @@ $(document).ready(function() {
 		let kingRank = kingSquare[1];
 		if ((kingFile !== 3 && kingFile !== 7) || (kingRank !== 1 && kingRank !== 8)) return;
 
+		let rookMove;
+
 		// queenside castling
 		if (kingFile === 3) {
 
 			// white
 			if (kingRank === 1) {
-				let rookMove = {'piece' : 'wR', 'id' : 0, 'move' : [4, 1]};
+				rookMove = {'piece' : 'wR', 'id' : 0, 'move' : [4, 1]};
 			}
 
 			// black
 			else if (kingRank === 8) {
-				let rookMove = {'piece' : 'bR', 'id' : 0, 'move' : [4, 8]};
+				rookMove = {'piece' : 'bR', 'id' : 0, 'move' : [4, 8]};
 			}
 
 			movePiece(rookMove);
@@ -665,12 +668,12 @@ $(document).ready(function() {
 
 			// white
 			if (kingRank === 1) {
-				let rookMove = {'piece' : 'wR', 'id' : 1, 'move' : [6, 1]};
+				rookMove = {'piece' : 'wR', 'id' : 1, 'move' : [6, 1]};
 			}
 
 			// black
 			else if (kingRank === 8) {
-				let rookMove = {'piece' : 'bR', 'id' : 1, 'move' : [6, 8]};
+				rookMove = {'piece' : 'bR', 'id' : 1, 'move' : [6, 8]};
 			}
 
 			movePiece(rookMove);
@@ -829,11 +832,12 @@ $(document).ready(function() {
 	function getSquare(x, y) {
 		let file = Math.floor(x/squareSize);
 		let rank = Math.floor(y/squareSize);
+		let square;
 		if (whiteDown) {
-			let square = [file, 9 - rank];
+			square = [file, 9 - rank];
 		}
 		else {
-			let square = [9 - file, rank];
+			square = [9 - file, rank];
 		}
 		return square;
 	}
