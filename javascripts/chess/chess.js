@@ -327,9 +327,9 @@ $(document).ready(function() {
 
 		$('.result-description').html(colorAbbreviations[currentColor] + " to move");
 
-		console.log(allPieces);
-		console.log(occupiedSquares);
-		console.log(attackedSquares);
+		// console.log(allPieces);
+		// console.log(occupiedSquares);
+		// console.log(attackedSquares);
 
 		// if human is moving, allow him/her to move
 		if (whiteDown && currentColor === 'w' || !whiteDown && currentColor === 'b' || noComp) {

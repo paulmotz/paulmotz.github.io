@@ -165,15 +165,13 @@ class Piece {
 						  [-1,  0],          [1,  0],
 						  [-1, -1], [0, -1], [1, -1]];
 
-		for (let i in directions) {
-			let currDir = directions[i];
+		for (let currDir of directions) {
 			let f = currDir[0];
 			let r = currDir[1];
 			while (file + f >= 1 && file + f <= 8 && rank + r >= 1 && rank + r <= 8) {
 				file += f;
 				rank += r;
-				if (occupiedSquares[squareToIndex([file, rank]) - 1] && 
-					occupiedSquares[squareToIndex([file, rank]) - 1][0] === this.color) {
+				if (occupiedSquares[squareToIndex([file, rank]) - 1]) {
 					if (occupiedSquares[squareToIndex([file, rank]) - 1][1] === 'K') {
 						return currDir;
 					} 
