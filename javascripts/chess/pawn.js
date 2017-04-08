@@ -122,7 +122,7 @@ class Pawn extends Piece {
 		let protectedSquares = color === 'w' ? [[file - 1, rank + 1], [file + 1, rank + 1]] : [[file - 1, rank - 1], [file + 1, rank - 1]];
 
 		// ensure protected squares are off the board. Only need to check file and not rank.
-		let protectedSquares = protectedSquares.filter(function(square) {
+		protectedSquares = protectedSquares.filter(function(square) {
 			return square[0] > 0 && square[0] < 9;
 		});
 

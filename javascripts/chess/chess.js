@@ -110,7 +110,6 @@ $(document).ready(function() {
 	let humanTurn;
 	let whiteToMove = true;
 
-	let markedSquares = new Set();
 	let boardStrings;
 
 	newGame();
@@ -328,9 +327,9 @@ $(document).ready(function() {
 
 		$('.result-description').html(colorAbbreviations[currentColor] + " to move");
 
-		console.log(allPieces);
-		console.log(occupiedSquares);
-		console.log(attackedSquares);
+		// console.log(allPieces);
+		// console.log(occupiedSquares);
+		// console.log(attackedSquares);
 
 		// if human is moving, allow him/her to move
 		if (whiteDown && currentColor === 'w' || !whiteDown && currentColor === 'b' || noComp) {
@@ -808,13 +807,14 @@ $(document).ready(function() {
 	 */
 
 	function getCoordinates(file, rank) {
+		let x, y;
 		if (whiteDown) {
-			let x = file * squareSize;
-			let y = (9 - rank) * squareSize;
+			x = file * squareSize;
+			y = (9 - rank) * squareSize;
 		}
 		else {
-			let x = (9 - file) * squareSize;
-			let y = rank * squareSize;
+			x = (9 - file) * squareSize;
+			y = rank * squareSize;
 		}
 		return [x, y];
 	}

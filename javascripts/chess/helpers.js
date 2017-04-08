@@ -173,7 +173,7 @@ function getLegalMoves(checkingPieces, clickedPiece) {
 		let checkingPieceIndex = findPieceIndex(checkingPieceColorAndType, checkingPieces[0][2])
 		let checkingPiece = allPieces[checkingPieceColorAndType][checkingPieceIndex];
 		let checkingPieceSquare = [checkingPiece.file, checkingPiece.rank]
-		let checkingPieceIndex = squareToIndex(checkingPieceSquare);
+		checkingPieceIndex = squareToIndex(checkingPieceSquare);
 		
 		// can the piece be captured?
 		let captureMove = clickedPieceMoves.indexOf(checkingPieceIndex);
