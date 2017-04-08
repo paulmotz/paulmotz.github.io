@@ -172,7 +172,7 @@ class Piece {
 				file += f;
 				rank += r;
 				if (occupiedSquares[squareToIndex([file, rank]) - 1]) {
-					if (occupiedSquares[squareToIndex([file, rank]) - 1][1] === 'K') {
+					if (occupiedSquares[squareToIndex([file, rank]) - 1][0] === this.color && occupiedSquares[squareToIndex([file, rank]) - 1][1] === 'K') {
 						return currDir;
 					} 
 					else {
