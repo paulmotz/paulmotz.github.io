@@ -49,8 +49,6 @@ d3.json("data/maps/election_results.json", function(data) {
 
 	s.addEventListener("change", function() {
 		year = s.value;
-		let obesityHeading = document.querySelector('.obesity-heading');
-		obesityHeading.innerHTML = 'Obesity';
 		drawMaps(year);
 	});
 
