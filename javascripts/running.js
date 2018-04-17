@@ -215,7 +215,7 @@ function draw(data) {
 	});
 }
 
-d3.csv("./data/all.csv", draw);
+d3.csv("https://raw.githubusercontent.com/paulmotz/paulmotz.github.io/master/data/all.csv", draw);
 
 // TODO: 
 // -make this work for ploygons as well
