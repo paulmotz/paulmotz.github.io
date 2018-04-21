@@ -1,0 +1,444 @@
+{
+	"auto_complete":
+	{
+		"selected_items":
+		[
+			[
+				"scrob",
+				"scrobbleCount"
+			],
+			[
+				"scro",
+				"scrobbleCount"
+			],
+			[
+				"Bo",
+				"Bouwmeester"
+			],
+			[
+				"top",
+				"topTacks"
+			],
+			[
+				"topT",
+				"topTrackData"
+			],
+			[
+				"new",
+				"newCol"
+			],
+			[
+				"col",
+				"colNum"
+			],
+			[
+				"moved",
+				"moved"
+			],
+			[
+				"tile",
+				"tileIndex"
+			],
+			[
+				"move",
+				"moveTiles"
+			],
+			[
+				"row",
+				"rowNum"
+			],
+			[
+				"ro",
+				"rowNum"
+			],
+			[
+				"tiles",
+				"tilesObj"
+			],
+			[
+				"co",
+				"color"
+			],
+			[
+				"curr",
+				"currNum"
+			],
+			[
+				"inlin",
+				"inline-block"
+			],
+			[
+				"str",
+				"stringLength"
+			],
+			[
+				"mo",
+				"moveUp"
+			],
+			[
+				"key",
+				"keyCode"
+			],
+			[
+				"pla",
+				"player"
+			],
+			[
+				"city",
+				"cityCoords"
+			],
+			[
+				"lega",
+				"legalMoves"
+			],
+			[
+				"piece",
+				"pieceName"
+			],
+			[
+				"rook",
+				"rookMove"
+			],
+			[
+				"tool",
+				"tooltipX"
+			],
+			[
+				"sor",
+				"sortedRuns"
+			],
+			[
+				"page",
+				"pageX"
+			],
+			[
+				"get",
+				"getAttribute"
+			],
+			[
+				"to",
+				"toLowerCase"
+			],
+			[
+				"word",
+				"words"
+			],
+			[
+				"sec",
+				"second_word"
+			],
+			[
+				"first",
+				"first_word"
+			],
+			[
+				"is",
+				"isAnagram"
+			],
+			[
+				"rever",
+				"reverseEachWord"
+			],
+			[
+				"pro",
+				"product"
+			],
+			[
+				"arr",
+				"array"
+			],
+			[
+				"arra",
+				"array"
+			],
+			[
+				"array",
+				"array_of_integers"
+			],
+			[
+				"current",
+				"current_min"
+			],
+			[
+				"sum",
+				"sumUpTo"
+			],
+			[
+				"fin",
+				"findMissing"
+			],
+			[
+				"click",
+				"clickCounter"
+			],
+			[
+				"clic",
+				"clickCounter"
+			],
+			[
+				"merge",
+				"mergeSortRec"
+			],
+			[
+				"m",
+				"mergeSort"
+			],
+			[
+				"fib",
+				"fibRec"
+			],
+			[
+				"fon",
+				"font-weight"
+			]
+		]
+	},
+	"buffers":
+	[
+		{
+			"settings":
+			{
+				"buffer_size": 0,
+				"line_ending": "Unix"
+			}
+		}
+	],
+	"build_system": "",
+	"build_system_choices":
+	[
+	],
+	"build_varint": "",
+	"command_palette":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"console":
+	{
+		"height": 0.0,
+		"history":
+		[
+		]
+	},
+	"distraction_free":
+	{
+		"menu_visible": true,
+		"show_minimap": false,
+		"show_open_files": false,
+		"show_tabs": false,
+		"side_bar_visible": false,
+		"status_bar_visible": false
+	},
+	"expanded_folders":
+	[
+	],
+	"file_history":
+	[
+		"/Users/pjmotz/GitHub/paulmotz.github.io/javascripts/running.js",
+		"/Users/pjmotz/GitHub/paulmotz.github.io/running.html",
+		"/Users/pjmotz/GitHub/paulmotz.github.io/index.html",
+		"/Users/pjmotz/GitHub/paulmotz.github.io/css/about.css",
+		"/Users/pjmotz/GitHub/paulmotz.github.io/about.html",
+		"/Users/pjmotz/GitHub/paulmotz.github.io/javascripts/script.js",
+		"/Users/pjmotz/GitHub/paulmotz.github.io/javascripts/index.js",
+		"/Users/pjmotz/GitHub/paulmotz.github.io/lastfm.js",
+		"/Users/pjmotz/Desktop/nhl.csv",
+		"/Users/pjmotz/Downloads/Temp.xml",
+		"/Users/pjmotz/GitHub/paulmotz.github.io/maps.html",
+		"/Users/pjmotz/GitHub/paulmotz.github.io/javascripts/maps.js",
+		"/Users/pjmotz/GitHub/paulmotz.github.io/iTunesMod.json",
+		"/Users/pjmotz/GitHub/paulmotz.github.io/javascripts/nhlCities.js",
+		"/Users/pjmotz/GitHub/paulmotz.github.io/nhl_teams.js",
+		"/Users/pjmotz/GitHub/paulmotz.github.io/javascripts/modResults.js",
+		"/Users/pjmotz/GitHub/paulmotz.github.io/nhl_cities.html",
+		"/Users/pjmotz/GitHub/paulmotz.github.io/javascripts/results.js",
+		"/Users/pjmotz/GitHub/paulmotz.github.io/javascripts/2u48.js",
+		"/Users/pjmotz/GitHub/paulmotz.github.io/2u48.html",
+		"/Users/pjmotz/GitHub/paulmotz.github.io/css/2u48.css",
+		"/Users/pjmotz/GitHub/paulmotz.github.io/javascripts/chess/chess.js",
+		"/Users/pjmotz/GitHub/paulmotz.github.io/css/nhl_cities.css",
+		"/Users/pjmotz/GitHub/paulmotz.github.io/javascripts/chess/king.js",
+		"/Users/pjmotz/GitHub/paulmotz.github.io/javascripts/chess/helpers.js",
+		"/Users/pjmotz/GitHub/paulmotz.github.io/javascripts/chess/pawn.js",
+		"/Users/pjmotz/GitHub/paulmotz.github.io/javascripts/chess/rook.js",
+		"/Users/pjmotz/GitHub/paulmotz.github.io/javascripts/chess/knight.js",
+		"/Users/pjmotz/GitHub/paulmotz.github.io/javascripts/chess/piece.js",
+		"/Users/pjmotz/Dropbox/Code/Node/actionhero-tutorial/config/servers/web.js",
+		"/Users/pjmotz/Dropbox/Code/Node/actionhero-tutorial/config/api.js",
+		"/Users/pjmotz/Dropbox/Code/Node/actionhero-tutorial/initializers/users.js",
+		"/Users/pjmotz/Dropbox/Code/JS/interview.html",
+		"/Users/pjmotz/Dropbox/Code/JS/interview.js",
+		"/Users/pjmotz/Dropbox/Code/JS/algs.js",
+		"/Users/pjmotz/Dropbox/Code/Node/actionhero-tutorial/package.json",
+		"/Users/pjmotz/Dropbox/Code/Web/UIN/pl/routes/sentences.js",
+		"/Users/pjmotz/Dropbox/Code/Web/EngSecLan/scripts/script.js",
+		"/Users/pjmotz/Dropbox/Code/Web/UIN/pl/app.js",
+		"/Users/pjmotz/GitHub/about/about.html",
+		"/Users/pjmotz/Dropbox/Code/JS/algs.html",
+		"/Users/pjmotz/Dropbox/Udacity/Web/JS Design Patterns/index.html",
+		"/Users/pjmotz/Dropbox/Udacity/Web/JS Design Patterns/index.js",
+		"/Users/pjmotz/GitHub/ud989-pizzamvo/js/app.js",
+		"/Users/pjmotz/GitHub/ud989-pizzamvo/index.html",
+		"/Users/pjmotz/GitHub/ud989-pizzamvo/README.md",
+		"/Users/pjmotz/Dropbox/Code/JS/JavaScript30/02 - JS + CSS Clock/index-FINISHED.html",
+		"/Users/pjmotz/Dropbox/Udacity/Web/JS Design Patters/index.html",
+		"/Users/pjmotz/Downloads/startbootstrap-agency-gh-pages/index.html",
+		"/Users/pjmotz/GitHub/paulmotz.github.io/chess.html",
+		"/Users/pjmotz/Downloads/startbootstrap-agency-gh-pages/js/contact_me.js",
+		"/Users/pjmotz/Dropbox/Code/JS/JavaScript30/01 - JavaScript Drum Kit/index-START.html",
+		"/Users/pjmotz/GitHub/paulmotz.github.io/css/running.css",
+		"/Users/pjmotz/Desktop/t.css"
+	],
+	"find":
+	{
+		"height": 39.0
+	},
+	"find_in_files":
+	{
+		"height": 101.0,
+		"where_history":
+		[
+		]
+	},
+	"find_state":
+	{
+		"case_sensitive": false,
+		"find_history":
+		[
+		],
+		"highlight": true,
+		"in_selection": false,
+		"preserve_case": false,
+		"regex": true,
+		"replace_history":
+		[
+		],
+		"reverse": false,
+		"show_context": true,
+		"use_buffer2": true,
+		"whole_word": false,
+		"wrap": true
+	},
+	"groups":
+	[
+		{
+			"selected": 0,
+			"sheets":
+			[
+				{
+					"buffer": 0,
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 0,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								0,
+								0
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Text/Plain text.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 0,
+					"type": "text"
+				}
+			]
+		}
+	],
+	"incremental_find":
+	{
+		"height": 23.0
+	},
+	"input":
+	{
+		"height": 0.0
+	},
+	"layout":
+	{
+		"cells":
+		[
+			[
+				0,
+				0,
+				1,
+				1
+			]
+		],
+		"cols":
+		[
+			0.0,
+			1.0
+		],
+		"rows":
+		[
+			0.0,
+			1.0
+		]
+	},
+	"menu_visible": true,
+	"output.find_results":
+	{
+		"height": 0.0
+	},
+	"pinned_build_system": "",
+	"project": "Website.sublime-project",
+	"replace":
+	{
+		"height": 42.0
+	},
+	"save_all_on_build": true,
+	"select_file":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"select_project":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"select_symbol":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"selected_group": 0,
+	"settings":
+	{
+	},
+	"show_minimap": true,
+	"show_open_files": true,
+	"show_tabs": true,
+	"side_bar_visible": true,
+	"side_bar_width": 222.0,
+	"status_bar_visible": true,
+	"template_settings":
+	{
+	}
+}

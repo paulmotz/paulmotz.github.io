@@ -4,7 +4,7 @@ This is the code for my personal webpage. I have a few personal projects here an
 
 ## Dummy Chess
 
-This is a chess game that I wrote in JavaScript where a user can play against an opponent that makes random moves. A user can also choose to play as both sides (so that two people can play a game). As there are multiple .js files for the game, they are stored in their own folder javascripts/chess.
+This is a chess game that I wrote in JavaScript where a user can play against an opponent that makes random moves. A user can also choose to play as both sides (so that two people can play a game). As there are multiple .js files for the game, they are stored in their own folder scripts/chess.
 
 ## D3 Maps
 
