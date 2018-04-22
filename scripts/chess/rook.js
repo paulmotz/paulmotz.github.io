@@ -1,3 +1,10 @@
+const rookDirections = [
+							[-1, 0], 
+							[+1, 0],
+							[0, -1],
+							[0, +1]
+						];
+
 class Rook extends Piece {
 
 	/*
@@ -25,33 +32,29 @@ class Rook extends Piece {
 	 */
 
 	moves() {
-		let moves = [];
-		let file = this._file;
-		let rank = this._rank;
+		const moves = [];
+		const file = this._file;
+		const rank = this._rank;
 
-		let pD = this.getPinDirection();
+		const pD = this.getPinDirection();
  		if (pD) {
-
- 			let f = pD[0];
- 			let r = pD[1];
+ 			const [f, r] = pD;
 
  			// diagonal pin, rook cannot move
  			if ((f + r) % 2 === 0) {
  				return moves;
  			}
  			else {
- 				
  				// rook can only move in line with the pinning piece
- 				moves = this.moveOneWay(file, rank,  f,  r, moves, false);
- 				moves = this.moveOneWay(file, rank, -f, -r, moves, false);
+ 				moves.push(...this.moveOneWay(file, rank,  f,  r, false));
+ 				moves.push(...this.moveOneWay(file, rank, -f, -r, false));
  				return moves;
  			}
  		}
 
-		moves = this.moveOneWay(file, rank, -1, 0, moves, false);
-		moves = this.moveOneWay(file, rank, +1, 0, moves, false);
-		moves = this.moveOneWay(file, rank, 0, -1, moves, false);
-		moves = this.moveOneWay(file, rank, 0, +1, moves, false);
+		for (const direction of rookDirections) {
+ 			moves.push(...this.moveOneWay(file, rank, ...direction, false))
+ 		}
 
 		return moves;
 	}
@@ -63,14 +66,13 @@ class Rook extends Piece {
 	 */
 
 	protectedSquares() {
-		let protectedSquares = [];
-		let file = this._file;
-		let rank = this._rank;
+		const protectedSquares = [];
+		const file = this._file;
+		const rank = this._rank;
 
-		protectedSquares = this.moveOneWay(file, rank, -1, 0, protectedSquares, true);
-		protectedSquares = this.moveOneWay(file, rank, +1, 0, protectedSquares, true);
-		protectedSquares = this.moveOneWay(file, rank, 0, -1, protectedSquares, true);
-		protectedSquares = this.moveOneWay(file, rank, 0, +1, protectedSquares, true);
+		for (const direction of rookDirections) {
+ 			protectedSquares.push(...this.moveOneWay(file, rank, ...direction, false))
+ 		}
 
 		return protectedSquares;
 	}

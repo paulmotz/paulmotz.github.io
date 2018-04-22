@@ -1,3 +1,10 @@
+const bishopDirections = [
+							[-1, -1],
+							[-1, +1],
+							[+1, -1],
+							[+1, +1],
+						];
+
 class Bishop extends Piece {
 
 	/**
@@ -7,34 +14,30 @@ class Bishop extends Piece {
 	 */
 
 	moves() {
-		let moves = [];
+		const moves = [];
 
-		let file = this._file;
-		let rank = this._rank;
+		const file = this._file;
+		const rank = this._rank;
 
-		let pD = this.getPinDirection();
+		const pD = this.getPinDirection();
  		if (pD) {
-
- 			let f = pD[0];
- 			let r = pD[1];
+ 			const [f, r] = pD;
 
  			// horizontal/vertical pin, bishop cannot move
  			if ((f + r) % 2 !== 0) {
  				return moves;
  			}
  			else {
-
  				// bishop can only move in line with the pinning piece
- 				moves = this.moveOneWay(file, rank,  f,  r, moves, false);
- 				moves = this.moveOneWay(file, rank, -f, -r, moves, false);
+ 				moves.push(...this.moveOneWay(file, rank,  f,  r, false));
+ 				moves.push(...this.moveOneWay(file, rank, -f, -r, false));
  				return moves;
  			}
  		}
 
-		moves = this.moveOneWay(file, rank, -1, -1, moves, false);
-		moves = this.moveOneWay(file, rank, -1, +1, moves, false);
-		moves = this.moveOneWay(file, rank, +1, -1, moves, false);
-		moves = this.moveOneWay(file, rank, +1, +1, moves, false);
+		for (const direction of queenDirections) {
+ 			moves.push(...this.moveOneWay(file, rank, ...direction, false))
+ 		}
 
 		return moves;
 	}
@@ -46,15 +49,14 @@ class Bishop extends Piece {
 	 */
 
 	protectedSquares() {
-		let protectedSquares = [];
+		const protectedSquares = [];
 
-		let file = this._file;
-		let rank = this._rank;
+		const file = this._file;
+		const rank = this._rank;
 
-		protectedSquares = this.moveOneWay(file, rank, -1, -1, protectedSquares, true);
-		protectedSquares = this.moveOneWay(file, rank, -1, +1, protectedSquares, true);
-		protectedSquares = this.moveOneWay(file, rank, +1, -1, protectedSquares, true);
-		protectedSquares = this.moveOneWay(file, rank, +1, +1, protectedSquares, true);
+		for (const direction of queenDirections) {
+ 			protectedSquares.push(...this.moveOneWay(file, rank, ...direction, false))
+ 		}
 
 		return protectedSquares;
 	}

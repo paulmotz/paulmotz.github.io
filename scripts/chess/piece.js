@@ -124,16 +124,16 @@ class Piece {
 	 * @param {Number} rank - the rank that the piece is currently occupying: 1 - 8
 	 * @param {Number} f - the piece's movement between files: -1, 0, 1
 	 * @param {Number} r - the piece's movement between ranks: -1, 0, 1
-	 * @return {Number[][]} moves - the moves of the piece that have already been calculated
 	 * @param {Boolean} defending - whether the move's being calculated are attacking or defending. Defending counts pieces of the same color guarded by the piece
 	 * @return {Number[][]} moves - the moves of the piece as an array of co-ordinates (also an array)
 	 */
 
-	moveOneWay(file, rank, f, r, moves, defending) {
+	moveOneWay(file, rank, f, r, defending) {
+		const moves = [];
 		while (file + f >= 1 && file + f <= 8 && rank + r >= 1 && rank + r <= 8) {
 			file += f;
 			rank += r;
-			let index = squareToIndex([file, rank]) - 1;
+			const index = squareToIndex([file, rank]) - 1;
 			if (occupiedSquares[index]) {
 				if (defending) {
 					moves.push([file, rank]);

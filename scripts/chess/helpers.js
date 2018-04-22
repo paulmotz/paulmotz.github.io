@@ -4,15 +4,14 @@
  */
 
 function differentColorBishops() {
-
-	// no bishops, TODO, funciton shouldn't even be called
+	// no bishops, TODO, function shouldn't even be called
 	if (!allPieces['wB'].length && !allPieces['bB'].length) return false;
-	let firstBishop = allPieces['wB'].length ? allPieces['wB'][0] : allPieces['bB'][0];
-	let firstBishopSquareColor = (firstBishop.file + firstBishop.rank) % 2;
-	for (let c in colors) {
-		let bishops = allPieces[colors[c] + 'B'];
-		for (let j in bishops) {
-			if (firstBishopSquareColor !== (bishops[j].file + bishops[j].rank) % 2) {
+	const firstBishop = allPieces['wB'].length ? allPieces['wB'][0] : allPieces['bB'][0];
+	const firstBishopSquareColor = (firstBishop.file + firstBishop.rank) % 2;
+	for (const color of colors) {
+		const bishops = allPieces[color + 'B'];
+		for (const bishop in bishops) {
+			if (firstBishopSquareColor !== (bishop.file + bishop.rank) % 2) {
 				return true;
 			}
 		}
@@ -39,7 +38,7 @@ function squareToIndex(square) {
  */
 
 function indexToSquare(index) {
-	let file = index % 8 === 0 ? 8 : index % 8;
+	const file = index % 8 === 0 ? 8 : index % 8;
 	return [file, Math.ceil(index / 8)];
 }
 
@@ -136,7 +135,6 @@ function getBoardString() {
  */
 
 function findPieceIndex(piece, id) {
-
 	let pieceType = allPieces[piece];
 
 	for (let p = 0; p < pieceType.length; p++) {
@@ -156,7 +154,6 @@ function findPieceIndex(piece, id) {
  */
 
 function getLegalMoves(checkingPieces, clickedPiece) {
-
 	let king = allPieces[clickedPiece[0] + 'K'][0];
 	let kingSquare = [king.file, king.rank];
 	let kingIndex = squareToIndex(kingSquare);

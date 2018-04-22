@@ -1,5 +1,15 @@
-class Queen extends Piece {
+const queenDirections = [
+							[-1, 0], 
+							[+1, 0],
+							[0, -1],
+							[0, +1],
+							[-1, -1],
+							[-1, +1],
+							[+1, -1],
+							[+1, +1],
+						];
 
+class Queen extends Piece {
 	/**
 	 * Get the Queen's moves
 	 * @param {String[]} occupiedSquares - the squares that are currently occupied, array entries are piece names (eg wP3)
@@ -7,29 +17,23 @@ class Queen extends Piece {
 	 */
 
 	moves() {
-		let moves = [];
-		let file = this._file;
-		let rank = this._rank;
+		const moves = [];
+		const file = this._file;
+		const rank = this._rank;
 
-		let pD = this.getPinDirection();
+		const pD = this.getPinDirection();
  		if (pD) {
- 			let f = pD[0];
- 			let r = pD[1];
+ 			const [f, r] = pD;
 
 			// queen can only move in line with the pinning piece
-			moves = this.moveOneWay(file, rank,  f,  r, moves, false);
-			moves = this.moveOneWay(file, rank, -f, -r, moves, false);
+			moves.push(...this.moveOneWay(file, rank,  f,  r, false));
+			moves.push(...this.moveOneWay(file, rank, -f, -r, false));
 			return moves;
  		}
 
-		moves = this.moveOneWay(file, rank, -1, 0, moves, false);
-		moves = this.moveOneWay(file, rank, +1, 0, moves, false);
-		moves = this.moveOneWay(file, rank, 0, -1, moves, false);
-		moves = this.moveOneWay(file, rank, 0, +1, moves, false);
-		moves = this.moveOneWay(file, rank, -1, -1, moves, false);
-		moves = this.moveOneWay(file, rank, -1, +1, moves, false);
-		moves = this.moveOneWay(file, rank, +1, -1, moves, false);
-		moves = this.moveOneWay(file, rank, +1, +1, moves, false);
+ 		for (const direction of queenDirections) {
+ 			moves.push(...this.moveOneWay(file, rank, ...direction, false))
+ 		}
 
 		return moves;
 	}
@@ -41,18 +45,13 @@ class Queen extends Piece {
 	 */
 
 	protectedSquares() {
-		let protectedSquares = [];
-		let file = this._file;
-		let rank = this._rank;
+		const protectedSquares = [];
+		const file = this._file;
+		const rank = this._rank;
 
-		protectedSquares = this.moveOneWay(file, rank, -1, 0, protectedSquares, true);
-		protectedSquares = this.moveOneWay(file, rank, +1, 0, protectedSquares, true);
-		protectedSquares = this.moveOneWay(file, rank, 0, -1, protectedSquares, true);
-		protectedSquares = this.moveOneWay(file, rank, 0, +1, protectedSquares, true);
-		protectedSquares = this.moveOneWay(file, rank, -1, -1, protectedSquares, true);
-		protectedSquares = this.moveOneWay(file, rank, -1, +1, protectedSquares, true);
-		protectedSquares = this.moveOneWay(file, rank, +1, -1, protectedSquares, true);
-		protectedSquares = this.moveOneWay(file, rank, +1, +1, protectedSquares, true);
+		for (const direction of queenDirections) {
+ 			protectedSquares.push(...this.moveOneWay(file, rank, ...direction, false))
+ 		}
 
 		return protectedSquares;
 	}

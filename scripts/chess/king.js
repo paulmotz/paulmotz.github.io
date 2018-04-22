@@ -24,7 +24,6 @@ class King extends Piece {
 	 */
 
  	moves() {
-
  		let color = this._color;
  		let opponentColor = otherColor(color);
  		let file = this._file;
@@ -33,8 +32,6 @@ class King extends Piece {
  		let possibleMoves = [ [file - 1, rank + 1], [file, rank + 1], [file + 1, rank + 1], 
  							  [file - 1, rank],                       [file + 1, rank], 
  							  [file - 1, rank - 1], [file, rank - 1], [file + 1, rank - 1] ];
-
-
 
 		let moves = possibleMoves.filter(function(square){
 			return square[0] > 0 && square[0] < 9 && square[1] > 0 && square[1] < 9 && 
