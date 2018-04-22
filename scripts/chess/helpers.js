@@ -3,8 +3,10 @@
  * @return {Boolean} - true if there is a pair of bishops with opposing square colors
  */
 function differentColorBishops() {
-	// no bishops, TODO, function shouldn't even be called
-	if (!allPieces['wB'].length && !allPieces['bB'].length) return false;
+	// there are no bishops
+	if (!allPieces['wB'].length && !allPieces['bB'].length) {
+		return false;
+	}
 	const firstBishop = allPieces['wB'].length ? allPieces['wB'][0] : allPieces['bB'][0];
 	const firstBishopSquareColor = (firstBishop.file + firstBishop.rank) % 2;
 	for (const color of colors) {
@@ -49,30 +51,29 @@ function indexToSquare(index) {
  * @return {String} algSquare - the algebraic notation representatino of the square e.g. e4
  */
 function getAlgNotMove(piece, pieceId, capture, squareIndex, oldSquare) {
-	let pieceType = piece[1];
+	const pieceType = piece[1];
 	let pieceString = pieceType !== 'P' ? pieceType : '';
-	pieceId = Number(pieceId); ///ensure pieceId is a Number and not a string
+	pieceId = Number(pieceId); // ensure pieceId is a Number and not a string
 	let capString = '';
 	let promotionString = '';
 
-	let oldFileLetter = String.fromCharCode(oldSquare[0] + 96);
-	let square = indexToSquare(squareIndex);
-	let newFileLetter = String.fromCharCode(square[0] + 96);
+	const oldFileLetter = String.fromCharCode(oldSquare[0] + 96);
+	const square = indexToSquare(squareIndex);
+	const newFileLetter = String.fromCharCode(square[0] + 96);
 
 	// check if multiple pieces of that type can move to the same square and disambiguate if so
-	if (pieceType !== 'P' && pieceType !== 'K') {
-		let piecesArray = allPieces[piece];
-		
+	if (pieceType !== 'P' && pieceType !== 'K') {		
 		// find all pieces that can move to the square and keep track of their file/rank
-		let algOldSquare = Array(2);
-		for (let p in piecesArray) {
-			if (piecesArray[p].id !==  pieceId) {
-				let pieceMoves = piecesArray[p].moves().map(squareToIndex);
-				if (pieceMoves.indexOf(squareIndex) !== -1) {
-					if (oldSquare[1] === piecesArray[p].rank || (oldSquare[1] !== piecesArray[p].rank && oldSquare[0] !== piecesArray[p].file)) {
+		const algOldSquare = Array(2);
+		const piecesArray = allPieces[piece];
+		for (const piece of piecesArray) {
+			if (piece.id !==  pieceId) {
+				const pieceMoves = piece.moves().map(squareToIndex);
+				if (!pieceMoves.includes(squareIndex)) {
+					if (oldSquare[1] === piece.rank || (oldSquare[1] !== piece.rank && oldSquare[0] !== piece.file)) {
 						algOldSquare[0] = oldFileLetter;
 					}
-					if (oldSquare[0] === piecesArray[p].file) {
+					if (oldSquare[0] === piece.file) {
 						algOldSquare[1] = oldSquare[1];
 					}
 				}
@@ -83,7 +84,6 @@ function getAlgNotMove(piece, pieceId, capture, squareIndex, oldSquare) {
 	}
 
 	if (pieceType === 'P') {
-
 		// if the pawn is moving off of its file, it is capturing
 		if (oldSquare[0] !== square[0]) {
 			capString = oldFileLetter + 'x';
@@ -91,14 +91,14 @@ function getAlgNotMove(piece, pieceId, capture, squareIndex, oldSquare) {
 
 		// check for promotion
 		if (square[1] === 1 || square[1] === 8) {
-			promotionString = '=' + $('input[name=piece]:checked').val();
+			promotionString = `=${$('input[name=piece]:checked').val()}`;
 		}
 	}
 	else if (capture) {
 		capString = 'x';
 	}
 
-	let squareString =  newFileLetter + square[1];
+	const squareString =  newFileLetter + square[1];
 	return pieceString + capString + squareString + promotionString;
 }
 
@@ -138,11 +138,11 @@ function findPieceIndex(piece, id) {
  * @return {Number[]} legalMoves - the legal moves, represented as an array of board square indices, that the clicked piece can make
  */
 function getLegalMoves(checkingPieces, clickedPiece) {
-	let king = allPieces[clickedPiece[0] + 'K'][0];
-	let kingSquare = [king.file, king.rank];
-	let kingIndex = squareToIndex(kingSquare);
+	const [king] = allPieces[clickedPiece[0] + 'K'];
+	const kingSquare = [king.file, king.rank];
+	const kingIndex = squareToIndex(kingSquare);
 
-	let legalMoves = [];
+	const legalMoves = [];
 	let clickedPieceColorAndType = clickedPiece.slice(0, 2);
 	let clickedPieceId = clickedPiece[2];
 	let clickedPieceIndex = findPieceIndex(clickedPieceColorAndType, clickedPieceId);
@@ -150,14 +150,14 @@ function getLegalMoves(checkingPieces, clickedPiece) {
 
 	// check if there is only one checkingPiece, it may be possible to capture or block it
 	if (checkingPieces.length === 1) {
-		let checkingPieceColorAndType = checkingPieces[0].slice(0, 2)
+		const checkingPieceColorAndType = checkingPieces[0].slice(0, 2)
 		let checkingPieceIndex = findPieceIndex(checkingPieceColorAndType, checkingPieces[0][2])
-		let checkingPiece = allPieces[checkingPieceColorAndType][checkingPieceIndex];
-		let checkingPieceSquare = [checkingPiece.file, checkingPiece.rank]
+		const checkingPiece = allPieces[checkingPieceColorAndType][checkingPieceIndex];
+		const checkingPieceSquare = [checkingPiece.file, checkingPiece.rank]
 		checkingPieceIndex = squareToIndex(checkingPieceSquare);
 		
 		// can the piece be captured?
-		let captureMove = clickedPieceMoves.indexOf(checkingPieceIndex);
+		const captureMove = clickedPieceMoves.indexOf(checkingPieceIndex);
 		if (captureMove !== -1) {
 			legalMoves.push(clickedPieceMoves[captureMove]);
 		}
@@ -177,34 +177,33 @@ function getLegalMoves(checkingPieces, clickedPiece) {
 
 	// only the king can move
 	if (clickedPiece[1] === 'K') {
-
-		let attackedSquares = [];
-		for (let piece in checkingPieces) {
-			let checkingPieceColorAndType = checkingPieces[piece].slice(0, 2)
-			let checkingPieceIndex = findPieceIndex(checkingPieceColorAndType, checkingPieces[piece][2])
-			let checkingPiece = allPieces[checkingPieceColorAndType][checkingPieceIndex];
-			let checkingPieceSquare = [checkingPiece.file, checkingPiece.rank]
+		const attackedSquares = [];
+		for (const piece of checkingPieces) {
+			const checkingPieceColorAndType = piece.slice(0, 2)
+			const checkingPieceIndex = findPieceIndex(checkingPieceColorAndType, piece[2])
+			const checkingPiece = allPieces[checkingPieceColorAndType][checkingPieceIndex];
+			const checkingPieceSquare = [checkingPiece.file, checkingPiece.rank]
 
 			// no need to get check path for knights and pawns
 			if (checkingPieceColorAndType[1] !== 'N' && checkingPieceColorAndType[1] !== 'P') {
-				let checkPath = getCheckPath(checkingPieceSquare, kingSquare, true).map(squareToIndex);
+				const checkPath = getCheckPath(checkingPieceSquare, kingSquare, true).map(squareToIndex);
 
-				for (let c in checkPath) {
-					if (checkPath[c] !== kingIndex) {
-						attackedSquares.push(checkPath[c]);
+				for (const square of checkPath) {
+					if (square !== kingIndex) {
+						attackedSquares.push(square);
 					}
 				}
 			}
 		}
 
-		let kingMoves = king.moves().map(squareToIndex);
+		const kingMoves = king.moves().map(squareToIndex);
 
-		let legalKingMoves = kingMoves.filter(function(val) {
-			return attackedSquares.indexOf(val) === -1;
+		const legalKingMoves = kingMoves.filter((val) => {
+			return !attackedSquares.includes(val);
 		});
 
-		for (let m in legalKingMoves) {
-			legalMoves.push(legalKingMoves[m]);
+		for (const legalKingMove of legalKingMoves) {
+			legalMoves.push(legalKingMove);
 		}
 	}
 
@@ -219,21 +218,26 @@ function getLegalMoves(checkingPieces, clickedPiece) {
  * @return {Number[][]} checkPath - an array of squares between the pieces, returns [] if no so path
  */
 function getCheckPath(checkingPieceSquare, kingSquare, extend) {
-	let checkPath = [];
-	let delF = checkingPieceSquare[0] - kingSquare[0]; // change in file
-	let delR = checkingPieceSquare[1] - kingSquare[1]; // change in rank
-	let pieceDist = Math.max(Math.abs(delF), Math.abs(delR));
+	console.log(checkingPieceSquare)
+	console.log(kingSquare)
+	console.log(extend)
+	const checkPath = [];
+	const delF = checkingPieceSquare[0] - kingSquare[0]; // change in file
+	const delR = checkingPieceSquare[1] - kingSquare[1]; // change in rank
+	const pieceDist = Math.max(Math.abs(delF), Math.abs(delR));
 
 	// there is a valid path 
-	if (delF === 0 || delR === 0 || Math.abs(delF/delR) === 1) {
-
+	if (delF === 0 || delR === 0 || Math.abs(delF / delR) === 1) {
+		console.log(true)
 		// extend the path so that it blocks the king from retreating in the direction of the check
 		// TODO: this also includes the king's current square
-		let pathLength = extend ? pieceDist + 2 : pieceDist;
+		const pathLength = extend ? pieceDist + 2 : pieceDist;
 		for (let i = 1; i < pathLength; i++) {
-			checkPath.push([checkingPieceSquare[0] - i * delF/pieceDist, checkingPieceSquare[1] - i * delR/pieceDist]);
+			checkPath.push([checkingPieceSquare[0] - i * delF / pieceDist, checkingPieceSquare[1] - i * delR / pieceDist]);
 		}
 	}
+
+	console.log(checkPath)
 
 	return checkPath;
 }
@@ -246,10 +250,13 @@ function getCheckPath(checkingPieceSquare, kingSquare, extend) {
  * @return {Boolean} - whether the game is a draw
  */
 function checkDraw(color, boardStrings, drawMoveCounter) {
-	if (!checkMatingMaterial() || checkDrawRep(boardStrings) || checkDraw50(drawMoveCounter) || checkStalemate(color)) {
-		return true;
-	}
-	return false;
+	return !checkMatingMaterial() || checkDrawRep(boardStrings) || checkDraw50(drawMoveCounter) || checkStalemate(color);
+
+
+	// if (!checkMatingMaterial() || checkDrawRep(boardStrings) || checkDraw50(drawMoveCounter) || checkStalemate(color)) {
+	// 	return true;
+	// }
+	// return false;
 }
 
 /**
