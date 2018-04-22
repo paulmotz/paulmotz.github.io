@@ -166,10 +166,8 @@ function getLegalMoves(checkingPieces, clickedPiece) {
 		// knights and pawns cannot be blocked
 		if (checkingPieceColorAndType[1] !== 'N' && checkingPieceColorAndType[1] !== 'P') {
 			const checkPath = getCheckPath(checkingPieceSquare, kingSquare, false).map(squareToIndex);
-			// TODO
-			// console.log(checkPath)
-			for (let i = 0; i < checkPath.length; i++) {
-				let blockMove = clickedPieceMoves.indexOf(checkPath[i]);
+			for (const square of checkPath) {
+				const blockMove = clickedPieceMoves.indexOf(square);
 				if (blockMove !== -1) {
 					legalMoves.push(clickedPieceMoves[blockMove]);
 				} 
