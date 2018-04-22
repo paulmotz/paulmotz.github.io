@@ -44,7 +44,7 @@ d3.json("data/maps/election_results.json", function(data) {
 
 	const s = document.querySelector('.select');
 
-	const year = s.value;
+	let year = s.value;
 	drawMaps(year);
 
 	s.addEventListener("change", function() {
