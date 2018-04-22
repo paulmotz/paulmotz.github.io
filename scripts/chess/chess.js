@@ -855,7 +855,6 @@ $(document).ready(function() {
 		$('.result-description').html(`Checkmate! ${winningColor} wins!`);
 		const resultString = winningColor === 'White' ? '1-0' : '0-1';
 		$('.result').html(resultString);
-		console.log(currentColor)
 		drawCheckSquare(currentColor, false); // make the square the normal color
 		return true;
 	}
