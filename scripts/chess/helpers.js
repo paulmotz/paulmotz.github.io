@@ -411,6 +411,21 @@ function checkCheckmate(currentColor, opponentColor, checkingPieces) {
 	return true;
 }
 
+/**
+ * Returns the color of the otehr player
+ * @param {String} color - the player's color
+ * @return {String} - the opposite color
+ */
+
 function otherColor(color) {
 	return color === 'w' ? 'b' : 'w';
+}
+
+/**
+ * Checks whether the square is on the board
+ * @param {Number[]} square - the square's file, two numbers: 1 - 8
+ * @return {Boolen} - whether the square is on the board
+ */
+function checkSquareOnBoard(square) {
+	return square[0] >= 1 && square[0] <= 8 && square[1] >= 1 && square[1] <= 8
 }

@@ -36,7 +36,7 @@ class Bishop extends Piece {
  		}
 
 		for (const direction of bishopDirections) {
- 			moves.push(...this.moveOneWay(file, rank, ...direction, false))
+ 			moves.push(...this.moveOneWay(file, rank, ...direction, false));
  		}
 
 		return moves;
@@ -55,7 +55,7 @@ class Bishop extends Piece {
 		const rank = this._rank;
 
 		for (const direction of bishopDirections) {
- 			protectedSquares.push(...this.moveOneWay(file, rank, ...direction, true))
+ 			protectedSquares.push(...this.moveOneWay(file, rank, ...direction, true));
  		}
 
 		return protectedSquares;

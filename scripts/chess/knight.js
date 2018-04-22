@@ -1,6 +1,6 @@
 class Knight extends Piece {
 	/**
-	 * Get the possible Knight's moves
+	 * Get the Knight's possible moves
 	 * @param {Number} file - file rank of the knight: 1 - 8
 	 * @param {Number} rank - the rank of the knight: 1 - 8
 	 * @return {Number[][]} moves - the moves of the Knight as an array of co-ordinates (also an array)
@@ -31,7 +31,7 @@ class Knight extends Piece {
 
  		// in addition to not being able to move off the board, a knight can only move to a square that is unoccupied or is occupied by a piece of the opposite color
 		const moves = possibleMoves.filter((square) => {
-			return square[0] >= 1 && square[0] <= 8 && square[1] >= 1 && square[1] <= 8 && 
+			return checkSquareOnBoard(square) && 
 				(!occupiedSquares[squareToIndex([square[0], square[1]]) - 1] || occupiedSquares[squareToIndex([square[0], square[1]]) - 1][0] !== color);
 		});
 
@@ -48,9 +48,7 @@ class Knight extends Piece {
  		const rank = this._rank;
  		const possibleMoves = this.getPossibleMoves(file, rank);
 
-		const protectedSquares = possibleMoves.filter((square) => {
-			return square[0] >= 1 && square[0] <= 8 && square[1] >= 1 && square[1] <= 8;
-		});
+		const protectedSquares = possibleMoves.filter(checkSquareOnBoard);
 
 		return protectedSquares;
  	}

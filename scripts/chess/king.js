@@ -1,5 +1,18 @@
 class King extends Piece {
-	
+	/**
+	 * Get the Kings's possible moves
+	 * @param {Number} file - file rank of the king: 1 - 8
+	 * @param {Number} rank - the rank of the king: 1 - 8
+	 * @return {Number[][]} moves - the moves of the king as an array of co-ordinates (also an array)
+	 */
+	getPossibleMoves(file, rank) {
+		return [ 
+			[file - 1, rank + 1], [file, rank + 1], [file + 1, rank + 1], 
+			[file - 1, rank],                       [file + 1, rank], 
+			[file - 1, rank - 1], [file, rank - 1], [file + 1, rank - 1] 
+		];
+	}
+
 	// TODO:
 	// check if the piece is in check
 	// restrict move if move would place the king in check
@@ -14,7 +27,7 @@ class King extends Piece {
 	 */
 
 	constructor(color, abbr, file, rank, id, hasMoved) {
-		super(color, abbr, file, rank, id)
+		super(color, abbr, file, rank, id);
 		this._hasMoved = hasMoved;
 	}
 
@@ -24,23 +37,21 @@ class King extends Piece {
 	 */
 
  	moves() {
- 		let color = this._color;
- 		let opponentColor = otherColor(color);
- 		let file = this._file;
- 		let rank = this._rank;
- 		let hasMoved = this._hasMoved;
- 		let possibleMoves = [ [file - 1, rank + 1], [file, rank + 1], [file + 1, rank + 1], 
- 							  [file - 1, rank],                       [file + 1, rank], 
- 							  [file - 1, rank - 1], [file, rank - 1], [file + 1, rank - 1] ];
+ 		const color = this._color;
+ 		const opponentColor = otherColor(color);
+ 		const file = this._file;
+ 		const rank = this._rank;
+ 		const hasMoved = this._hasMoved;
+ 		const possibleMoves = this.getPossibleMoves(file, rank);
 
-		let moves = possibleMoves.filter(function(square){
-			return square[0] > 0 && square[0] < 9 && square[1] > 0 && square[1] < 9 && 
+		const moves = possibleMoves.filter((square) => {
+			return checkSquareOnBoard(square) && 
 			(!occupiedSquares[squareToIndex([square[0], square[1]]) - 1] || occupiedSquares[squareToIndex([square[0], square[1]]) - 1][0] !== color) &&
 			!attackedSquares[opponentColor].has(squareToIndex(square));			
 		});
 
-		let colorRook = color + 'R';
-		let queensideRook = allPieces[colorRook][findPieceIndex(colorRook, 0)];
+		const colorRook = color + 'R';
+		const queensideRook = allPieces[colorRook][findPieceIndex(colorRook, 0)];
 
 		// queenside castling
 		if (!hasMoved && queensideRook && !queensideRook.hasMoved && 
@@ -49,7 +60,7 @@ class King extends Piece {
 			moves.push([file - 2, rank]);
 		}
 
-		let kingsideRook = allPieces[colorRook][findPieceIndex(colorRook, 1)];
+		const kingsideRook = allPieces[colorRook][findPieceIndex(colorRook, 1)];
 
 		// kingside castling
 		if (!hasMoved && kingsideRook && !kingsideRook.hasMoved && 
@@ -67,18 +78,14 @@ class King extends Piece {
 	 */
 
  	protectedSquares() {
- 		let color = this._color;
- 		let file = this._file;
- 		let rank = this._rank;
- 		let hasMoved = this._hasMoved;
- 		let possibleMoves = [ [file - 1, rank + 1], [file, rank + 1], [file + 1, rank + 1], 
- 							  [file - 1, rank],                       [file + 1, rank], 
- 							  [file - 1, rank - 1], [file, rank - 1], [file + 1, rank - 1] ];
+ 		const color = this._color;
+ 		const file = this._file;
+ 		const rank = this._rank;
+ 		const hasMoved = this._hasMoved;
+ 		const possibleMoves = this.getPossibleMoves(file, rank);
 
  		// only need to check if square is on the board
-		let protectedSquares = possibleMoves.filter(function(square){
-			return square[0] > 0 && square[0] < 9 && square[1] > 0 && square[1] < 9;			
-		});
+		const protectedSquares = possibleMoves.filter(checkSquareOnBoard);
 
 		return protectedSquares;
  	}

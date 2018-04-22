@@ -32,7 +32,7 @@ class Queen extends Piece {
  		}
 
  		for (const direction of queenDirections) {
- 			moves.push(...this.moveOneWay(file, rank, ...direction, false))
+ 			moves.push(...this.moveOneWay(file, rank, ...direction, false));
  		}
 
 		return moves;
@@ -50,7 +50,7 @@ class Queen extends Piece {
 		const rank = this._rank;
 
 		for (const direction of queenDirections) {
- 			protectedSquares.push(...this.moveOneWay(file, rank, ...direction, true))
+ 			protectedSquares.push(...this.moveOneWay(file, rank, ...direction, true));
  		}
 
 		return protectedSquares;

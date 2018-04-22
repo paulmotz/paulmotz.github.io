@@ -52,7 +52,7 @@ class Rook extends Piece {
  		}
 
 		for (const direction of rookDirections) {
- 			moves.push(...this.moveOneWay(file, rank, ...direction, false))
+ 			moves.push(...this.moveOneWay(file, rank, ...direction, false));
  		}
 
 		return moves;
@@ -69,7 +69,7 @@ class Rook extends Piece {
 		const rank = this._rank;
 
 		for (const direction of rookDirections) {
- 			protectedSquares.push(...this.moveOneWay(file, rank, ...direction, true))
+ 			protectedSquares.push(...this.moveOneWay(file, rank, ...direction, true));
  		}
 
 		return protectedSquares;

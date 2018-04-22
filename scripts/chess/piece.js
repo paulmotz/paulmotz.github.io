@@ -203,7 +203,7 @@ class Piece {
 				while (file + f >= 1 && file + f <= 8 && rank + r >= 1 && rank + r <= 8) {
 					file += f;
 					rank += r;
-					let inlinePiece = occupiedSquares[squareToIndex([file, rank]) - 1];
+					const inlinePiece = occupiedSquares[squareToIndex([file, rank]) - 1];
 					if (inlinePiece) {
 						if (inlinePiece[0] !== this.color && (inlinePiece[1] === 'B' || inlinePiece[1] === 'Q')) {
 							return [f, r];
@@ -220,7 +220,7 @@ class Piece {
 				while (file + f >= 1 && file + f <= 8 && rank + r >= 1 && rank + r <= 8) {
 					file += f;
 					rank += r;
-					let inlinePiece = occupiedSquares[squareToIndex([file, rank]) - 1];
+					const inlinePiece = occupiedSquares[squareToIndex([file, rank]) - 1];
 					if (inlinePiece) {
 						if (inlinePiece[0] !== this.color && (inlinePiece[1] === 'R' || inlinePiece[1] === 'Q')) {
 							return [f, r];
