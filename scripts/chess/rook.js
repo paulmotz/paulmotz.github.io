@@ -1,9 +1,9 @@
 const rookDirections = [
-							[-1, 0], 
-							[+1, 0],
-							[0, -1],
-							[0, +1]
-						];
+	[-1, 0], 
+	[+1, 0],
+	[0, -1],
+	[0, +1]
+];
 
 class Rook extends Piece {
 
@@ -27,7 +27,6 @@ class Rook extends Piece {
 
 	/**
 	 * Get the Rook's moves
-	 * @param {String[]} occupiedSquares - the squares that are currently occupied, array entries are piece names (eg wP3)
 	 * @return {Number[][]} moves - the moves of the Rook as an array of co-ordinates (also an array)
 	 */
 
@@ -61,7 +60,6 @@ class Rook extends Piece {
 
 	/**
 	 * Get the squares that the Rook protects
-	 * @param {String[]} occupiedSquares - the squares that are currently occupied, array entries are piece names (eg wP3)
 	 * @return {Number[][]} protectedSquares - the squares that the Rook protects as an array of co-ordinates (also an array)
 	 */
 

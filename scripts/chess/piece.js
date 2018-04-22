@@ -156,18 +156,17 @@ class Piece {
 	getKingDirection() {
 		let file = this.file;
 		let rank = this.rank;
-		let piece = occupiedSquares[squareToIndex([file, rank]) - 1];
-		let pieceType = piece[1];
+		const piece = occupiedSquares[squareToIndex([file, rank]) - 1];
+		const pieceType = piece[1];
 		if (pieceType === 'K') {
 			return null; // TODO: maybe this should be a special value
 		}
-		let directions = [[-1,  1], [0,  1], [1,  1],
+		const directions = [[-1,  1], [0,  1], [1,  1],
 						  [-1,  0],          [1,  0],
 						  [-1, -1], [0, -1], [1, -1]];
 
-		for (let currDir of directions) {
-			let f = currDir[0];
-			let r = currDir[1];
+		for (const currDir of directions) {
+			const [f, r] = currDir;
 			while (file + f >= 1 && file + f <= 8 && rank + r >= 1 && rank + r <= 8) {
 				file += f;
 				rank += r;
@@ -191,13 +190,13 @@ class Piece {
 	 */
 
 	getPinDirection() {
-		let kd = this.getKingDirection();
+		const kd = this.getKingDirection();
 		if (!kd) return;
 		else {
 			let file = this.file;
 			let rank = this.rank;
-			let f = -kd[0];
-			let r = -kd[1];
+			const f = -kd[0];
+			const r = -kd[1];
 
 			// diagonal move
 			if ((f + r) % 2 === 0) {
