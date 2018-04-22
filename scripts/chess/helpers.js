@@ -218,9 +218,6 @@ function getLegalMoves(checkingPieces, clickedPiece) {
  * @return {Number[][]} checkPath - an array of squares between the pieces, returns [] if no so path
  */
 function getCheckPath(checkingPieceSquare, kingSquare, extend) {
-	console.log(checkingPieceSquare)
-	console.log(kingSquare)
-	console.log(extend)
 	const checkPath = [];
 	const delF = checkingPieceSquare[0] - kingSquare[0]; // change in file
 	const delR = checkingPieceSquare[1] - kingSquare[1]; // change in rank
@@ -228,7 +225,6 @@ function getCheckPath(checkingPieceSquare, kingSquare, extend) {
 
 	// there is a valid path 
 	if (delF === 0 || delR === 0 || Math.abs(delF / delR) === 1) {
-		console.log(true)
 		// extend the path so that it blocks the king from retreating in the direction of the check
 		// TODO: this also includes the king's current square
 		const pathLength = extend ? pieceDist + 2 : pieceDist;
@@ -236,8 +232,6 @@ function getCheckPath(checkingPieceSquare, kingSquare, extend) {
 			checkPath.push([checkingPieceSquare[0] - i * delF / pieceDist, checkingPieceSquare[1] - i * delR / pieceDist]);
 		}
 	}
-
-	console.log(checkPath)
 
 	return checkPath;
 }
@@ -251,12 +245,6 @@ function getCheckPath(checkingPieceSquare, kingSquare, extend) {
  */
 function checkDraw(color, boardStrings, drawMoveCounter) {
 	return !checkMatingMaterial() || checkDrawRep(boardStrings) || checkDraw50(drawMoveCounter) || checkStalemate(color);
-
-
-	// if (!checkMatingMaterial() || checkDrawRep(boardStrings) || checkDraw50(drawMoveCounter) || checkStalemate(color)) {
-	// 	return true;
-	// }
-	// return false;
 }
 
 /**
@@ -271,7 +259,6 @@ function checkDraw(color, boardStrings, drawMoveCounter) {
  * @return {Boolean} - whether or not there is enough material to a plater to checkmate
  */
 function checkMatingMaterial() {
-
 	// no more major pieces or pawns
 	if (allPieces['wQ'].length === 0 && allPieces['bQ'].length === 0 &&
 		allPieces['wR'].length === 0 && allPieces['bR'].length === 0 &&
