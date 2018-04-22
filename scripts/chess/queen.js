@@ -15,7 +15,6 @@ class Queen extends Piece {
 	 * @param {String[]} occupiedSquares - the squares that are currently occupied, array entries are piece names (eg wP3)
 	 * @return {Number[][]} moves - the moves of the Queen as an array of co-ordinates (also an array)
 	 */
-
 	moves() {
 		const moves = [];
 		const file = this._file;
@@ -43,7 +42,6 @@ class Queen extends Piece {
 	 * @param {String[]} occupiedSquares - the squares that are currently occupied, array entries are piece names (eg wP3)
 	 * @return {Number[][]} protectedSquares - the squares that the Queen protects as an array of co-ordinates (also an array)
 	 */
-
 	protectedSquares() {
 		const protectedSquares = [];
 		const file = this._file;

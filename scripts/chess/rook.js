@@ -15,21 +15,15 @@ class Rook extends Piece {
 	 * @param {Number} rank - the rank of the rook: 1 - 8
 	 * @param {Boolean} hasMoved - whether or not the rook has moved (used for checking if castling is possible)
 	 */
-
 	constructor(color, abbr, file, rank, id, hasMoved) {
 		super(color, abbr, file, rank, id)
 		this._hasMoved = hasMoved;
-	}
-
-	hasMoved() {
-		return this._hasMoved;
 	}
 
 	/**
 	 * Get the Rook's moves
 	 * @return {Number[][]} moves - the moves of the Rook as an array of co-ordinates (also an array)
 	 */
-
 	moves() {
 		const moves = [];
 		const file = this._file;
@@ -62,7 +56,6 @@ class Rook extends Piece {
 	 * Get the squares that the Rook protects
 	 * @return {Number[][]} protectedSquares - the squares that the Rook protects as an array of co-ordinates (also an array)
 	 */
-
 	protectedSquares() {
 		const protectedSquares = [];
 		const file = this._file;
@@ -78,7 +71,6 @@ class Rook extends Piece {
 	/**
  	 * Get whether the rook has moved
  	 */
-
  	get hasMoved() {
 		return this._hasMoved;
 	}
@@ -86,7 +78,6 @@ class Rook extends Piece {
  	/**
  	 * Keep track of whether the rook has moved
  	 */
-
  	set hasMoved(hasMoved) {
 		this._hasMoved = hasMoved;
 	}

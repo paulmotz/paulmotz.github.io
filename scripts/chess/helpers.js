@@ -328,7 +328,6 @@ function checkDrawRep(boardStrings) {
  * @return {Boolean} - whether the game is a draw
  */
 function checkDraw50(drawMoveCounter) {
-
 	// a turn if one move from each player
 	if (drawMoveCounter === 50) {
 		$('.result-description').html(`It's a draw by the fifty-move rule!`);

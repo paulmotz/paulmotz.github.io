@@ -25,7 +25,6 @@ class King extends Piece {
 	 * @param {Number} rank - the rank of the king: 1 - 8
 	 * @param {bBoolean} hasMoved - whether or not the king has moved (used for checking if castling is possible)
 	 */
-
 	constructor(color, abbr, file, rank, id, hasMoved) {
 		super(color, abbr, file, rank, id);
 		this._hasMoved = hasMoved;
@@ -35,7 +34,6 @@ class King extends Piece {
 	 * Get the King's moves
 	 * @return {Number[][]} moves - the moves of the King as an array of co-ordinates (also an array)
 	 */
-
  	moves() {
  		const color = this._color;
  		const opponentColor = otherColor(color);
@@ -76,7 +74,6 @@ class King extends Piece {
 	 * Get the squares that the King protects
 	 * @return {number[][]} protectedSquares - the squares that the King protects as an array of co-ordinates (also an array)
 	 */
-
  	protectedSquares() {
  		const color = this._color;
  		const file = this._file;
@@ -93,7 +90,6 @@ class King extends Piece {
  	/**
  	 * Get whether the king has moved
  	 */
-
  	get hasMoved() {
 		return this._hasMoved;
 	}
@@ -101,7 +97,6 @@ class King extends Piece {
  	/**
  	 * Keep track of whether the king has moved
  	 */
-
  	set hasMoved(hasMoved) {
 		this._hasMoved = hasMoved;
 	}

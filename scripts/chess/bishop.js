@@ -6,13 +6,11 @@ const bishopDirections = [
 ];
 
 class Bishop extends Piece {
-
 	/**
 	 * Get the Bishop's moves
 	 * @param {String[]} occupiedSquares - the squares that are currently occupied, array entries are piece names (eg wP3)
 	 * @return {Number[][]} moves - the moves of the Bishop as an array of co-ordinates (also an array)
 	 */
-
 	moves() {
 		const moves = [];
 
@@ -47,7 +45,6 @@ class Bishop extends Piece {
 	 * @param {String[]} occupiedSquares - the squares that are currently occupied, array entries are piece names (eg wP3)
 	 * @return {Number[][]} protectedSquares - the squares that the Bishop protects as an array of co-ordinates (also an array)
 	 */
-
 	protectedSquares() {
 		const protectedSquares = [];
 

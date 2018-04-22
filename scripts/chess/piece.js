@@ -8,7 +8,6 @@ class Piece {
 	 * @param {Number} rank - the rank of the piece: 1 - 8
 	 * @param {Number} id - the id of the piece: 1 - 10 (where 10 = max possible number of any given piece per color)
 	 */
-
 	constructor(color, abbr, file, rank, id) {
 		this._color = color;
 		this._abbr = abbr;
@@ -21,7 +20,6 @@ class Piece {
 	 * Get the piece's color
 	 * @return {String} color - The color of the piece: white || black
 	 */
-
 	get color() {
 		return this._color;
 	}
@@ -30,7 +28,6 @@ class Piece {
 	 * Get the piece's abbreviation
 	 * @param {String} abbr - The abbreviation of the piece: B, N, K, P, Q or R
 	 */
-
 	get abbr() {
 		return this._abbr;
 	}
@@ -39,7 +36,6 @@ class Piece {
 	 * Get the piece's file
 	 * @return {Number} file - The file of the piece: 1 - 8
 	 */
-
 	get file() {
 		return this._file;
 	}
@@ -48,7 +44,6 @@ class Piece {
 	 * Get the piece's rank
 	 * @return {Number} rank - The rank of the piece: 1 - 8
 	 */
-
 	get rank() {
 		return this._rank;
 	}
@@ -57,7 +52,6 @@ class Piece {
 	 * Get the piece's id
 	 * @return {Number} id - The id of the piece: 1 - 10 (where 10 = max possible number of any given piece per color)
 	 */
-
 	get id() {
 		return this._id;
 	}
@@ -66,7 +60,6 @@ class Piece {
 	 * Set the piece's color
 	 * @param {String} color - The color of the piece: white || black
 	 */
-
 	set color(color) {
 		if (color === 'white' || color === 'black') {
 			this._color = color;
@@ -77,7 +70,6 @@ class Piece {
 	 * Set the piece's abbreviation
 	 * @param {String} abbr - The abbreviation of the piece: B, N, K, P, Q or R
 	 */
-
 	set abbr(abbr) {
 		this._abbr = abbr;
 	}
@@ -86,7 +78,6 @@ class Piece {
 	 * Set the piece's color
 	 * @param {Number} file - The file of the piece: 1 - 8
 	 */
-
 	set file(file) {
 		if (file > 0 && file < 9) {
 			this._file = file;
@@ -97,7 +88,6 @@ class Piece {
 	 * Set the piece's rank
 	 * @param {Number} rank - The rank of the piece: 1 - 8
 	 */
-
 	set rank(rank) {
 		if (rank > 0 && rank < 9) {
 			this._rank = rank;
@@ -108,7 +98,6 @@ class Piece {
 	 * Get the piece's id
 	 * @param {Number} id - The id of the piece: 1 - 10 (where 10 = max possible number of any given piece per color)
 	 */
-
 	set id(id) {
 		this._id = id;
 	}
@@ -127,7 +116,6 @@ class Piece {
 	 * @param {Boolean} defending - whether the move's being calculated are attacking or defending. Defending counts pieces of the same color guarded by the piece
 	 * @return {Number[][]} moves - the moves of the piece as an array of co-ordinates (also an array)
 	 */
-
 	moveOneWay(file, rank, f, r, defending) {
 		const moves = [];
 		while (file + f >= 1 && file + f <= 8 && rank + r >= 1 && rank + r <= 8) {
@@ -152,7 +140,6 @@ class Piece {
 	 * Returns the direction of the king from the piece. Used for checking for pinned pieces
 	 * @return {Number[]} kingDirection - the direction of the king from the piece, null if another piece is in the way
 	 */
-
 	getKingDirection() {
 		let file = this.file;
 		let rank = this.rank;
@@ -188,7 +175,6 @@ class Piece {
 	 * Checks to see if a piece is pinned and if so gets the direction of the pin
 	 * @return {Number[]} pinDirection - the direciton of the pin (ie the direction which the piece may be able to move), null if no pin
 	 */
-
 	getPinDirection() {
 		const kd = this.getKingDirection();
 		if (!kd) return;
