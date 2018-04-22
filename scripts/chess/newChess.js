@@ -11,47 +11,50 @@ let enPassantPawn;
 let attackedSquares = { 'w' : new Set(), 'b' : new Set() };
 
 // the two players' colors
-const colors = ['w', 'b'];
-const colorAbbreviations = {'w' : 'White', 'b' : 'Black'};
+let colors = ['w', 'b'];
+let colorAbbreviations = {'w' : 'White', 'b' : 'Black'};
 
 // square colors
-const dark = '#555';
-const light = '#999';
-const clicked = 'orange';
-const highlightedDark = 'Green';
-const highlightedLight = 'lime';
-const check = '#FF0000';
+let dark = '#555';
+let light = '#999';
+let clicked = "orange";
+let highlightedDark = "Green";
+let highlightedLight = "lime";
+let check = "#FF0000";
 
 // board colors
-const edge = '#000';
-const text = '#FFF';
+let edge = "#000";
+let text = "#FFF";
 
 // piece colors
-const whitePieces = '#FFF';
-const blackPieces = '#000';
+let whitePieces = "#FFF";
+let blackPieces = "#000";
 
 // store the game states so that a user can return to a previous position
-const gameStates = [];
+let gameStates = [];
 
 $(document).ready(function() {
+
 	// want element to still take up space on page, so don't use hide
 	$('.moves-display').css('visibility', 'hidden');
 
 	let $board = $('#chessboard');
-	let delay = 0;
+	let delay = 500;
 
-	// visual/layout variables
+	// visual/layout letiables
 	let height = parseInt($board.css('height'));
 	let width = parseInt($board.css('width'));
-	const squareSize = height / 10;
-	const lineWidth = height / 100;
+	let squareSize = height / 10;
+	let lineWidth = height / 100;
+
+	let markedSquares = new Set();
 
 	let board = $board[0];
-	const ctx = board.getContext('2d');
-	const files = ['', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', ''];
-	const ranks = ['', '1', '2', '3', '4', '5', '6', '7', '8', ''];
+	let ctx = board.getContext('2d');
+	let files = ['', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', ''];
+	let ranks = ['', '1', '2', '3', '4', '5', '6', '7', '8', ''];
 
-	// game/logic variables
+	// game/logic letiables
 
 	// display the Number of moves
 	let moveCounter = 0;
@@ -118,7 +121,8 @@ $(document).ready(function() {
 			if ($('#radio-white').is(':checked') || $('#radio-human').is(':checked')) {
 				whiteDown = true;
 				$(this).parent().find('span').html(pieceSymbols['w' + piece] + " " + pieceNames[piece])
-			} else {
+			}
+			else {
 				whiteDown = false;
 				$(this).parent().find('span').html(pieceSymbols['b' + piece] + " " + pieceNames[piece]);
 			}
@@ -130,8 +134,9 @@ $(document).ready(function() {
 	});
 
 	/**
-	 * Starts a new game and initialized global variables to starting values
+	 * Starts a new game and initialized global letiables to starting values
 	 */
+
 	function newGame() {
 		lastMove = {};
 		moveCounter = 0;
@@ -148,6 +153,7 @@ $(document).ready(function() {
 	/**
 	 * Stores the pieces into global allPieces object
 	 */
+
 	function initializePieces() {
 
 		// reset allPieces object
@@ -173,6 +179,7 @@ $(document).ready(function() {
 	 * @param {Number} id - the id of the new piece
 	 * @param {Boolean} hasMoved - whether the piece has moved or not (used to check if castling is allowed)
 	 */
+
 	function addPiece(colorAndPiece, file, rank, id, hasMoved) {
 		const [color, piece] = colorAndPiece;
 		switch (piece) {
@@ -201,14 +208,16 @@ $(document).ready(function() {
 	 * Draw the board
 	 * @param {Boolean} newGame - whether it is a new game or not
 	 */
+
 	function drawBoard(newGame) {
+
 		// redraw border to overwrite existing text
 		ctx.fillStyle = edge;
 		ctx.fillRect(0, 0, squareSize * 10, squareSize * 10);
 
-		ctx.textAlign = 'center';
-		ctx.textBaseline = 'middle'; 
-		ctx.font = '20px serif';
+		ctx.textAlign = "center";
+		ctx.textBaseline = "middle"; 
+		ctx.font = "20px serif";
 
 		for (let r = 0; r < 10; r++) {
 			for (let f = 0; f < 10; f++) {
@@ -232,7 +241,8 @@ $(document).ready(function() {
 				else {
 					if ((f + r) % 2 === 1) {
 						ctx.fillStyle = dark;
-					} else {
+					}
+					else {
 						ctx.fillStyle = light;
 					}
 					ctx.fillRect(f * squareSize, r * squareSize, squareSize, squareSize);
@@ -246,6 +256,7 @@ $(document).ready(function() {
 	 * Draws the pieces on the board
 	 * @param {Boolean} newGame - whether it is a new game or not
 	 */
+
 	function drawPieces(newGame) {
 		if (newGame) {
 			occupiedSquares = Array(64); // reset the occupied squares if it is a new game
@@ -271,6 +282,7 @@ $(document).ready(function() {
 	 * @param {String} opponentColor - the color of the opponenet's pieces: 'w' or 'b'
 	 * @param {Boolean} noComp - play human vs human
 	 */
+
 	function move(currentColor, opponentColor, noComp) {
 		let boardString = getBoardString();
 		
@@ -298,7 +310,7 @@ $(document).ready(function() {
 			return;
 		}
 
-		$('.result-description').html(`${colorAbbreviations[currentColor]} to move`);
+		$('.result-description').html(colorAbbreviations[currentColor] + " to move");
 
 		// console.log(allPieces);
 		// console.log(occupiedSquares);
@@ -418,7 +430,9 @@ $(document).ready(function() {
 
 						if (!checkingPieces.length) {
 							pieceMoves = pieceArray[piece].moves();
-						} else {
+						}
+
+						else {
 							let selectedPiece = currentColor + pieceArray[piece].abbr + pieceArray[piece].id;
 							pieceMoves = getLegalMoves(checkingPieces, selectedPiece).map(indexToSquare);
 						}
@@ -434,10 +448,10 @@ $(document).ready(function() {
 
 			if (!numMoves && inCheck(currentColor).length) {
 				let winningColor = colorAbbreviations[opponentColor]
-				$('.result-description').html(`Checkmate! ${winningColor} wins!`);
+				$('.result-description').html("Checkmate! " + winningColor + " wins!");
 				let resultString = winningColor === 'White' ? '1-0' : '0-1';
 				$('.move-container').append(resultString);
-				$('.move-container').append(`<span class='result'>${resultString}</span>`);
+				$('.move-container').append("<span class='result'>" + resultString + "</span>");
 				drawCheckSquare(currentColor, false); // make the square the normal color
 				return;			
 			}
@@ -460,7 +474,8 @@ $(document).ready(function() {
 
 			updateMoves(currentColor, algNot);
 
-			setTimeout(() => { move(opponentColor, currentColor, false) }, delay);
+			// setTimeout(function() { move(opponentColor, currentColor, false) }, delay);
+			move(opponentColor, currentColor, false);
 		}
 	}
 
@@ -469,6 +484,7 @@ $(document).ready(function() {
 	 * @param {object} move - an object consisting of the piece, its id (an int) and the square to move to
 	 * @return {String} algNot - the algebraic notation representation of the move (e.g. "e4")
 	 */
+
 	function movePiece(move) {
 		let algNot = '';
 
@@ -478,7 +494,8 @@ $(document).ready(function() {
 		let id = move.id;
 		let newSquare = move.move;
 		let newIndex = squareToIndex(newSquare);
-		const [file, rank] = newSquare;
+		let file = newSquare[0];
+		let rank = newSquare[1];
 
 		// pawn moves reset the fifty-move rule counter
 		if (pieceType === 'P') {
@@ -499,17 +516,19 @@ $(document).ready(function() {
 		if (occupiedSquares[newIndex - 1]) {
 			algNot = getAlgNotMove(piece, id, true, newIndex, oldSquare)
 			capturePiece(occupiedSquares[newIndex  - 1], newSquare);
-		} else {
+		}
+
+		else {
 			algNot = getAlgNotMove(piece, id, false, newIndex, oldSquare);
 		}
 
 		if (pieceType === 'K') {
 			if ((file - oldFile) === 2) {
-				algNot = '0-0';
+				algNot = "0-0";
 				castle(newSquare);
 			}
 			if ((file - oldFile) === -2) {
-				algNot = '0-0-0';
+				algNot = "0-0-0";
 				castle(newSquare);
 			}
 		}
@@ -532,7 +551,8 @@ $(document).ready(function() {
 			if (color === 'w' && occupiedSquares[newIndex - 9] === enPassantPawn) {
 				capturePiece(enPassantPawn, [file, rank - 1]);
 				occupiedSquares[newIndex - 9] = null;
-			} else if (color === 'b' && occupiedSquares[newIndex + 7] === enPassantPawn) {
+			}
+			else if (color === 'b' && occupiedSquares[newIndex + 7] === enPassantPawn) {
 				capturePiece(enPassantPawn, [file, rank + 1]);
 				occupiedSquares[newIndex + 7] = null;
 			}
@@ -541,7 +561,8 @@ $(document).ready(function() {
 		// if a pawn moves two squares, make it able to be captured en passant
 		if (pieceType === 'P' && Math.abs(rank - oldRank) === 2) {
 			enPassantPawn = piece  + id;
-		} else {
+		}
+		else {
 			enPassantPawn = null;
 		}
 
@@ -566,6 +587,7 @@ $(document).ready(function() {
 	 * @param {Number} newIndex - the index of the square the pawn is moving to
 	 * @param {Number[]} newSquare - the square the pawn is moving to
 	 */
+
 	function promote(piece, pieceIndex, newIndex, newSquare) {
 
 		// newIndex is calculated using 1-indexing, it is only used for array accesses in this function, so decrement it
@@ -575,18 +597,19 @@ $(document).ready(function() {
 		let pieceName;
 		if (humanTurn) {
 			pieceName = $('input[name=piece]:checked').val();
-		} else {
-			const pieces = ['B', 'N', 'Q', 'R'];
+		}
+		else {
+			let pieces = ['B', 'N', 'Q', 'R'];
 			pieceName = pieces[Math.floor(Math.random() * pieces.length)];
 		}
-		const newPiece = color + pieceName;
-		const index = allPieces[newPiece].length > 0 ? allPieces[newPiece][allPieces[newPiece].length - 1].id + 1 : allPieces[newPiece].length;
-		const symbol = pieceSymbols[newPiece];
+		let newPiece = color + pieceName;
+		let index = allPieces[newPiece].length > 0 ? allPieces[newPiece][allPieces[newPiece].length - 1].id + 1 : allPieces[newPiece].length;
+		let symbol = pieceSymbols[newPiece];
 		drawOverPiece(newSquare);
 		drawOnSquare(file, rank, symbol, newPiece[0]);
 		addPiece(newPiece, file, rank, index, true);
 		allPieces[piece].splice(pieceIndex, 1);
-		const pieceId = newPiece + index;
+		let pieceId = newPiece + index;
 		occupiedSquares[newIndex] = pieceId;
 		boardStrings = [];
 	}
@@ -604,6 +627,7 @@ $(document).ready(function() {
 
 		// queenside castling
 		if (kingFile === 3) {
+
 			// white
 			if (kingRank === 1) {
 				rookMove = {'piece' : 'wR', 'id' : 0, 'move' : [4, 1]};
@@ -619,6 +643,7 @@ $(document).ready(function() {
 
 		// kingside castling
 		else if (kingFile === 7) {
+
 			// white
 			if (kingRank === 1) {
 				rookMove = {'piece' : 'wR', 'id' : 1, 'move' : [6, 1]};
@@ -637,6 +662,7 @@ $(document).ready(function() {
 	 * Creates a new set of indices corresponding to the squares that a color is attacking
 	 * @return {Number[]} attackedSquares - the squares that are being attacked
 	 */
+
 	function getAttackedSquares() {
 		const attackedSquares = { 'w' : new Set(), 'b' : new Set() };
 		for (const pieceType in allPieces) {
@@ -656,6 +682,7 @@ $(document).ready(function() {
 	 * @param {Number} squareIndex - the index of the square for which the attacking pieces are desired
 	 * @return {Number[]} attackingPieces - the pices that are attacking the square
 	 */
+
 	function getAttackingPieces(color, squareIndex) {
 		const attackingPieces = [];
 		for (const pieceType in allPieces) {
@@ -664,7 +691,7 @@ $(document).ready(function() {
 					// use protectedSquares instead of move since pinned pieces can still check
 					const pieceMoves = piece.protectedSquares();
 					for (const pieceMove of pieceMoves) {
-						if (squareToIndex(pieceMove) === squareIndex) {
+						if (squareToIndex(pieceMoves) === squareIndex) {
 							attackingPieces.push(color + piece.abbr + piece.id);
 						}
 					}
@@ -676,18 +703,22 @@ $(document).ready(function() {
 
 	/**
 	 * Checks whether the king of the defending color is in check and returns the pieces
-	 * @param {String} defendingColor - the color of the king to check whether it is in check
+	 * @param {String} color - the color of the king to check whether it is in check
 	 * @return {String} attackingPieces - the piece(s) that is/are delivering check
 	 */
-	function inCheck(defendingColor) {
-		const attackingColor = otherColor(defendingColor);
 
-		const [king] = allPieces[defendingColor + 'K'];
-		const kingIndex = squareToIndex([king.file, king.rank]);
-		const attackingPieces = getAttackingPieces(attackingColor, kingIndex);
+	function inCheck(defendingColor) {
+
+		let attackingColor = otherColor(defendingColor);
+
+		let king = allPieces[defendingColor + 'K'][0];
+		let kingIndex = squareToIndex([king.file, king.rank]);
+		let attackingPieces = getAttackingPieces(attackingColor, kingIndex);
 		if (attackingPieces.length) {
 			drawCheckSquare(defendingColor, true);
-		} else {
+		}
+
+		else {
 			drawCheckSquare(defendingColor, false);
 		}
 
@@ -701,16 +732,46 @@ $(document).ready(function() {
 	 * @param {String} pieceToCapture - the string representation (colorPieceIndex) of the piece being captured
 	 * @param {Number[]} square - the indices of the square of the piece being captured in the form [file, rank]
 	 */
+
 	function capturePiece(pieceToCapture, square) {
+
 		// captures reset the fifty-move rule counter
 		drawMoveCounter = 0;
-		const piece = pieceToCapture.slice(0, 2);
-		const id = pieceToCapture[2];
-		const pieceType = allPieces[piece];
-		const index = findPieceIndex(piece, id);
+		let piece = pieceToCapture.slice(0, 2);
+		let id = pieceToCapture[2];
+		let pieceType = allPieces[piece];
+		let index = findPieceIndex(piece, id);
 		pieceType.splice(index, 1);
 		drawOverPiece(square);
 		boardStrings = [];
+	}
+
+	/**
+	 * Checks to see if a player is in checkmate
+	 * @param {string} currentColor - the player who is in check
+	 * @param {String} opponentColor - the player who is giving check
+	 * @param {String[]} checkingPieces - the pieces that are giving check
+	 * @return {Boolean} - whether the player is in checkmate
+	 */
+
+	function checkCheckmate(currentColor, opponentColor, checkingPieces) {
+		for (let pieceType in allPieces) {
+			if (pieceType[0] === currentColor) {
+				let pieces = allPieces[pieceType];
+				for (let j in pieces) {
+					let selectedPiece = pieces[j].color + pieces[j].abbr + pieces[j].id;
+					if (getLegalMoves(checkingPieces, selectedPiece).length) {
+						return false;
+					}
+				}
+			}
+		}
+		let winningColor = colorAbbreviations[opponentColor]
+		$('.result-description').html("Checkmate! " + winningColor + " wins!");
+		let resultString = winningColor === 'White' ? '1-0' : '0-1';
+		$('.result').html(resultString);
+		drawCheckSquare(currentColor, false); // make the square the normal color
+		return true;
 	}
 
 	/**
@@ -719,12 +780,14 @@ $(document).ready(function() {
 	 * @param {Number} rank - the square's rank: 1 - 8
 	 * @return {Number[]} offset - the offset of the square in the form [x, y]
 	 */
+
 	function getCoordinates(file, rank) {
 		let x, y;
 		if (whiteDown) {
 			x = file * squareSize;
 			y = (9 - rank) * squareSize;
-		} else {
+		}
+		else {
 			x = (9 - file) * squareSize;
 			y = rank * squareSize;
 		}
@@ -737,10 +800,18 @@ $(document).ready(function() {
 	 * @param {Number} y - e.offsetY
 	 * @return {Number[]} square - the indices of the square in the form [file, rank]
 	 */
+
 	function getSquare(x, y) {
-		const file = Math.floor(x / squareSize);
-		const rank = Math.floor(y / squareSize);
-		return whiteDown ? [file, 9 - rank] : [9 - file, rank];
+		let file = Math.floor(x/squareSize);
+		let rank = Math.floor(y/squareSize);
+		let square;
+		if (whiteDown) {
+			square = [file, 9 - rank];
+		}
+		else {
+			square = [9 - file, rank];
+		}
+		return square;
 	}
 
 	/**
@@ -749,27 +820,32 @@ $(document).ready(function() {
 	 * @param {String} color - the color of the piece that was moved
 	 * @param {Boolean} drawOver - whether the move is drawing over a previously highlighted move (true) or is highlighting a move (false)
 	 */
+
 	function drawLastMove(lastMove, color, drawOver) {
-		const [oldFile, oldRank] = lastMove['oldSquare'];
-		const [newFile, newRank] = lastMove['newSquare'];
-		const oldSquareCoordinates = getCoordinates(oldFile, oldRank);
-		const newSquareCoordinates = getCoordinates(newFile, newRank);
+		let oldFile = lastMove['oldSquare'][0];
+		let oldRank = lastMove['oldSquare'][1];
+		let newFile = lastMove['newSquare'][0];
+		let newRank = lastMove['newSquare'][1];
+		let oldSquareCoordinates = getCoordinates(oldFile, oldRank);
+		let newSquareCoordinates = getCoordinates(newFile, newRank);
 
 		if ((oldFile + oldRank) % 2 === 0) {
 			ctx.fillStyle = drawOver ? dark : highlightedDark;
-		} else {
+		}
+		else {
 			ctx.fillStyle = drawOver ? light : highlightedLight;
 		}
 		ctx.fillRect(oldSquareCoordinates[0], oldSquareCoordinates[1], squareSize, squareSize);
 		if ((newFile + newRank) % 2 === 0) {
 			ctx.fillStyle = drawOver ? dark : highlightedDark;
-		} else {
+		}
+		else {
 			ctx.fillStyle = drawOver ? light : highlightedLight;
 		}
 		ctx.fillRect(newSquareCoordinates[0], newSquareCoordinates[1], squareSize, squareSize);
 
-		const piece = lastMove.piece.slice(0, 2);
-		const id = lastMove.piece[2];
+		let piece = lastMove.piece.slice(0, 2);
+		let id = lastMove.piece[2];
 
 		// TODO: clean up this ternary and if statement
 
@@ -791,9 +867,10 @@ $(document).ready(function() {
 	 * @param {String} symbol - what to draw on the square
 	 * @param {String} color - the piece's color: w or b
 	 */
+
 	function drawOnSquare(file, rank, symbol, color) {
 		ctx.fillStyle = colorAbbreviations[color];
-		const coordinates = getCoordinates(file, rank);
+		let coordinates = getCoordinates(file, rank);
 		ctx.font = squareSize + "px serif";
 		ctx.fillText(symbol, coordinates[0] + (0.5 * squareSize), coordinates[1] + (0.5 * squareSize));
 	}
@@ -803,8 +880,11 @@ $(document).ready(function() {
 	 * @param {Number[]} coordinates - the top left corner of the rectangle
 	 * @param {Number} squareSize - the height and width of the square
 	 */
+
 	function drawSquare(coordinates, squareSize) {
-		const [drawLocationF, drawLocationR] = coordinates;
+
+		let drawLocationF = coordinates[0];
+		let drawLocationR = coordinates[1];
 		let drawSizeF = squareSize;
 		let drawSizeR = squareSize;
 
@@ -834,49 +914,25 @@ $(document).ready(function() {
 	}
 
 	/**
-	 * Checks to see if a player is in checkmate
-	 * @param {string} currentColor - the player who is in check
-	 * @param {String} opponentColor - the player who is giving check
-	 * @param {String[]} checkingPieces - the pieces that are giving check
-	 * @return {Boolean} - whether the player is in checkmate
-	 */
-	function checkCheckmate(currentColor, opponentColor, checkingPieces) {
-		for (const pieceType in allPieces) {
-			if (pieceType[0] === currentColor) {
-				for (const piece of allPieces[pieceType]) {
-					const selectedPiece = piece.color + piece.abbr + piece.id;
-					if (getLegalMoves(checkingPieces, selectedPiece).length) {
-						return false;
-					}
-				}
-			}
-		}
-		const winningColor = colorAbbreviations[opponentColor]
-		$('.result-description').html(`Checkmate! ${winningColor} wins!`);
-		const resultString = winningColor === 'White' ? '1-0' : '0-1';
-		$('.result').html(resultString);
-		console.log(currentColor)
-		drawCheckSquare(currentColor, false); // make the square the normal color
-		return true;
-	}
-
-	/**
 	 * Marks the square if the king is in check
 	 * @param {String} color - the color of the king in check: 'w' or 'b'
 	 * @param {Boolean} inCheck - whether the king is in check
 	 */
+
 	function drawCheckSquare(color, inCheck) {
-		const king = color + 'K';
-		const file = allPieces[king][0].file;
-		const rank = allPieces[king][0].rank;
-		const symbol = pieceSymbols[king];
-		const coordinates = getCoordinates(file, rank);
+		let king = color + 'K';
+		let file = allPieces[king][0].file;
+		let rank = allPieces[king][0].rank;
+		let symbol = pieceSymbols[king];
+		let coordinates = getCoordinates(file, rank);
 		if (inCheck) {
 			ctx.fillStyle = check;
-		} else {
+		}
+		else {
 			if ((file + rank) % 2 === 0) {
 				ctx.fillStyle = dark;
-			} else {
+			}
+			else {
 				ctx.fillStyle = light;
 			}
 		}
@@ -891,12 +947,15 @@ $(document).ready(function() {
 	 * @param {Number} file - the square's file: 1 - 8
 	 * @param {Number} rank - the square's rank: 1 - 8
 	 */
+
 	function drawOverPiece(square) {
-		const [file, rank] = square;
-		const coordinates = getCoordinates(file, rank);
+		let file = square[0];
+		let rank = square[1];
+		let coordinates = getCoordinates(file, rank);
 		if ((file + rank) % 2 === 0) {
 			ctx.fillStyle = dark;
-		} else {
+		}
+		else {
 			ctx.fillStyle = light;
 		}
 		ctx.fillRect(coordinates[0], coordinates[1], squareSize, squareSize);
@@ -906,15 +965,16 @@ $(document).ready(function() {
 	 * Redraws a square and (if occupied) its piece at the given index
 	 * @param {Number} index - the square's index: 1 - 63
 	 */
+
 	function redrawSquare(index) {
-		const square = indexToSquare(index);
+		let square = indexToSquare(index);
 		drawOverPiece(square);
 		unmarkSquare(square[0], square[1]);
-		const piece = occupiedSquares[index - 1];
+		let piece = occupiedSquares[index - 1];
 		
 		// if redrawn square had a piece on it, redraw it
 		if (piece) {
-			const color = piece[0];
+			let color = piece[0];
 			drawOnSquare(square[0], square[1], pieceSymbols[piece.slice(0, 2)], color);
 		}	
 	}
@@ -924,14 +984,16 @@ $(document).ready(function() {
 	 * @param {Number} file - the square's file: 1 - 8
 	 * @param {Number} rank - the square's rank: 1 - 8
 	 */
+
 	function unmarkSquare(file, rank) {
 		ctx.beginPath();
 		if ((rank + file) % 2 === 0) {
 			ctx.strokeStyle = dark;
-		} else {
+		}
+		else {
 			ctx.strokeStyle = light;
 		}
-		const c = getCoordinates(file, rank);
+		let c = getCoordinates(file, rank);
 		ctx.rect(c[0] + lineWidth/2, c[1] + lineWidth/2, squareSize - lineWidth, squareSize - lineWidth);			
 		ctx.lineWidth = lineWidth;
 		ctx.stroke();
@@ -943,9 +1005,11 @@ $(document).ready(function() {
 	 * @param {String} color - the color of the pieces of the player whose turn it is
 	 * @param {String} algNot - the last move represented as algebraic notation
 	 */
+
 	function updateMoves(color, algNot) {
-		const defendingColor = otherColor(color)
-		const checkingPieces = inCheck(defendingColor);
+
+		let defendingColor = otherColor(color)
+		let checkingPieces = inCheck(defendingColor);
 		let checkSymbol = '';
 
 		if (checkingPieces.length) {
@@ -955,7 +1019,8 @@ $(document).ready(function() {
 			attackedSquares = getAttackedSquares();
 			if (checkCheckmate(defendingColor, color, checkingPieces)) {
 				checkSymbol = "#";
-			} else {
+			}
+			else {
 				checkSymbol = "+".repeat(checkingPieces.length)
 			}
 		}
@@ -966,9 +1031,10 @@ $(document).ready(function() {
 			moveCounter++;
 			drawMoveCounter++;
 			$('.move-history').append("<div class='move'></div>");
-			$('.move').last().append(`<span class='turn move-count'>${moveCounter}</span> <span class='turn player-move white-move'>${algNot}</span>`);
-		} else {
-			$('.move').last().append(`<span class='turn player-move black-move'> ${algNot} </span>`);
+			$('.move').last().append("<span class='turn move-count'>" + moveCounter + "</span> <span class='turn player-move white-move'>" + algNot + " </span>");
+		}
+		else {
+			$('.move').last().append("<span class='turn player-move black-move'>" + algNot + "</span>");
 		}
 
 		// // 2 click events will be bound to each white move if click events are not turned off

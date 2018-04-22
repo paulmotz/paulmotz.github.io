@@ -2,7 +2,6 @@
  * Checks to see that there is at least one pair of bishop with opposing square colors
  * @return {Boolean} - true if there is a pair of bishops with opposing square colors
  */
-
 function differentColorBishops() {
 	// no bishops, TODO, function shouldn't even be called
 	if (!allPieces['wB'].length && !allPieces['bB'].length) return false;
@@ -24,9 +23,8 @@ function differentColorBishops() {
  * @param {Number[]} square - the square's file, two numbers: 1 - 8
  * @return {Number} index - the index of the square: 1 - 64
  */
-
 function squareToIndex(square) {
-	if (square[0] >= 1 && square[0] <= 8 && square[1] >= 1 && square[1] <= 8) {
+	if (checkSquareOnBoard(square)) {
 		return (square[1] - 1) * 8 + square[0];
 	}
 }
@@ -36,7 +34,6 @@ function squareToIndex(square) {
  * @param {Number} index - the index of the square: 1 - 64
  * @return {Number[]} square - the indices of the square in the form [file, rank]
  */
-
 function indexToSquare(index) {
 	const file = index % 8 === 0 ? 8 : index % 8;
 	return [file, Math.ceil(index / 8)];
@@ -51,10 +48,9 @@ function indexToSquare(index) {
  * @param {Number[]} oldSquare - former location of the piece in the form [file, rank]
  * @return {String} algSquare - the algebraic notation representatino of the square e.g. e4
  */
-
 function getAlgNotMove(piece, pieceId, capture, squareIndex, oldSquare) {
 	let pieceType = piece[1];
-	let pieceString = pieceType !== "P" ? pieceType : "";
+	let pieceString = pieceType !== 'P' ? pieceType : '';
 	pieceId = Number(pieceId); ///ensure pieceId is a Number and not a string
 	let capString = '';
 	let promotionString = '';
@@ -64,7 +60,7 @@ function getAlgNotMove(piece, pieceId, capture, squareIndex, oldSquare) {
 	let newFileLetter = String.fromCharCode(square[0] + 96);
 
 	// check if multiple pieces of that type can move to the same square and disambiguate if so
-	if (pieceType !== "P" && pieceType !== "K") {
+	if (pieceType !== 'P' && pieceType !== 'K') {
 		let piecesArray = allPieces[piece];
 		
 		// find all pieces that can move to the square and keep track of their file/rank
@@ -86,20 +82,20 @@ function getAlgNotMove(piece, pieceId, capture, squareIndex, oldSquare) {
 		pieceString += algOldSquare.join('');
 	}
 
-	if (pieceType === "P") {
+	if (pieceType === 'P') {
 
 		// if the pawn is moving off of its file, it is capturing
 		if (oldSquare[0] !== square[0]) {
-			capString = oldFileLetter + "x";
+			capString = oldFileLetter + 'x';
 		}
 
 		// check for promotion
 		if (square[1] === 1 || square[1] === 8) {
-			promotionString = "=" + $('input[name=piece]:checked').val();
+			promotionString = '=' + $('input[name=piece]:checked').val();
 		}
 	}
 	else if (capture) {
-		capString = "x";
+		capString = 'x';
 	}
 
 	let squareString =  newFileLetter + square[1];
@@ -109,7 +105,6 @@ function getAlgNotMove(piece, pieceId, capture, squareIndex, oldSquare) {
 /**
  * Creates a String representation of the board
  */
-
 function getBoardString() {
 	let boardString = '';
 
@@ -119,7 +114,6 @@ function getBoardString() {
 			boardString += occupiedSquares[i].slice(0, 2);
 		}
 		else {
-
 			// two underscores since piece names are color + piece type
 			boardString += '__';
 		}
@@ -133,17 +127,8 @@ function getBoardString() {
  * @param {Number} id - the piece's id
  * @return {Number} index 
  */
-
 function findPieceIndex(piece, id) {
-	let pieceType = allPieces[piece];
-
-	for (let p = 0; p < pieceType.length; p++) {
-
-		// different type (.id is a String, id is a number), so use == operator
-		if (pieceType[p].id == id) {
-			return p;
-		}
-	}
+	return allPieces[piece].findIndex(piece => Number(piece.id) === Number(id));
 }
 
 /**
@@ -152,7 +137,6 @@ function findPieceIndex(piece, id) {
  * @param {String} clickedPiece - the piece that the player is trying to move
  * @return {Number[]} legalMoves - the legal moves, represented as an array of board square indices, that the clicked piece can make
  */
-
 function getLegalMoves(checkingPieces, clickedPiece) {
 	let king = allPieces[clickedPiece[0] + 'K'][0];
 	let kingSquare = [king.file, king.rank];
@@ -181,7 +165,9 @@ function getLegalMoves(checkingPieces, clickedPiece) {
 		// can the piece be blocked?
 		// knights and pawns cannot be blocked
 		if (checkingPieceColorAndType[1] !== 'N' && checkingPieceColorAndType[1] !== 'P') {
-			let checkPath = getCheckPath(checkingPieceSquare, kingSquare, false).map(squareToIndex);
+			const checkPath = getCheckPath(checkingPieceSquare, kingSquare, false).map(squareToIndex);
+			// TODO
+			// console.log(checkPath)
 			for (let i = 0; i < checkPath.length; i++) {
 				let blockMove = clickedPieceMoves.indexOf(checkPath[i]);
 				if (blockMove !== -1) {
@@ -234,7 +220,6 @@ function getLegalMoves(checkingPieces, clickedPiece) {
  * @param {Boolean} extend - whether the path should be extended (used for also including the square beyond the king)
  * @return {Number[][]} checkPath - an array of squares between the pieces, returns [] if no so path
  */
-
 function getCheckPath(checkingPieceSquare, kingSquare, extend) {
 	let checkPath = [];
 	let delF = checkingPieceSquare[0] - kingSquare[0]; // change in file
@@ -262,7 +247,6 @@ function getCheckPath(checkingPieceSquare, kingSquare, extend) {
  * @param {String[]} boardStrings - an array of Strings representing board states
  * @return {Boolean} - whether the game is a draw
  */
-
 function checkDraw(color, boardStrings, drawMoveCounter) {
 	if (!checkMatingMaterial() || checkDrawRep(boardStrings) || checkDraw50(drawMoveCounter) || checkStalemate(color)) {
 		return true;
@@ -281,7 +265,6 @@ function checkDraw(color, boardStrings, drawMoveCounter) {
  * 1N + K vs 1N + K
  * @return {Boolean} - whether or not there is enough material to a plater to checkmate
  */
-
 function checkMatingMaterial() {
 
 	// no more major pieces or pawns
@@ -298,13 +281,13 @@ function checkMatingMaterial() {
 
 				// if the other player has no knights does the other player have at least one pair of bishops with opposite colored squares
 				if (!allPieces[p2 + 'N'].length && !differentColorBishops()) {
-					$('.result-description').html("It's a draw by insufficient mating material!");
+					$('.result-description').html(`It's a draw by insufficient mating material!`);
 					return false;
 				}
 
 				// only one of bishop or knight
 				if (allPieces[p2 + 'B'].length + allPieces[p2 + 'N'].length < 2) {
-					$('.result-description').html("It's a draw by insufficient mating material!");
+					$('.result-description').html(`It's a draw by insufficient mating material!`);
 					return false;
 				}
 			}
@@ -313,7 +296,7 @@ function checkMatingMaterial() {
 		// no knights left, are there different colored bishops?
 		if (!allPieces['wN'].length && !allPieces['bN'].length) {
 			if (!differentColorBishops()) {
-				$('.result-description').html("It's a draw by insufficient mating material!");
+				$('.result-description').html(`It's a draw by insufficient mating material!`);
 				return false;
 			}
 		}
@@ -321,7 +304,7 @@ function checkMatingMaterial() {
 		// no bishops left, do both players have one or fewer knights?
 		else if (!allPieces['wB'].length && !allPieces['bB'].length) {
 			if (allPieces['wN'].length <= 1 && allPieces['bN'].length <= 1) {
-				$('.result-description').html("It's a draw by insufficient mating material!");
+				$('.result-description').html(`It's a draw by insufficient mating material!`);
 				return false;
 			}
 		}
@@ -333,16 +316,15 @@ function checkMatingMaterial() {
  * Checks to see if the game is a draw by repetition
  * @return {Boolean} - whether the game is a draw
  */
-
 function checkDrawRep(boardStrings) {
-	let currBoardString = boardStrings[boardStrings.length - 1];
+	const currBoardString = boardStrings[boardStrings.length - 1];
 	let counter = 1;
 	for (let i = 0; i < boardStrings.length - 1; i++) {
 		if (boardStrings[i] === currBoardString) {
 			counter++;
 		}
 		if (counter === 3) {
-			$('.result-description').html("It's a draw by repetition!");
+			$('.result-description').html(`It's a draw by repetition!`);
 			return true;
 		}
 	}
@@ -353,12 +335,11 @@ function checkDrawRep(boardStrings) {
  * Checks to see if the game is a draw by the fifty-move rule
  * @return {Boolean} - whether the game is a draw
  */
-
 function checkDraw50(drawMoveCounter) {
 
 	// a turn if one move from each player
 	if (drawMoveCounter === 50) {
-		$('.result-description').html("It's a draw by the fifty-move rule!");
+		$('.result-description').html(`It's a draw by the fifty-move rule!`);
 		return true;
 	}
 	return false;
@@ -369,44 +350,44 @@ function checkDraw50(drawMoveCounter) {
  * @param {String} color - the color to check if there are any legal moves
  * @return {Boolean} - whether the game is a draw
  */
-
 function checkStalemate(color) {
-	for (let pieceType in allPieces) {
+	for (const pieceType in allPieces) {
 		if (pieceType[0] === color) {
-			let pieces = allPieces[pieceType];
-			for (let i in pieces) {
-				if (pieces[i].moves().length) {
+			const pieces = allPieces[pieceType];
+			for (const piece of allPieces[pieceType]) {
+				if (piece.moves().length) {
 					return false;
 				}
 			}
 		}
 	}
-	$('.result-description').html("It's a draw by stalemate!");
+	$('.result-description').html(`It's a draw by stalemate!`);
 	return true;
-}
+}	
+
 
 /**
  * Checks to see if a player is in checkmate
- * @param {String} currentColor - the player who is in check
+ * @param {string} currentColor - the player who is in check
  * @param {String} opponentColor - the player who is giving check
- * @param {String[]} color - the pieces that are giving check
+ * @param {String[]} checkingPieces - the pieces that are giving check
  * @return {Boolean} - whether the player is in checkmate
  */
-
 function checkCheckmate(currentColor, opponentColor, checkingPieces) {
-	for (let pieceType in allPieces) {
+	for (const pieceType in allPieces) {
 		if (pieceType[0] === currentColor) {
-			let pieces = allPieces[pieceType];
-			for (let j in pieces) {
-				let colorAndType = pieces[j].color + pieces[j].abbr;
-				let selectedPiece = colorAndType + pieces[j].id;
+			for (const piece of allPieces[pieceType]) {
+				const selectedPiece = piece.color + piece.abbr + piece.id;
 				if (getLegalMoves(checkingPieces, selectedPiece).length) {
 					return false;
 				}
 			}
 		}
 	}
-	$('.result-description').html("Checkmate! " + colorAbbreviations[opponentColor] + " wins!");
+	const winningColor = colorAbbreviations[opponentColor]
+	$('.result-description').html(`Checkmate! ${winningColor} wins!`);
+	const resultString = winningColor === 'White' ? '1-0' : '0-1';
+	$('.result').html(resultString);
 	drawCheckSquare(currentColor, false); // make the square the normal color
 	return true;
 }
@@ -416,7 +397,6 @@ function checkCheckmate(currentColor, opponentColor, checkingPieces) {
  * @param {String} color - the player's color
  * @return {String} - the opposite color
  */
-
 function otherColor(color) {
 	return color === 'w' ? 'b' : 'w';
 }
