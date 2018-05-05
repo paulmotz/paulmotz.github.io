@@ -349,21 +349,21 @@ function displayRuns(years) {
 	for (const year of years) {
 		if (checkedYears.includes(String(year))) {
 			if (checkedRadio === 'race') {
-				$(`circle. ${year}`).hide();
-				$(`polygon. ${year}`).show();
+				$(`circle.${year}`).hide();
+				$(`polygon.${year}`).show();
 			}
 			else if (checkedRadio === 'casual') {
-				$(`circle. ${year}`).show();
-				$(`polygon. ${year}`).hide();
+				$(`circle.${year}`).show();
+				$(`polygon.${year}`).hide();
 			}
 			else {
-				$(`circle. ${year}`).show();
-				$(`polygon. ${year}`).show();
+				$(`circle.${year}`).show();
+				$(`polygon.${year}`).show();
 			}
 		}
 		else {
-			$(`circle. ${year}`).hide();
-			$(`polygon. ${year}`).hide();
+			$(`circle.${year}`).hide();
+			$(`polygon.${year}`).hide();
 		}
 	}
 }
