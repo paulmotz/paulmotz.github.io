@@ -399,57 +399,51 @@ $(document).ready(function() {
 
 		// if computer is moving, pick a random move
 		else {
-
 			humanTurn = false;
 
 			// construct array of possible moves
 			const moves = [];
-			for (pieceTypes in allPieces) {
-				let pieceType = pieceTypes[1];
-
+			for (pieceType in allPieces) {
 				// only get moves from the correct color of pieces
-				if (pieceTypes[0] === currentColor) {
-					let pieceArray = allPieces[pieceTypes];
-					for (let piece in pieceArray) {
-
+				if (pieceType[0] === currentColor) {
+					for (const piece of allPieces[pieceType]) {
 						let pieceMoves;
 
 						if (!checkingPieces.length) {
-							pieceMoves = pieceArray[piece].moves();
+							pieceMoves = piece.moves();
 						} else {
-							let selectedPiece = currentColor + pieceArray[piece].abbr + pieceArray[piece].id;
+							const selectedPiece = currentColor + piece.abbr + piece.id;
 							pieceMoves = getLegalMoves(checkingPieces, selectedPiece).map(indexToSquare);
 						}
 
-						for (let i in pieceMoves) {
-							let m =  {'piece' : pieceTypes, 'id' : pieceArray[piece].id, 'move' : pieceMoves[i]};
-							moves.push(m);
+						for (const move of pieceMoves) {
+							moves.push({'piece' : pieceType, 'id' : piece.id, 'move' : move});
 						}
 					}
 				}
 			}
-			let numMoves = moves.length;
+			const numMoves = moves.length;
 
 			if (!numMoves && inCheck(currentColor).length) {
-				let winningColor = colorAbbreviations[opponentColor]
+				const winningColor = colorAbbreviations[opponentColor]
 				$('.result-description').html(`Checkmate! ${winningColor} wins!`);
-				let resultString = winningColor === 'White' ? '1-0' : '0-1';
+				const resultString = winningColor === 'White' ? '1-0' : '0-1';
 				$('.move-container').append(resultString);
 				$('.move-container').append(`<span class='result'>${resultString}</span>`);
 				drawCheckSquare(currentColor, false); // make the square the normal color
 				return;			
 			}
 
-			let r = Math.floor(Math.random() * numMoves);
+			const r = Math.floor(Math.random() * numMoves);
 
-			let compMove = moves[r];
-			let piece = compMove.piece;
-			let pieceObject = allPieces[piece][findPieceIndex(piece, compMove.id)];
+			const compMove = moves[r];
+			const piece = compMove.piece;
+			const pieceObject = allPieces[piece][findPieceIndex(piece, compMove.id)];
 			if (lastMove['oldSquare']) {
 				drawLastMove(lastMove, opponentColor, true);
 			}
 			lastMove = {'oldSquare' : [pieceObject.file, pieceObject.rank] , 'newSquare' : compMove.move, 'piece' : piece + compMove.id};
-			let pieceType = piece[1];
+			const pieceType = piece[1];
 
 			// movePiece checks whether a king or rook has moved. This should be done after checking for castling
 			const algNot = movePiece(moves[r]);
