@@ -327,7 +327,7 @@ $(document).ready(function() {
 					if (legalMoves.includes(index)) {
 
 						let nextMove =  {'piece' : selectedPiece.slice(0, 2), 'id' : selectedPiece[2], 'move' : square};
-						let algNot = movePiece(nextMove);
+						const algNot = movePiece(nextMove);
 
 						if (lastMove['oldSquare']) {
 							drawLastMove(lastMove, opponentColor, true);
@@ -452,7 +452,7 @@ $(document).ready(function() {
 			let pieceType = piece[1];
 
 			// movePiece checks whether a king or rook has moved. This should be done after checking for castling
-			let algNot = movePiece(moves[r]);
+			const algNot = movePiece(moves[r]);
 
 			inCheck(currentColor);
 
@@ -487,12 +487,12 @@ $(document).ready(function() {
 
 		drawOnSquare(file, rank, symbol, color);
 
-		let pieceIndex = findPieceIndex(piece, id);
+		const pieceIndex = findPieceIndex(piece, id);
 
-		let oldFile = allPieces[piece][pieceIndex].file;
-		let oldRank = allPieces[piece][pieceIndex].rank;
-		let oldSquare = [oldFile, oldRank];
-		let oldIndex = squareToIndex(oldSquare);
+		const oldFile = allPieces[piece][pieceIndex].file;
+		const oldRank = allPieces[piece][pieceIndex].rank;
+		const oldSquare = [oldFile, oldRank];
+		const oldIndex = squareToIndex(oldSquare);
 
 		if (occupiedSquares[newIndex - 1]) {
 			algNot = getAlgNotMove(piece, id, true, newIndex, oldSquare)

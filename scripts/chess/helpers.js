@@ -69,7 +69,7 @@ function getAlgNotMove(piece, pieceId, capture, squareIndex, oldSquare) {
 		for (const piece of piecesArray) {
 			if (piece.id !==  pieceId) {
 				const pieceMoves = piece.moves().map(squareToIndex);
-				if (!pieceMoves.includes(squareIndex)) {
+				if (pieceMoves.includes(squareIndex)) {
 					if (oldSquare[1] === piece.rank || (oldSquare[1] !== piece.rank && oldSquare[0] !== piece.file)) {
 						algOldSquare[0] = oldFileLetter;
 					}
