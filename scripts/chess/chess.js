@@ -37,16 +37,16 @@ $(document).ready(function() {
 	// want element to still take up space on page, so don't use hide
 	$('.moves-display').css('visibility', 'hidden');
 
-	let $board = $('#chessboard');
-	let delay = 0;
+	const $board = $('#chessboard');
+	const delay = 0;
 
 	// visual/layout variables
-	let height = parseInt($board.css('height'));
-	let width = parseInt($board.css('width'));
+	const height = parseInt($board.css('height'));
+	const width = parseInt($board.css('width'));
 	const squareSize = height / 10;
 	const lineWidth = height / 100;
 
-	let board = $board[0];
+	const board = $board[0];
 	const ctx = board.getContext('2d');
 	const files = ['', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', ''];
 	const ranks = ['', '1', '2', '3', '4', '5', '6', '7', '8', ''];
@@ -61,14 +61,13 @@ $(document).ready(function() {
 
 	let lastMove = {};	
 
-	let pieceNames = {'B' : 'Bishop', 'N' : 'Knight', 'K' : 'King', 'P' : 'Pawn', 'Q' : 'Queen', 'R' : 'Rook'};
-	let pieceAbbreviations = {'Bishop' : 'B', 'Knight' : 'N', 'King' : 'K', 'Pawn' : 'P', 'Queen' : 'Q', 'Rook' : 'R'};
+	const pieceNames = {'B' : 'Bishop', 'N' : 'Knight', 'K' : 'King', 'P' : 'Pawn', 'Q' : 'Queen', 'R' : 'Rook'};
 
 	// https://en.wikipedia.org/wiki/Chess_symbols_in_Unicode
-	let pieceSymbols = {'bB': '♝', 'bN': '♞', 'bK': '♚', 'bP': '♟', 'bQ': '♛', 'bR': '♜', 'wB': '♗', 'wN': '♘', 'wK': '♔', 'wP': '♙', 'wQ': '♕', 'wR': '♖'};
+	const pieceSymbols = {'bB': '♝', 'bN': '♞', 'bK': '♚', 'bP': '♟', 'bQ': '♛', 'bR': '♜', 'wB': '♗', 'wN': '♘', 'wK': '♔', 'wP': '♙', 'wQ': '♕', 'wR': '♖'};
 
-	// // kings and queens have arrays of length 1 for convenience in later methods
-	let pieceStartingPositions = {'wB' : [[3, 1], [6, 1]],
+	// kings and queens have arrays of length 1 for convenience in later methods
+	const pieceStartingPositions = {'wB' : [[3, 1], [6, 1]],
 									  'wN' : [[2, 1], [7, 1]],
 									  'wK' : [[5, 1]],
 									  'wP' : [[1, 2], [2, 2], [3, 2], [4, 2], [5, 2], [6, 2], [7, 2], [8, 2]],
@@ -113,8 +112,8 @@ $(document).ready(function() {
 
 	$('.btn').on('click', function() {
 		$('.radio-piece').each(function() {
-			let selection = $(this).parent().find('input');
-			let piece = selection.val();
+			const selection = $(this).parent().find('input');
+			const piece = selection.val();
 			if ($('#radio-white').is(':checked') || $('#radio-human').is(':checked')) {
 				whiteDown = true;
 				$(this).parent().find('span').html(pieceSymbols['w' + piece] + " " + pieceNames[piece])
@@ -149,7 +148,6 @@ $(document).ready(function() {
 	 * Stores the pieces into global allPieces object
 	 */
 	function initializePieces() {
-
 		// reset allPieces object
 		for (const key in allPieces) {
 			allPieces[key] = [];
@@ -272,14 +270,14 @@ $(document).ready(function() {
 	 * @param {Boolean} noComp - play human vs human
 	 */
 	function move(currentColor, opponentColor, noComp) {
-		let boardString = getBoardString();
+		const boardString = getBoardString();
 		
 		boardStrings.push(boardString);
 
 		// used in king.js for getting legal king moves
 		attackedSquares = getAttackedSquares();
 
-		let checkingPieces = inCheck(currentColor);
+		const checkingPieces = inCheck(currentColor);
 
 		// only draw the last move if there was a last move
 		if (lastMove['oldSquare']) {
