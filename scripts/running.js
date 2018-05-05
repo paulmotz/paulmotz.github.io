@@ -91,7 +91,7 @@ function draw(data) {
 
 	// custon tooltips inspired by: 
 	// http://stackoverflow.com/questions/16256454/d3-js-position-tooltips-using-element-position-not-mouse-position
-	$("svg circle, svg polygon").on('mouseover', function (e) {
+	$("svg circle, svg polygon").on('mouseover', function(e) {
 		if (!dropdownExpanded()) {
 			const rect = this.getBoundingClientRect();
 			const xScroll = $(window).scrollLeft();
@@ -250,51 +250,6 @@ function getRuns(data) {
 	});
 
 	const sortedRuns = runs.sort((a, b) => b.dist - a.dist);
-
-	return sortedRuns;
-}
-
-/**
- * Separates the runs into groups for each year
- * @param {Object[]} runs - running data with only certain fields
- * @return {Object} sortedRuns - contains runs sorted by year and info for each year
- */
-function sortRuns(runs) {
-	runs.sort((a, b) => a.date - b.date);
-	const numRuns = runs.length;
-	const sortedRuns = {'years' : [], 'avgTemp' : {} };
-	let thisYear = '0';
-	let year;
-	let temp = 0
-	let tempCount = 0;
-
-	for (const run of runs) {
-		year = run.date.getFullYear();
-		if (year !== thisYear) {
-			if (run.temp) {
-				temp += run.temp;
-				tempCount++;
-				sortedRuns.avgTemp[thisYear] = temp / tempCount;
-			}
-			temp = 0;
-			tempCount = 0;
-			thisYear = year;
-			sortedRuns.years.push(thisYear);
-			sortedRuns[thisYear] = [];
-		}
-
-
-		
-		sortedRuns[thisYear].push(run);
-		
-		if (run.temp) {
-			temp += run.temp;
-			tempCount++;
-		}
-	}
-
-	// add last year's temperature
-	sortedRuns.avgTemp[thisYear] = temp / tempCount;
 
 	return sortedRuns;
 }
