@@ -1,7 +1,6 @@
 /**
  * TODOs:
  * - use svg layers rather than css z-indices
- * - turn off tooltips when the portfolio is clicked displaying the dropdown
  *
  */
 
@@ -11,21 +10,21 @@
 
 let runs = [];
 
-let margins = {'top' : 20, 'right' : 20, 'bottom' : 50, 'left' : 70};
-let height = 500;
-let width = 960;
-let plotHeight = height - margins.top - margins.bottom;
-let plotWidth = width - margins.right - margins.left;
+const margins = {'top' : 20, 'right' : 20, 'bottom' : 50, 'left' : 70};
+const height = 500;
+const width = 960;
+const plotHeight = height - margins.top - margins.bottom;
+const plotWidth = width - margins.right - margins.left;
 
-let x = d3.scaleLinear()
+const x = d3.scaleLinear()
 	.domain([0,365])
 	.range([margins.left, plotWidth]);
 
-let y = d3.scaleLinear()
+const y = d3.scaleLinear()
 	.domain([3,7.5])
 	.range([plotHeight,margins.top]);
 
-let r = d3.scaleSqrt()
+const r = d3.scaleSqrt()
 	.domain([0,10])
 	.range([1,10]);
 
@@ -55,17 +54,17 @@ function draw(data) {
 	let svg = d3.select('.svg').attr('width',width).attr('height',height);
 
 	// x-axis
-	svg.append('g').attr('transform', 'translate(0,' + plotHeight + ')').call(d3.axisBottom(x).tickValues(MONTH_DAYS).tickFormat((d, i) => {
+	svg.append('g').attr('transform', `translate(0, ${plotHeight})`).call(d3.axisBottom(x).tickValues(MONTH_DAYS).tickFormat((d, i) => {
 		return MONTH_ABBREVIATIONS[i]
 	}));
 
 	// y-axis
-	svg.append('g').attr('transform', 'translate(' + margins.left + ',0)').call(d3.axisLeft(y).tickFormat((pace) => { 
+	svg.append('g').attr('transform', `translate(${margins.left},0)`).call(d3.axisLeft(y).tickFormat((pace) => { 
 		return getPaceString(pace);
 	}));
 
 	svg.append('text')
-		.attr('transform', 'translate(' + (plotWidth/2 + margins.left) + ' ,' + (height - margins.top) + ')')
+		.attr('transform', `translate(${(plotWidth/2 + margins.left)} , ${(height - margins.top)})`)
 		.style('text-anchor', 'middle')
 		.text('Date');
 
@@ -123,7 +122,7 @@ function draw(data) {
 				tooltipX = xPos - tooltipWidth / 2;
 				tooltipY = yPos + tooltipOffset;
 
-				tooltip.style("border", '3px solid ' + color) // for colored borders
+				tooltip.style("border", `3px solid ${color}`) // for colored borders
 					.style('border-radius', '10px')
 					.style("left", tooltipX + "px")
     			.style("top", tooltipY + "px");
@@ -132,7 +131,7 @@ function draw(data) {
     			t.offset({left: tooltipX + tooltipWidth / 2 - triangleSize, top: tooltipY - triangleSize});
     			t.css({"border-left": "8px solid transparent"});
 					t.css({"border-right": "8px solid transparent"});
-    			t.css({"border-bottom": "8px solid " + color});
+    			t.css({"border-bottom": `8px solid ${color}`});
     			t.css({"border-top": "0px solid transparent"});
 			}
 
@@ -154,7 +153,7 @@ function draw(data) {
 						
 						// styling for the arrow
       			t.offset({left: tooltipX + tooltipWidth - 1, top: tooltipY + tooltipHeight / 2 - triangleSize});
-      			t.css({"border-left": "8px solid " + color});
+      			t.css({"border-left": `8px solid  ${color}`});
 		 				t.css({"border-right": "0px solid transparent"});
       			t.css({"border-bottom": "8px solid transparent"});
       			t.css({"border-top": "8px solid transparent"});
@@ -165,7 +164,7 @@ function draw(data) {
 						// styling for the arrow
       			t.offset({left: tooltipX - triangleSize, top: tooltipY + tooltipHeight / 2 - triangleSize});
       			t.css({"border-left": "0px solid transparent"});
-		 				t.css({"border-right": "8px solid " + color});
+		 				t.css({"border-right": `8px solid ${color}`});
       			t.css({"border-bottom": "8px solid transparent"});
       			t.css({"border-top": "8px solid transparent"});
 					}
@@ -177,10 +176,10 @@ function draw(data) {
     			t.css({"border-left": "8px solid transparent"});
 	 				t.css({"border-right": "8px solid transparent"});
     			t.css({"border-bottom": "0px solid transparent"});
-    			t.css({"border-top": "8px solid " + color});
+    			t.css({"border-top": `8px solid ${color}`});
 				}
 
-				tooltip.style("border", '3px solid ' + color) // for colored borders
+				tooltip.style("border", `3px solid ${color}`) // for colored borders
 					.style('border-radius', '10px')
 					.style("left", tooltipX + "px")     
     			.style("top", tooltipY + "px");
@@ -216,12 +215,12 @@ function getRunCentre() {
 	let count = 0;
 	$('circle').each(function(item) {
 		if($('input[name=' + this.getAttribute('class') + ']')[0].checked) {
-			x += (this.getBoundingClientRect().left + this.getBoundingClientRect().width/2);
-			y += (this.getBoundingClientRect().top + this.getBoundingClientRect().height/2);
+			x += (this.getBoundingClientRect().left + this.getBoundingClientRect().width / 2);
+			y += (this.getBoundingClientRect().top + this.getBoundingClientRect().height / 2);
 			count++;
 		}
 	});
-	return [ x/count, y/count];
+	return [x / count, y / count];
 }
 
 /**
@@ -250,11 +249,7 @@ function getRuns(data) {
 		}
 	});
 
-	console.log(runs)
-
 	const sortedRuns = runs.sort((a, b) => b.dist - a.dist);
-
-	// let sortedRuns = sortRuns(runs);
 
 	return sortedRuns;
 }
@@ -265,6 +260,7 @@ function getRuns(data) {
  * @return {Object} sortedRuns - contains runs sorted by year and info for each year
  */
 function sortRuns(runs) {
+	runs.sort((a, b) => a.date - b.date);
 	const numRuns = runs.length;
 	const sortedRuns = {'years' : [], 'avgTemp' : {} };
 	let thisYear = '0';
@@ -273,12 +269,12 @@ function sortRuns(runs) {
 	let tempCount = 0;
 
 	for (const run of runs) {
-		year = runs.date.getFullYear();
+		year = run.date.getFullYear();
 		if (year !== thisYear) {
 			if (run.temp) {
 				temp += run.temp;
 				tempCount++;
-				sortedRuns.avgTemp[thisYear] = temp/tempCount;
+				sortedRuns.avgTemp[thisYear] = temp / tempCount;
 			}
 			temp = 0;
 			tempCount = 0;
@@ -287,6 +283,8 @@ function sortRuns(runs) {
 			sortedRuns[thisYear] = [];
 		}
 
+
+		
 		sortedRuns[thisYear].push(run);
 		
 		if (run.temp) {
@@ -296,7 +294,7 @@ function sortRuns(runs) {
 	}
 
 	// add last year's temperature
-	sortedRuns.avgTemp[thisYear] = temp/tempCount;
+	sortedRuns.avgTemp[thisYear] = temp / tempCount;
 
 	return sortedRuns;
 }
@@ -316,7 +314,7 @@ function plotAll(svg, runs, years) {
 		const daysIntoYear = MONTH_DAYS[month] + day + leap;
 
 		// string representation of data for tooltips
-		const dateString = MONTH_NAMES[row.date.getMonth()] + ' ' + row.date.getDate() + ' ' + row.date.getFullYear();
+		const dateString = `${MONTH_NAMES[row.date.getMonth()]} ${row.date.getDate()} ${row.date.getFullYear()}`;
 		const paceString = `${getPaceString(row.pace)} min/km`
 
 		if (!row.race) {
@@ -327,7 +325,7 @@ function plotAll(svg, runs, years) {
 				.attr('stroke','rgba(0, 0, 0, 0.3)')
 				.attr('cx', x(daysIntoYear))
 				.attr('cy', y(row.pace))
-				.attr('title', 'Date: ' + dateString + '<br>Pace: ' + paceString + '<br>Dist ' + row.dist + ' km');
+				.attr('title', `Date: ${dateString}<br>Pace: ${paceString} <br>Dist ${row.dist} km`);
 		}
 		if (row.race) {
 			const cX = x(daysIntoYear);
@@ -367,7 +365,7 @@ function plotAll(svg, runs, years) {
 		if (index > 0 && index % 3 === 0) {
 			$('#years-to-display').append('<br>');
 		}
-		$('#years-to-display').append('<div class="checkbox-inline ' + 'checkbox-' + year + '" style="color:' + getColor(year, years, 1.0) + '"><label class="running-label"><input type="checkbox" name="'+year+'" value="one" checked="true">'+year+'</label></div>');
+		$('#years-to-display').append(`<div class="checkbox-inline checkbox- ${year} " style="color: ${getColor(year, years, 1.0)} "><label class="running-label"><input type="checkbox" name="${year}" value="one" checked="true">${year}</label></div>`);
 	}
 
 	$('input[type=checkbox]').change(function() {
@@ -396,21 +394,21 @@ function displayRuns(years) {
 	for (const year of years) {
 		if (checkedYears.includes(String(year))) {
 			if (checkedRadio === 'race') {
-				$('circle.' + year).hide();
-				$('polygon.' + year).show();
+				$(`circle. ${year}`).hide();
+				$(`polygon. ${year}`).show();
 			}
 			else if (checkedRadio === 'casual') {
-				$('circle.' + year).show();
-				$('polygon.' + year).hide();
+				$(`circle. ${year}`).show();
+				$(`polygon. ${year}`).hide();
 			}
 			else {
-				$('circle.' + year).show();
-				$('polygon.' + year).show();
+				$(`circle. ${year}`).show();
+				$(`polygon. ${year}`).show();
 			}
 		}
 		else {
-			$('circle.' + year).hide();
-			$('polygon.' + year).hide();
+			$(`circle. ${year}`).hide();
+			$(`polygon. ${year}`).hide();
 		}
 	}
 }
@@ -451,14 +449,10 @@ function getPaceString(pace) {
 }
 
 /**
- * applies a sttyle in the appropraite color to the tooltip trianlge
+ * applies a style in the appropraite color to the tooltip trianlge
  * @param {String}
  */
 
 // function stylize() {
 
 // }
-
-// console.log(document.getElementsByClassName('svg'));
-
-// 
