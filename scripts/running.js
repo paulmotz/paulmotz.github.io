@@ -180,7 +180,8 @@ function draw(data) {
     			t.css({"border-top": "8px solid " + color});
 				}
 
-				tooltip.style("border", '1px solid ' + color) // for colored borders
+				tooltip.style("border", '3px solid ' + color) // for colored borders
+					.style('border-radius', '10px')
 					.style("left", tooltipX + "px")     
     			.style("top", tooltipY + "px");
 			}
