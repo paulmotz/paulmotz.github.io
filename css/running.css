@@ -40,7 +40,7 @@ div.tooltip {
   position: absolute;           
   text-align: center;           
   padding: 6px;             
-  background: rgba(182, 182, 182, 0.6);   
+  background: rgba(256, 256, 256, 0.7);   
   border: 1px solid rgba(5, 5, 5, 0.3);   
   border-radius: 2px;           
 }
