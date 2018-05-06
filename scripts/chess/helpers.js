@@ -384,7 +384,7 @@ function checkCheckmate(currentColor, opponentColor, checkingPieces) {
 }
 
 /**
- * Returns the color of the otehr player
+ * Returns the color of the other player
  * @param {String} color - the player's color
  * @return {String} - the opposite color
  */
