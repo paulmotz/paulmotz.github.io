@@ -26,10 +26,6 @@ const check = '#FF0000';
 const edge = '#000';
 const text = '#FFF';
 
-// piece colors
-const whitePieces = '#FFF';
-const blackPieces = '#000';
-
 // store the game states so that a user can return to a previous position
 const gameStates = [];
 
@@ -325,8 +321,7 @@ $(document).ready(function() {
 
 					// if the two clicked squares represent a valid move, move the piece
 					if (legalMoves.includes(index)) {
-
-						let nextMove =  {'piece' : selectedPiece.slice(0, 2), 'id' : selectedPiece[2], 'move' : square};
+						const nextMove =  {'piece' : selectedPiece.slice(0, 2), 'id' : selectedPiece[2], 'move' : square};
 						const algNot = movePiece(nextMove);
 
 						if (lastMove['oldSquare']) {
@@ -368,15 +363,15 @@ $(document).ready(function() {
 					// if the clicked square has a piece of the correct color in it, get its moves
 					if (selectedPiece && selectedPiece[0] === currentColor && fromTo.length === 1) {
 						ctx.beginPath();
-						let c = getCoordinates(square[0], square[1]);
-						ctx.rect(c[0] + lineWidth/2, c[1] + lineWidth/2, squareSize - lineWidth, squareSize - lineWidth);			
+						const c = getCoordinates(square[0], square[1]);
+						ctx.rect(c[0] + lineWidth / 2, c[1] + lineWidth / 2, squareSize - lineWidth, squareSize - lineWidth);			
 						ctx.lineWidth = lineWidth;
 						ctx.strokeStyle = clicked;
 						ctx.stroke();
 						ctx.closePath();
-						let pieceName = selectedPiece.slice(0, 2);
-						let id = selectedPiece[2]; // only need one digit since id can never be greater than 9 (8 pawns promoted to B/N/R)
-						let index = findPieceIndex(pieceName, id);
+						const pieceName = selectedPiece.slice(0, 2);
+						const id = selectedPiece[2]; // only need one digit since id can never be greater than 9 (8 pawns promoted to B/N/R)
+						const index = findPieceIndex(pieceName, id);
 						
 						// if the king is not in check
 						if (!checkingPieces.length) {
