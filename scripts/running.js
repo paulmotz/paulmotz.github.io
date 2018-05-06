@@ -40,14 +40,14 @@ function draw(data) {
 	runs = getRuns(data);
 
 	let tooltip = d3.select("body").append("div")   
-	    .attr("class", "tooltip")
-	    .style("opacity", 0);
+		.attr("class", "tooltip")
+		.style("opacity", 0);
 
 	let tooltipOffset = 28;
 
-  let tooltipTriangle = d3.select("body").append("div")
-  	.attr("class", "tooltip-triangle")
-  	.style("opacity", 0);
+	let tooltipTriangle = d3.select("body").append("div")
+		.attr("class", "tooltip-triangle")
+		.style("opacity", 0);
 
 	let triangleSize = 8;
 
@@ -123,16 +123,16 @@ function draw(data) {
 				tooltipY = yPos + tooltipOffset;
 
 				tooltip.style("border", `3px solid ${color}`) // for colored borders
-					.style('border-radius', '10px')
-					.style("left", tooltipX + "px")
-    			.style("top", tooltipY + "px");
+				.style('border-radius', '10px')
+				.style("left", tooltipX + "px")
+				.style("top", tooltipY + "px");
 
-    			// styling for the arrow      			
-    			t.offset({left: tooltipX + tooltipWidth / 2 - triangleSize, top: tooltipY - triangleSize});
-    			t.css({"border-left": "8px solid transparent"});
-					t.css({"border-right": "8px solid transparent"});
-    			t.css({"border-bottom": `8px solid ${color}`});
-    			t.css({"border-top": "0px solid transparent"});
+				// styling for the arrow      			
+				t.offset({left: tooltipX + tooltipWidth / 2 - triangleSize, top: tooltipY - triangleSize});
+				t.css({"border-left": "8px solid transparent"});
+				t.css({"border-right": "8px solid transparent"});
+				t.css({"border-bottom": `8px solid ${color}`});
+				t.css({"border-top": "0px solid transparent"});
 			}
 
 			// run is above the average on the graph
@@ -152,41 +152,41 @@ function draw(data) {
 						tooltipX = xPos - tooltipOffset - tooltipWidth;
 						
 						// styling for the arrow
-      			t.offset({left: tooltipX + tooltipWidth - 1, top: tooltipY + tooltipHeight / 2 - triangleSize});
-      			t.css({"border-left": `8px solid  ${color}`});
-		 				t.css({"border-right": "0px solid transparent"});
-      			t.css({"border-bottom": "8px solid transparent"});
-      			t.css({"border-top": "8px solid transparent"});
+						t.offset({left: tooltipX + tooltipWidth - 1, top: tooltipY + tooltipHeight / 2 - triangleSize});
+						t.css({"border-left": `8px solid  ${color}`});
+						t.css({"border-right": "0px solid transparent"});
+						t.css({"border-bottom": "8px solid transparent"});
+						t.css({"border-top": "8px solid transparent"});
 					} 
 					else {
 						tooltipX = xPos + tooltipOffset;
 
 						// styling for the arrow
-      			t.offset({left: tooltipX - triangleSize, top: tooltipY + tooltipHeight / 2 - triangleSize});
-      			t.css({"border-left": "0px solid transparent"});
-		 				t.css({"border-right": `8px solid ${color}`});
-      			t.css({"border-bottom": "8px solid transparent"});
-      			t.css({"border-top": "8px solid transparent"});
+						t.offset({left: tooltipX - triangleSize, top: tooltipY + tooltipHeight / 2 - triangleSize});
+						t.css({"border-left": "0px solid transparent"});
+						t.css({"border-right": `8px solid ${color}`});
+						t.css({"border-bottom": "8px solid transparent"});
+						t.css({"border-top": "8px solid transparent"});
 					}
 				}
 
 				else {
 					// styling for the arrow
-    			t.offset({left: tooltipX + tooltipWidth / 2 - triangleSize, top: tooltipY + tooltipHeight});
-    			t.css({"border-left": "8px solid transparent"});
-	 				t.css({"border-right": "8px solid transparent"});
-    			t.css({"border-bottom": "0px solid transparent"});
-    			t.css({"border-top": `8px solid ${color}`});
+	    			t.offset({left: tooltipX + tooltipWidth / 2 - triangleSize, top: tooltipY + tooltipHeight});
+					t.css({"border-left": "8px solid transparent"});
+						t.css({"border-right": "8px solid transparent"});
+					t.css({"border-bottom": "0px solid transparent"});
+					t.css({"border-top": `8px solid ${color}`});
 				}
 
 				tooltip.style("border", `3px solid ${color}`) // for colored borders
-					.style('border-radius', '10px')
-					.style("left", tooltipX + "px")     
-    			.style("top", tooltipY + "px");
+				.style('border-radius', '10px')
+				.style("left", tooltipX + "px")     
+				.style("top", tooltipY + "px");
 			}
 		}
     });
-    $("svg circle, svg polygon").on("mouseout", (e) => {    
+    $("svg circle, svg polygon").on("mouseout", () => {    
     	// tooltip.transition()
     	// .duration(100)
     	tooltip.style("opacity", 0);
@@ -226,7 +226,7 @@ function getRunCentre() {
 /**
  * Transforms the running data into an object that will be used to plot the data
  * @param {Object[]} data - running data
- * @return {Object} sortedRuns - contains runs sorted by year and info for each year
+ * @return {Object[]} sortedRuns - contains runs sorted by year and info for each year
  */
 function getRuns(data) {
 	const runs = [];
@@ -249,9 +249,19 @@ function getRuns(data) {
 		}
 	});
 
-	const sortedRuns = runs.sort((a, b) => b.dist - a.dist);
+	return sortRuns(runs);
+}
 
-	return sortedRuns;
+/**
+ * Sort runs so that casual runs starting with the longest runs and plot races starting with the shortest race
+ * successively plotted circles representing runs can block previously plotted circles, meaning that the older runs tooltip can't be displayed
+ * @param Object[] runs - running data
+ * @return Object[] sortedRuns - contains runs sorted as described above
+ */
+function sortRuns(runs) {
+	const races = runs.filter(run => run.race !== "").sort((a, b) => a.dist - b.dist);
+	const casualRuns = runs.filter(run => run.race === "").sort((a, b) => b.dist - a.dist);
+	return [...casualRuns, ...races];
 }
 
 /**
@@ -290,15 +300,15 @@ function plotAll(svg, runs, years) {
 			const pentBisectRad = rS * Math.sin(18/180*Math.PI);
 			const pentCornRad = pentBisectRad / Math.cos(36/180*Math.PI);
 			const star = [{'x':cX, 'y':cY - rS},
-						{'x':cX + pentCornRad * Math.sin(36/180*Math.PI), 'y':cY - pentCornRad * Math.cos(36/180*Math.PI)},
-						{'x':cX + side, 'y':cY - pentCornRad * Math.cos(36/180*Math.PI)},
-						{'x':cX + pentCornRad * Math.cos(18/180*Math.PI), 'y':cY + pentCornRad * Math.sin(18/180*Math.PI)},
-						{'x':cX + rS * Math.sin(36/180*Math.PI), 'y':cY + rS * Math.cos(36/180*Math.PI)},
-						{'x':cX, 'y':cY + pentCornRad},
-						{'x':cX - rS * Math.sin(36/180*Math.PI), 'y':cY + rS * Math.cos(36/180*Math.PI)},
-						{'x':cX - pentCornRad * Math.cos(18/180*Math.PI), 'y':cY + pentCornRad * Math.sin(18/180*Math.PI)},
-						{'x':cX - side, 'y':cY - pentCornRad * Math.cos(36/180*Math.PI)},
-						{'x':cX - pentCornRad * Math.sin(36/180*Math.PI), 'y':cY - pentCornRad * Math.cos(36/180*Math.PI)}];
+				{'x':cX + pentCornRad * Math.sin(36/180*Math.PI), 'y':cY - pentCornRad * Math.cos(36/180*Math.PI)},
+				{'x':cX + side, 'y':cY - pentCornRad * Math.cos(36/180*Math.PI)},
+				{'x':cX + pentCornRad * Math.cos(18/180*Math.PI), 'y':cY + pentCornRad * Math.sin(18/180*Math.PI)},
+				{'x':cX + rS * Math.sin(36/180*Math.PI), 'y':cY + rS * Math.cos(36/180*Math.PI)},
+				{'x':cX, 'y':cY + pentCornRad},
+				{'x':cX - rS * Math.sin(36/180*Math.PI), 'y':cY + rS * Math.cos(36/180*Math.PI)},
+				{'x':cX - pentCornRad * Math.cos(18/180*Math.PI), 'y':cY + pentCornRad * Math.sin(18/180*Math.PI)},
+				{'x':cX - side, 'y':cY - pentCornRad * Math.cos(36/180*Math.PI)},
+				{'x':cX - pentCornRad * Math.sin(36/180*Math.PI), 'y':cY - pentCornRad * Math.cos(36/180*Math.PI)}];
 
 			const starString = star.map((p) => {
 				return [p.x,p.y].join(',');
