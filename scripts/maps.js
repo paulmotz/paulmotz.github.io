@@ -22,8 +22,8 @@ const projection = d3.geoAlbersUsa()
 				   .scale([1000]);          // scale things down to see entire US
         
 // Define path generator
-const path = d3.geoPath()               // path generator that will convert GeoJSON to SVG paths
-		  	 .projection(projection);  // tell path generator to use albersUsa projection
+const path = d3.geoPath()             // path generator that will convert GeoJSON to SVG paths
+		  	 .projection(projection); // tell path generator to use albersUsa projection
 
 const colors = ["rgb(35,32,102)", "rgb(239,29,14)", "Purple", "DarkOrange"];
 		
@@ -155,9 +155,9 @@ d3.json("data/maps/election_results.json", (data) => {
 				.on("mousemove", (d) => {   
 					const republican = d.properties.republican == 1 ? "Republican" : "Democrat";
 					tooltipElection.html(d.properties.name + "<br>" + republican);
-					tooltipElection.style("left", (d3.event.pageX) + "px")     
-			        	.style("left", (d3.event.pageX + 9) + "px")  
-			        	.style("top", (d3.event.pageY + 9) + "px");
+					tooltipElection.style("left", `${(d3.event.pageX)}px`)     
+			        	.style("left", `${(d3.event.pageX + 9)}px`)  
+			        	.style("top", `${(d3.event.pageY + 9)}px`);
 			    	tooltipElection.transition()        
 			      	   .duration(200)      
 			           .style("opacity", .9);         
@@ -171,7 +171,7 @@ d3.json("data/maps/election_results.json", (data) => {
 			// vanilla JS is great! http://vanilla-js.com
 		    const election = document.querySelector('.election-heading');
 
-			election.innerHTML = elections[year] + " - " + year;
+			election.innerHTML = `${elections[year]} - ${year}`;
 
 			const legendElection = document.querySelector('.legend-election');
 
@@ -180,10 +180,7 @@ d3.json("data/maps/election_results.json", (data) => {
 
 			// inspired by http://bl.ocks.org/jkeohan/b8a3a9510036e40d3a4e
 			for (const index in legendTextElection) {
-				legendElection.innerHTML += "<p class='legend-item'><span class='square " + 
-					legendTextElection[index].toLowerCase() + "'></span><span>" + 
-					legendTextElection[index] + " (" + 
-					(index == 1 ? numRedStates : 51 - numRedStates) + ")</p></span>";
+				legendElection.innerHTML += `<p class='legend-item'><span class='square ${legendTextElection[index].toLowerCase()}'></span><span>${legendTextElection[index]} (${(index == 1 ? numRedStates : 51 - numRedStates)})</p></span>`;
 			}
 
 			svgObese.selectAll("path")
@@ -201,10 +198,10 @@ d3.json("data/maps/election_results.json", (data) => {
 					return mostObeseStatesObj.hasOwnProperty(obesity) ? color(1) : color(0);
 				})
 				.on("mousemove", (d) => {   
-					tooltipObese.html(d.properties.name + "<br>" + "Obesity Rate: " + yearlyObesityRates[d.properties.name] + "%");
-					tooltipObese.style("left", (d3.event.pageX) + "px")     
-			        	.style("left", (d3.event.pageX + 9) + "px")  
-			        	.style("top", (d3.event.pageY + 9) + "px");
+					tooltipObese.html(`${d.properties.name}<br>Obesity Rate: ${yearlyObesityRates[d.properties.name]}%`);
+					tooltipObese.style("left", `${(d3.event.pageX)}px`)     
+			        	.style("left", `${(d3.event.pageX + 9)}px`)  
+			        	.style("top", `${(d3.event.pageY + 9)}px`);
 			    	tooltipObese.transition()        
 			      	   .duration(200)      
 			           .style("opacity", .9);      
@@ -219,16 +216,11 @@ d3.json("data/maps/election_results.json", (data) => {
 
 		    legendObese.innerHTML = "";
 
-			legendObese.innerHTML += "The " + numRedStates + " most obese states (" + numRedStates	+ " is the number of states that voted Republican in " + year +").<br>";    
+			legendObese.innerHTML += `The ${numRedStates} most obese states (${numRedStates} is the number of states that voted Republican in ${year}).<br>`;    
 
 			for (const index in legendTextObese) {
-				legendObese.innerHTML += "<p class='legend-item'><span class='square " + 
-					legendTextObese[index].toLowerCase().split(' ').join('-')+ "'></span><span>" + 
-					legendTextObese[index] + " (" + (index == 1 ? numRedStates : 51 - numRedStates) + 
-					")</p></span>";
+				legendObese.innerHTML += `<p class='legend-item'><span class='square ${legendTextObese[index].toLowerCase().split(' ').join('-')}'></span><span>${legendTextObese[index]} (${(index == 1 ? numRedStates : 51 - numRedStates)})</p></span>`;
 			}
-
-			// console.log(mostObeseStatesObj);
 
 		    svgCompare.selectAll("path")
 				.data(json.features)
@@ -269,10 +261,10 @@ d3.json("data/maps/election_results.json", (data) => {
 
 				.on("mousemove", (d) => {   
 					const party = d.properties.republican == 1 ? "Republican" : "Democrat";
-					tooltipCompare.html(d.properties.name + "<br>" + party + "<br>Obesity Rate: " + yearlyObesityRates[d.properties.name] + "%");
-					tooltipCompare.style("left", (d3.event.pageX) + "px")   
-						.style("left", (d3.event.pageX + 9) + "px")  
-			        	.style("top", (d3.event.pageY + 9) + "px");
+					tooltipCompare.html(`${d.properties.name}<br> ${party}<br>Obesity Rate: ${yearlyObesityRates[d.properties.name]}"%`);
+					tooltipCompare.style("left", `${(d3.event.pageX)}px`)   
+						.style("left", `${(d3.event.pageX + 9)}px`)  
+			        	.style("top", `${(d3.event.pageY + 9)}px`);
 			    	tooltipCompare.transition()        
 			      	   .duration(200)      
 			           .style("opacity", .9);      
@@ -288,22 +280,14 @@ d3.json("data/maps/election_results.json", (data) => {
 		    legendCompare.innerHTML = 'A comparison to see the relation between voting and obesity rates.<br>This uses the same divsions as the previous two maps.<br>'
 
 			for (const index in legendTextCompare) {
-				legendCompare.innerHTML += "<p class='legend-item'><span class='square " + 
-					legendTextCompare[index].toLowerCase().split(' ').join('-')+ "'></span><span>" + 
-					legendTextCompare[index] + " (" + caseValues[index] + ")</p></span>";
-				// if (l == 1) legendCompare.innerHTML += "<br>";
+				legendCompare.innerHTML += `<p class='legend-item'><span class='square ${legendTextCompare[index].toLowerCase().split(' ').join('-')}'></span><span>${legendTextCompare[index]} (${caseValues[index]})</p></span>`;
 			}
 
 			const prediction = document.getElementById('prediction');
 			const correctlyPredicted = caseValues[0] + caseValues[1];
-			prediction.innerHTML = 'If you had sorted the 50 states + DC by the obesity rate in ' +
-									year + ', ' + 
-								   'knew how many states both parties would win in ' +
-								   year +
-								   ' and predicted states by predicting the most obese as Republican and least obese as Democrat, ' +
-								   'you would have predicted ' +
-								   correctlyPredicted + '/51 states ' +
-								   'or ' + Math.round(correctlyPredicted/0.51) + '% correctly.';
+			prediction.innerHTML = `If you had sorted the 50 states + DC by the obesity rate in ${year}, knew how many states both parties would win in
+			   ${year} and predicted states by predicting the most obese as Republican and least obese as Democrat, you would have predicted 
+			   ${correctlyPredicted}/51 states or ${Math.round(correctlyPredicted/0.51)}% correctly.`;
 		});
 	}
 });
