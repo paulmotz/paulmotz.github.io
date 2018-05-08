@@ -18,17 +18,16 @@ const width = 960;
 const height = 500;
 
 const projection = d3.geoAlbersUsa()
-				   .translate([width/2, height/2])    // translate to center of screen
-				   .scale([1000]);          // scale things down to see entire US
-        
+	.translate([width/2, height/2]) // translate to center of screen
+	.scale([1000]);          				// scale things down to see entire US
+			
 // Define path generator
 const path = d3.geoPath()             // path generator that will convert GeoJSON to SVG paths
-		  	 .projection(projection); // tell path generator to use albersUsa projection
+	.projection(projection); // tell path generator to use albersUsa projection
 
 const colors = ['rgb(35,32,102)', 'rgb(239,29,14)', 'Purple', 'DarkOrange'];
 		
-const color = d3.scaleLinear()
-			  .range(colors);
+const color = d3.scaleLinear().range(colors);
 
 const legendTextElection = ['Democrat', 'Republican'];
 const legendTextObese = ['Less Obese', 'More Obese'];
@@ -127,31 +126,31 @@ d3.json('data/maps/election_results.json', (data) => {
 		}
 
 		const tooltipElection = d3.select("body").append("div")   
-		    .attr("class", "tooltip-election")
-		    .style("opacity", 0);
+			.attr("class", "tooltip-election")
+			.style("opacity", 0);
 
-	    const tooltipObese = d3.select("body").append("div")   
-		    .attr("class", "tooltip-obese")
-		    .style("opacity", 0);
+		const tooltipObese = d3.select("body").append("div")   
+			.attr("class", "tooltip-obese")
+			.style("opacity", 0);
 
 		const tooltipCompare = d3.select("body").append("div")   
-		    .attr("class", "tooltip-compare")
-		    .style("opacity", 0);
+				.attr("class", "tooltip-compare")
+				.style("opacity", 0);
 
 		// http://stackoverflow.com/questions/22452112/nvd3-clear-svg-before-loading-new-chart
 		d3.selectAll("svg > *").remove();
 
 		const svgElection = d3.select('.svg-election')
-				.attr("width", width)
-				.attr("height", height);
+			.attr("width", width)
+			.attr("height", height);
 
 		const svgObese = d3.select('.svg-obese')
-				.attr("width", width)
-				.attr("height", height);
+			.attr("width", width)
+			.attr("height", height);
 
 		const svgCompare = d3.select('.svg-compare')
-				.attr("width", width)
-				.attr("height", height);
+			.attr("width", width)
+			.attr("height", height);
 
 		color.domain([0,1,2,3]);
 
@@ -187,20 +186,20 @@ d3.json('data/maps/election_results.json', (data) => {
 					const republican = d.properties.republican == 1 ? "Republican" : "Democrat";
 					tooltipElection.html(d.properties.name + "<br>" + republican);
 					tooltipElection.style("left", `${(d3.event.pageX)}px`)     
-			        	.style("left", `${(d3.event.pageX + 9)}px`)  
-			        	.style("top", `${(d3.event.pageY + 9)}px`);
-			    	tooltipElection.transition()        
-			      	   .duration(200)      
-			           .style("opacity", .9);         
+								.style("left", `${(d3.event.pageX + 9)}px`)  
+								.style("top", `${(d3.event.pageY + 9)}px`);
+						tooltipElection.transition()        
+								 .duration(200)      
+								 .style("opacity", .9);         
 				})
-			    .on("mouseout", () => {       
-			        tooltipElection.transition()        
-			           .duration(500)      
-			           .style("opacity", 0);   
-			    });
+					.on("mouseout", () => {       
+							tooltipElection.transition()        
+							.duration(500)      
+							.style("opacity", 0);   
+					});
 
 			// vanilla JS is great! http://vanilla-js.com
-		    const election = document.querySelector('.election-heading');
+				const election = document.querySelector('.election-heading');
 
 			election.innerHTML = `${elections[year]} - ${year}`;
 
@@ -235,21 +234,21 @@ d3.json('data/maps/election_results.json', (data) => {
 					tooltipObese.html(`${d.properties.name}<br>Obesity Rate: 
 						${yearlyObesityRates[d.properties.name]}%`);
 					tooltipObese.style("left", `${(d3.event.pageX)}px`)     
-			        	.style("left", `${(d3.event.pageX + 9)}px`)  
-			        	.style("top", `${(d3.event.pageY + 9)}px`);
-			    	tooltipObese.transition()        
-			      	   .duration(200)      
-			           .style("opacity", .9);      
+								.style("left", `${(d3.event.pageX + 9)}px`)  
+								.style("top", `${(d3.event.pageY + 9)}px`);
+						tooltipObese.transition()        
+								.duration(200)      
+								.style("opacity", .9);      
 				})
-			    .on("mouseout", () => {       
-			        tooltipObese.transition()        
-			           .duration(500)      
-			           .style("opacity", 0);   
-			    });
+					.on("mouseout", () => {       
+							tooltipObese.transition()        
+							.duration(500)      
+							.style("opacity", 0);   
+					});
 
-		    const legendObese = document.querySelector('.legend-obese');
+				const legendObese = document.querySelector('.legend-obese');
 
-		    legendObese.innerHTML = "";
+				legendObese.innerHTML = "";
 
 			legendObese.innerHTML += `The ${numRedStates} most obese states (${numRedStates} 
 				is the number of states that voted Republican in ${year}).<br>`;    
@@ -260,7 +259,7 @@ d3.json('data/maps/election_results.json', (data) => {
 				${legendTextObese[index]} (${(index == 1 ? numRedStates : 51 - numRedStates)})</p></span>`;
 			}
 
-		    svgCompare.selectAll("path")
+				svgCompare.selectAll("path")
 				.data(json.features)
 				.enter()
 				.append("path")
@@ -313,10 +312,10 @@ d3.json('data/maps/election_results.json', (data) => {
 						.style("opacity", 0);   
 				});
 
-		    const legendCompare = document.querySelector('.legend-compare');
+				const legendCompare = document.querySelector('.legend-compare');
 
-		    legendCompare.innerHTML = `A comparison to see the relation between voting and obesity 
-		    	rates.<br>This uses the same divsions as the previous two maps.<br>`
+				legendCompare.innerHTML = `A comparison to see the relation between voting and obesity 
+					rates.<br>This uses the same divsions as the previous two maps.<br>`
 
 			for (const index in legendTextCompare) {
 				legendCompare.innerHTML += `<p class='legend-item'><span class='square 

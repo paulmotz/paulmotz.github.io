@@ -57,10 +57,12 @@ $(document).ready(function() {
 
 	let lastMove = {};	
 
-	const pieceNames = {'B' : 'Bishop', 'N' : 'Knight', 'K' : 'King', 'P' : 'Pawn', 'Q' : 'Queen', 'R' : 'Rook'};
+	const pieceNames = {'B': 'Bishop', 'N': 'Knight', 'K': 'King', 'P': 'Pawn', 'Q': 'Queen', 
+		'R': 'Rook'};
 
 	// https://en.wikipedia.org/wiki/Chess_symbols_in_Unicode
-	const pieceSymbols = {'bB': '♝', 'bN': '♞', 'bK': '♚', 'bP': '♟', 'bQ': '♛', 'bR': '♜', 'wB': '♗', 'wN': '♘', 'wK': '♔', 'wP': '♙', 'wQ': '♕', 'wR': '♖'};
+	const pieceSymbols = {'bB': '♝', 'bN': '♞', 'bK': '♚', 'bP': '♟', 'bQ': '♛', 'bR': '♜', 
+		'wB': '♗', 'wN': '♘', 'wK': '♔', 'wP': '♙', 'wQ': '♕', 'wR': '♖'};
 
 	// kings and queens have arrays of length 1 for convenience in later methods
 	const pieceStartingPositions = {'wB' : [[3, 1], [6, 1]],
@@ -96,7 +98,8 @@ $(document).ready(function() {
 	// 								};
 
 	// represent all pieces as entries in arrays for dynamic access (kings could have been single entry)
-	allPieces = {'wB' : [], 'wN' : [], 'wK' : [], 'wP' : [], 'wQ' : [], 'wR' : [], 'bB' : [], 'bN' : [], 'bK' : [], 'bP' : [], 'bQ' : [], 'bR' : [] };
+	allPieces = {'wB' : [], 'wN' : [], 'wK' : [], 'wP' : [], 'wQ' : [], 'wR' : [], 
+		'bB' : [], 'bN' : [], 'bK' : [], 'bP' : [], 'bQ' : [], 'bR' : [] };
 
 	let whiteDown = true;
 	let humanTurn;
@@ -437,7 +440,10 @@ $(document).ready(function() {
 			if (lastMove['oldSquare']) {
 				drawLastMove(lastMove, opponentColor, true);
 			}
-			lastMove = {'oldSquare' : [pieceObject.file, pieceObject.rank] , 'newSquare' : compMove.move, 'piece' : piece + compMove.id};
+			lastMove = {
+				'oldSquare' : [pieceObject.file, pieceObject.rank] , 'newSquare' : compMove.move, 
+				'piece' : piece + compMove.id
+			};
 			const pieceType = piece[1];
 
 			// movePiece checks whether a king or rook has moved. This should be done after checking for castling
@@ -567,7 +573,8 @@ $(document).ready(function() {
 			pieceName = pieces[Math.floor(Math.random() * pieces.length)];
 		}
 		const newPiece = color + pieceName;
-		const index = allPieces[newPiece].length > 0 ? allPieces[newPiece][allPieces[newPiece].length - 1].id + 1 : allPieces[newPiece].length;
+		const index = allPieces[newPiece].length > 0 ? 
+			allPieces[newPiece][allPieces[newPiece].length - 1].id + 1 : allPieces[newPiece].length;
 		const symbol = pieceSymbols[newPiece];
 		drawOverPiece(newSquare);
 		drawOnSquare(file, rank, symbol, newPiece[0]);
