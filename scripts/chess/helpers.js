@@ -263,22 +263,21 @@ function checkMatingMaterial() {
 	if (allPieces['wQ'].length === 0 && allPieces['bQ'].length === 0 &&
 		allPieces['wR'].length === 0 && allPieces['bR'].length === 0 &&
 		allPieces['wP'].length === 0 && allPieces['bP'].length === 0) {
-
-		for (let i = 0; i < colors.length; i++) {
-			let p1 = colors[i];
-			let p2 = colors[(i + 1) % 2];
+		for (const color of colors) {
+			const color1 = color;
+			const color2 = otherColor(color);
 
 			// one player has no pieces, can the other mate?
-			if (!allPieces[p1 + 'B'].length && !allPieces[p1 + 'N'].length) {
+			if (!allPieces[color1 + 'B'].length && !allPieces[color1 + 'N'].length) {
 
 				// if the other player has no knights does the other player have at least one pair of bishops with opposite colored squares
-				if (!allPieces[p2 + 'N'].length && !differentColorBishops()) {
+				if (!allPieces[color2 + 'N'].length && !differentColorBishops()) {
 					$('.result-description').html(`It's a draw by insufficient mating material!`);
 					return false;
 				}
 
 				// only one of bishop or knight
-				if (allPieces[p2 + 'B'].length + allPieces[p2 + 'N'].length < 2) {
+				if (allPieces[color2 + 'B'].length + allPieces[color2 + 'N'].length < 2) {
 					$('.result-description').html(`It's a draw by insufficient mating material!`);
 					return false;
 				}
