@@ -401,7 +401,7 @@ $(document).ready(function() {
 
 			// construct array of possible moves
 			const moves = [];
-			for (pieceType in allPieces) {
+			for (const pieceType in allPieces) {
 				// only get moves from the correct color of pieces
 				if (pieceType[0] === currentColor) {
 					for (const piece of allPieces[pieceType]) {
