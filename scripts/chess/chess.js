@@ -590,7 +590,6 @@ $(document).ready(function() {
 	 * @param {Number[]} kingSquare - the file and rank of the king's move
 	 */
 	function castle(kingSquare) {
-
 		const [kingFile, kingRank] = kingSquare;
 		if ((kingFile !== 3 && kingFile !== 7) || (kingRank !== 1 && kingRank !== 8)) return;
 

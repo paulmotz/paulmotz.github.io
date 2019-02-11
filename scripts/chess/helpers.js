@@ -155,11 +155,11 @@ function getLegalMoves(checkingPieces, clickedPiece) {
 		const checkingPiece = allPieces[checkingPieceColorAndType][checkingPieceIndex];
 		const checkingPieceSquare = [checkingPiece.file, checkingPiece.rank]
 		checkingPieceIndex = squareToIndex(checkingPieceSquare);
-		
+
 		// can the piece be captured?
-		const captureMove = clickedPieceMoves.indexOf(checkingPieceIndex);
-		if (captureMove !== -1) {
-			legalMoves.push(clickedPieceMoves[captureMove]);
+		const captureMove = clickedPieceMoves.find((moveSquare) => moveSquare === checkingPieceIndex);
+		if (captureMove !== undefined) {
+			legalMoves.push(captureMove);
 		}
 
 		// can the piece be blocked?
@@ -167,9 +167,9 @@ function getLegalMoves(checkingPieces, clickedPiece) {
 		if (checkingPieceColorAndType[1] !== 'N' && checkingPieceColorAndType[1] !== 'P') {
 			const checkPath = getCheckPath(checkingPieceSquare, kingSquare, false).map(squareToIndex);
 			for (const square of checkPath) {
-				const blockMove = clickedPieceMoves.indexOf(square);
-				if (blockMove !== -1) {
-					legalMoves.push(clickedPieceMoves[blockMove]);
+				const blockMove = clickedPieceMoves.find((blockSquare) => blockSquare === square);
+				if (blockMove !== undefined) {
+					legalMoves.push(blockMove);
 				} 
 			}
 		}
