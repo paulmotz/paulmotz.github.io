@@ -1,6 +1,6 @@
 # thisispaulsusername.github.io
 
-This is the code for my personal webpage. I have a few personal projects here and hope to have more soon!
+This is the code for my first personal webpage. This page is largely out of date and I hope to soon replace it with some new projects built using more modern tools. You can observe my progress by checking out https://github.com/paulmotz/github-pages.
 
 ## Dummy Chess
 
